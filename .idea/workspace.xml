@@ -13,7 +13,9 @@
     <option name="reloaded" value="true" />
   </component>
   <component name="CMakeRunConfigurationManager">
-    <generated />
+    <generated>
+      <config projectName="D3DGame" targetName="D3DGame" />
+    </generated>
   </component>
   <component name="CMakeSettings">
     <configurations>
@@ -21,7 +23,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="initial commit" />
+    <list default="true" id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="initial commit">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -40,23 +45,23 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="d3d11" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "k-nero"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;k-nero&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/k-nero/D3DGame.git",
-    "accountId": "7ac07ea0-09fc-4dd0-92bb-eec6317d5b9a"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/k-nero/D3DGame.git&quot;,
+    &quot;accountId&quot;: &quot;7ac07ea0-09fc-4dd0-92bb-eec6317d5b9a&quot;
   }
-}]]></component>
+}</component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="oooJaPYB" />
   </component>
@@ -66,23 +71,23 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.5902020238854597" />
-      <entry key="MS500" value="3.3892654365332726" />
-      <entry key="S2" value="8.512340587989355" />
-      <entry key="S5" value="13.372584360030702" />
-      <entry key="S10" value="16.607195674753942" />
-      <entry key="S30" value="19.851060581629287" />
-      <entry key="S60" value="20.87151212080353" />
-      <entry key="M2" value="21.42133078270059" />
-      <entry key="M5" value="21.764944265144496" />
-      <entry key="M10" value="21.881863267022737" />
-      <entry key="M15" value="21.92110605711029" />
-      <entry key="M30" value="21.960484762453888" />
-      <entry key="H1" value="21.980225276021166" />
-      <entry key="H2" value="21.990108356863438" />
-      <entry key="H4" value="21.995053107538542" />
-      <entry key="D1" value="21.999175369136434" />
-      <entry key="W1" value="21.999882191946497" />
+      <entry key="MS100" value="1.0000000094962167" />
+      <entry key="MS500" value="1.0256921782220534" />
+      <entry key="S2" value="2.4892498007750214" />
+      <entry key="S5" value="7.725447640788286" />
+      <entry key="S10" value="13.235976781211932" />
+      <entry key="S30" value="19.97974178240017" />
+      <entry key="S60" value="22.313013668482267" />
+      <entry key="M2" value="23.608519585858964" />
+      <entry key="M5" value="24.43136540150406" />
+      <entry key="M10" value="24.71362992090386" />
+      <entry key="M15" value="24.808626983830656" />
+      <entry key="M30" value="24.90408280569552" />
+      <entry key="H1" value="24.951983567290885" />
+      <entry key="H2" value="24.97597730419818" />
+      <entry key="H4" value="24.98798502966389" />
+      <entry key="D1" value="24.997997001609402" />
+      <entry key="W1" value="24.999713845043363" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -104,23 +109,23 @@
       <entry key="W1" value="0.0" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.5043229106810279" />
-      <entry key="MS500" value="3.2912710233418148" />
-      <entry key="S2" value="8.317073107680963" />
-      <entry key="S5" value="13.237327033884682" />
-      <entry key="S10" value="16.524479970806855" />
-      <entry key="S30" value="19.8192013757159" />
-      <entry key="S60" value="20.854966157683222" />
-      <entry key="M2" value="21.412896480192263" />
-      <entry key="M5" value="21.761530840293283" />
-      <entry key="M10" value="21.880149852319693" />
-      <entry key="M15" value="21.919962284851678" />
-      <entry key="M30" value="21.959912126821006" />
-      <entry key="H1" value="21.979938770526292" />
-      <entry key="H2" value="21.989965057158486" />
-      <entry key="H4" value="21.99498144594196" />
-      <entry key="D1" value="21.999163423905472" />
-      <entry key="W1" value="21.999880485444976" />
+      <entry key="MS100" value="0.9395227576546545" />
+      <entry key="MS500" value="1.0125861151232625" />
+      <entry key="S2" value="2.445999415135262" />
+      <entry key="S5" value="7.643675398720631" />
+      <entry key="S10" value="13.16384538636769" />
+      <entry key="S30" value="19.944087411921156" />
+      <entry key="S60" value="22.293295037080657" />
+      <entry key="M2" value="23.59814630723125" />
+      <entry key="M5" value="24.42708706207035" />
+      <entry key="M10" value="24.71146875484141" />
+      <entry key="M15" value="24.807181281270346" />
+      <entry key="M30" value="24.903357482478228" />
+      <entry key="H1" value="24.951620285939523" />
+      <entry key="H2" value="24.97579550836645" />
+      <entry key="H4" value="24.98789409293144" />
+      <entry key="D1" value="24.99798184009379" />
+      <entry key="W1" value="24.999711678980454" />
     </decayedShown>
   </component>
   <component name="ProjectApplicationVersion">
@@ -138,48 +143,51 @@
     <option name="showLibraryContents" value="true" />
     <option name="showVisibilityIcons" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "CidrDebugProfileConversion": "true",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.RadMigrateCodeStyle": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "copilot.chat.legacySessionMetadata.migrated": "true",
-    "git-widget-placeholder": "d3d11",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/Users/thanh.nguyen/Documents/dev/D3DGame",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "/Users/thanh.nguyen/Documents/dev/untitled/main.cpp",
-    "to.speed.mode.migration.done": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;CidrDebugProfileConversion&quot;: &quot;true&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.RadMigrateCodeStyle&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;copilot.chat.legacySessionMetadata.migrated&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/thanh.nguyen/Documents/dev/D3DGame&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;/Users/thanh.nguyen/Documents/dev/untitled/main.cpp&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="untitled" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="untitled" TARGET_NAME="untitled" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="untitled" RUN_TARGET_NAME="untitled">
+    <configuration name="D3DGame" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="D3DGame" TARGET_NAME="D3DGame" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="D3DGame" RUN_TARGET_NAME="D3DGame">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
   </component>
-  <component name="SelectedDebugProfileService"><![CDATA[{
-  "profileIdByStamp": [],
-  "modificationCount": 6
-}]]></component>
+  <component name="SelectedDebugProfileService">{
+  &quot;profileIdByStamp&quot;: [
+    {
+      &quot;first&quot;: {
+        &quot;##RUN_CONFIGURATION##&quot;: &quot;CMake Application.D3DGame&quot;,
+        &quot;cmake&quot;: &quot;CMakeBuildProfile:Debug&quot;
+      },
+      &quot;second&quot;: &quot;709e70d3-a3df-4e6f-82ec-bc4a45afb4dd&quot;
+    }
+  ],
+  &quot;modificationCount&quot;: 12
+}</component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="" />
@@ -196,11 +204,33 @@
       <option name="project" value="LOCAL" />
       <updated>1786098315379</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="initial commit">
+      <option name="closed" value="true" />
+      <created>1786098385248</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1786098385248</updated>
+    </task>
+    <task id="LOCAL-00003" summary="initial commit">
+      <option name="closed" value="true" />
+      <created>1786098408073</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1786098408073</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VCPKGProject">
+    <isAutomaticCheckingOnLaunch value="false" />
+    <isAutomaticFoundErrors value="true" />
+    <isAutomaticReloadCMake value="true" />
+    <isAutomaticBootstrapAfterUpdate value="false" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -223,7 +253,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/main.cpp</url>
-          <line>24</line>
+          <line>12</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
