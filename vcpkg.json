@@ -1,0 +1,32 @@
+{
+  "name": "engine",
+  "version": "0.1.0",
+  "dependencies": [
+    "doctest",
+    "cgltf",
+    "stb",
+    "nlohmann-json",
+    "directxmath",
+    {
+      "name": "imgui",
+      "features": ["docking-experimental"]
+    },
+    {
+      "name": "imgui",
+      "features": ["dx12-binding", "win32-binding"],
+      "platform": "windows"
+    },
+    {
+      "name": "d3d12-memory-allocator",
+      "platform": "windows"
+    },
+    {
+      "name": "directx12-agility",
+      "platform": "windows"
+    },
+    {
+      "name": "directx-dxc",
+      "platform": "windows"
+    }
+  ]
+}
