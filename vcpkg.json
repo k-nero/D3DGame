@@ -1,6 +1,7 @@
 {
   "name": "engine",
   "version": "0.1.0",
+  "builtin-baseline": "ea1a7396b05637a53bf23c078647ecc0edee4b80",
   "dependencies": [
     "doctest",
     "cgltf",
@@ -9,11 +10,16 @@
     "directxmath",
     {
       "name": "imgui",
-      "features": ["docking-experimental"]
+      "features": [
+        "docking-experimental"
+      ]
     },
     {
       "name": "imgui",
-      "features": ["dx12-binding", "win32-binding"],
+      "features": [
+        "dx12-binding",
+        "win32-binding"
+      ],
       "platform": "windows"
     },
     {

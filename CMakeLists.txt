@@ -1,18 +1,24 @@
 cmake_minimum_required(VERSION 4.3)
 
-project(engine LANGUAGES CXX VERSION 0.1.0)
+set(CMAKE_CXX_STANDARD 26)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)          # clangd on the Mac side
+set(VCPKG_INSTALLED_DIR ${CMAKE_SOURCE_DIR}/vcpkg_installed)
+set(VCPKG_MANIFEST_DIR ${CMAKE_SOURCE_DIR})
+set(VCPKG_MANIFEST_MODE ON)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+option(ENG_BUILD_TESTS "Build unit tests" ON)
+
+project(engine VERSION 0.1.0 LANGUAGES CXX C )
 
 # Objective-C++ needed only for the macOS window stub (app_macos.mm)
 if(APPLE)
     enable_language(OBJCXX)
 endif()
 
-set(CMAKE_CXX_STANDARD 26)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)          # clangd on the Mac side
-
-option(ENG_BUILD_TESTS "Build unit tests" ON)
 
 # ------------------------------------------------------------------
 # eng_common: warnings + defines shared by every target.
