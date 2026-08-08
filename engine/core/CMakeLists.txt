@@ -1,7 +1,10 @@
 find_package(directxmath CONFIG REQUIRED)
 
-file(GLOB_RECURSE ENG_CORE_SRC CONFIGURE_DEPENDS src/*.cpp)
-
+file(GLOB_RECURSE ENG_CORE_SRC CONFIGURE_DEPENDS
+        src/*.cpp
+        src/*.h
+        include/*.h)
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${ENG_CORE_SRC})
 add_library(eng_core STATIC ${ENG_CORE_SRC})
 
 target_include_directories(eng_core PUBLIC  include        # eng/core/*.h — the public surface

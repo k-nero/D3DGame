@@ -1,8 +1,10 @@
 # Null backend + registry compile on every platform.
-file(GLOB ENG_RHI_SRC CONFIGURE_DEPENDS
-    src/*.cpp
-    src/null/*.cpp)
-
+file(GLOB_RECURSE ENG_RHI_SRC CONFIGURE_DEPENDS
+        src/*.cpp
+        src/null/*.cpp
+        src/*.h
+        include/*.h)
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${ENG_RHI_SRC})
 add_library(eng_rhi STATIC ${ENG_RHI_SRC})
 
 target_include_directories(eng_rhi

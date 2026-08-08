@@ -4,7 +4,11 @@ find_package(nlohmann_json CONFIG REQUIRED)
 find_path(STB_INCLUDE_DIRS   "stb_image.h" REQUIRED)
 find_path(CGLTF_INCLUDE_DIRS "cgltf.h"     REQUIRED)
 
-file(GLOB_RECURSE ENG_ASSETS_SRC CONFIGURE_DEPENDS src/*.cpp)
+file(GLOB_RECURSE ENG_ASSETS_SRC CONFIGURE_DEPENDS
+        src/*.cpp
+        src/*.h
+        include/*.h)
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${ENG_ASSETS_SRC})
 
 add_library(eng_assets STATIC ${ENG_ASSETS_SRC})
 

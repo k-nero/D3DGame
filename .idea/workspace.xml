@@ -35,15 +35,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="initial commit">
-      <change afterPath="$PROJECT_DIR$/.idea/cmake.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakePresets.json" beforeDir="false" afterPath="$PROJECT_DIR$/CMakePresets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/app/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/app/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/assets/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/assets/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/core/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vcpkg-configuration.json" beforeDir="false" afterPath="$PROJECT_DIR$/vcpkg-configuration.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vcpkg.json" beforeDir="false" afterPath="$PROJECT_DIR$/vcpkg.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/renderer/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/renderer/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/rendergraph/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rendergraph/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/rhi/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/scene/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/scene/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +60,7 @@
     </persistenceIdMap>
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="40" />
+    <option name="cachedIndexableFilesCount" value="55" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:debug" />
@@ -100,61 +100,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="9.792471501025249E-95" />
-      <entry key="MS500" value="7.431349759215973E-19" />
-      <entry key="S2" value="2.0659860634483144E-4" />
-      <entry key="S5" value="0.1690962693817907" />
-      <entry key="S10" value="1.5903408721708625" />
-      <entry key="S30" value="7.390313264235999" />
-      <entry key="S60" value="13.59184427977753" />
-      <entry key="M2" value="25.4238499590869" />
-      <entry key="M5" value="48.206849721548295" />
-      <entry key="M10" value="66.85716476290555" />
-      <entry key="M15" value="78.83113251669641" />
-      <entry key="M30" value="100.47946407519008" />
-      <entry key="H1" value="119.17150141847134" />
-      <entry key="H2" value="131.96462881475247" />
-      <entry key="H4" value="139.52129629133296" />
-      <entry key="D1" value="146.51746160327096" />
-      <entry key="W1" value="147.78643344061973" />
+      <entry key="MS100" value="1.0060919051748443" />
+      <entry key="MS500" value="1.5710558048863006" />
+      <entry key="S2" value="3.178539012100869" />
+      <entry key="S5" value="4.099213701345347" />
+      <entry key="S10" value="4.5137040801353" />
+      <entry key="S30" value="4.82909879549295" />
+      <entry key="S60" value="4.914083865307745" />
+      <entry key="M2" value="5.1376717152600415" />
+      <entry key="M5" value="11.655801975484188" />
+      <entry key="M10" value="29.866301874058628" />
+      <entry key="M15" value="45.773661396437035" />
+      <entry key="M30" value="77.2656383897267" />
+      <entry key="H1" value="106.06532587832761" />
+      <entry key="H2" value="126.52704957418185" />
+      <entry key="H4" value="138.89005812996973" />
+      <entry key="D1" value="150.51486910964658" />
+      <entry key="W1" value="152.6415401152995" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0" />
-      <entry key="S2" value="1.0" />
-      <entry key="S5" value="1.0" />
-      <entry key="S10" value="1.0000000000553164" />
-      <entry key="S30" value="1.0003811449112552" />
-      <entry key="S60" value="1.0198686118640388" />
-      <entry key="M2" value="1.1583896745067515" />
-      <entry key="M5" value="1.660969981152726" />
-      <entry key="M10" value="2.1747348092770835" />
-      <entry key="M15" value="2.4913540629888478" />
-      <entry key="M30" value="3.010010141919716" />
-      <entry key="H1" value="3.4172656698290074" />
-      <entry key="H2" value="3.6813728160143673" />
-      <entry key="H4" value="3.8330537127107007" />
-      <entry key="D1" value="3.971037586589475" />
-      <entry key="W1" value="3.995833562675895" />
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="1.5307346759485772E-129" />
+      <entry key="S5" value="2.9782418923376114E-52" />
+      <entry key="S10" value="1.7257583529182477E-26" />
+      <entry key="S30" value="2.585188164427946E-9" />
+      <entry key="S60" value="5.184508090580779E-5" />
+      <entry key="M2" value="0.00825916881501868" />
+      <entry key="M5" value="0.22992937013419512" />
+      <entry key="M10" value="0.8091380770236237" />
+      <entry key="M15" value="1.2887826310698458" />
+      <entry key="M30" value="2.164911113762642" />
+      <entry key="H1" value="2.8981095576998572" />
+      <entry key="H2" value="3.39021958814346" />
+      <entry key="H4" value="3.6783573549361543" />
+      <entry key="D1" value="3.9438661467655227" />
+      <entry key="W1" value="3.9919161881305487" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="8.348798379980002E-6" />
-      <entry key="MS500" value="0.0964550109411834" />
-      <entry key="S2" value="0.5574960425550968" />
-      <entry key="S5" value="0.9603985314115799" />
-      <entry key="S10" value="2.479206075180856" />
-      <entry key="S30" value="8.351249639278018" />
-      <entry key="S60" value="14.591022505234996" />
-      <entry key="M2" value="26.570013197013107" />
-      <entry key="M5" value="49.857755476236115" />
-      <entry key="M10" value="69.02210876685407" />
-      <entry key="M15" value="81.31349154876779" />
-      <entry key="M30" value="103.48272132909217" />
-      <entry key="H1" value="122.58444503435847" />
-      <entry key="H2" value="135.6435245857253" />
-      <entry key="H4" value="143.35301938593696" />
-      <entry key="D1" value="150.4882633306467" />
-      <entry key="W1" value="151.78223294570668" />
+      <entry key="MS100" value="0.018454418314883394" />
+      <entry key="MS500" value="0.8262252450484874" />
+      <entry key="S2" value="2.859147652673142" />
+      <entry key="S5" value="3.9537270719019686" />
+      <entry key="S10" value="4.437594649521927" />
+      <entry key="S30" value="4.802937619630942" />
+      <entry key="S60" value="4.900952291872324" />
+      <entry key="M2" value="5.139226863330978" />
+      <entry key="M5" value="11.881685219871049" />
+      <entry key="M10" value="30.670469658732742" />
+      <entry key="M15" value="47.056905651305875" />
+      <entry key="M30" value="79.42524984656185" />
+      <entry key="H1" value="108.95954860173009" />
+      <entry key="H2" value="129.91487731855267" />
+      <entry key="H4" value="142.56708321486437" />
+      <entry key="D1" value="154.4584917851748" />
+      <entry key="W1" value="156.63342096124282" />
     </decayedShown>
   </component>
   <component name="ProjectApplicationVersion">
@@ -174,6 +174,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "CMake Application.game.executor": "Run",
     "CMake Debug.engine.executor": "Debug",
     "CidrDebugProfileConversion": "true",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
@@ -190,6 +191,7 @@
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "copilot.chat.legacySessionMetadata.migrated": "true",
+    "ctest.advertisement.all.test.configuration.is.created": "true",
     "git-widget-placeholder": "master",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "/Users/thanh.nguyen/Documents/dev/D3DGame",
@@ -203,12 +205,7 @@
     "to.speed.mode.migration.done": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="CMake Debug.engine">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="CMake Application.game">
     <configuration name="eng_tests" type="CMakeDoctestTestRunConfigurationType" factoryName="doctest Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="engine" TARGET_NAME="eng_tests" CONFIG_NAME="debug" RUN_TARGET_PROJECT_NAME="engine" RUN_TARGET_NAME="eng_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -217,6 +214,11 @@
     </configuration>
     <configuration name="engine" type="CMakeListConfigurationType" factoryName="CMakeListConfigurationFactory">
       <method v="2" />
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
     </configuration>
     <configuration name="eng_app" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="engine" TARGET_NAME="eng_app" CONFIG_NAME="debug">
       <method v="2">
@@ -258,6 +260,12 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="All CTest" type="CTestRunConfiguration" factoryName="CTestRun" PROGRAM_PARAMS="--extra-verbose" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" WORKING_DIR="file://$CMakeCurrentLocalGenerationDir$" PASS_PARENT_ENVS_2="true" RUN_PATH="$CTestCurrentExecutableName$" EXPLICIT_BUILD_TARGET_NAME="all" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="CMake Application.eng_app" />
       <item itemvalue="CMake Application.eng_assets" />
@@ -268,6 +276,7 @@
       <item itemvalue="CMake Application.eng_rendergraph" />
       <item itemvalue="CMake Application.game" />
       <item itemvalue="CMake Debug.engine" />
+      <item itemvalue="CTest Application.All CTest" />
       <item itemvalue="Doctest.eng_tests" />
     </list>
   </component>
@@ -276,19 +285,19 @@
     {
       "first": {
         "##RUN_CONFIGURATION##": "CMake Debug.engine",
-        "cmake": "CMakeBuildProfile:Debug"
+        "cmake": "CMakeBuildProfile:debug"
       },
       "second": "3bc06641-7e70-4113-9127-7e3b85e4afc6"
     },
     {
       "first": {
         "##RUN_CONFIGURATION##": "CMake Application.game",
-        "cmake": "CMakeBuildProfile:Debug"
+        "cmake": "CMakeBuildProfile:debug"
       },
       "second": "3bc06641-7e70-4113-9127-7e3b85e4afc6"
     }
   ],
-  "modificationCount": 22
+  "modificationCount": 41
 }]]></component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -298,7 +307,8 @@
       <option name="presentableId" value="Default" />
       <updated>1786098232530</updated>
       <workItem from="1786179146293" duration="355000" />
-      <workItem from="1786180092046" duration="6112000" />
+      <workItem from="1786180092046" duration="7894000" />
+      <workItem from="1786189812947" duration="1527000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -332,7 +342,15 @@
       <option name="project" value="LOCAL" />
       <updated>1786185600131</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="initial commit">
+      <option name="closed" value="true" />
+      <created>1786188129314</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1786188129314</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

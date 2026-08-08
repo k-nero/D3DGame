@@ -2,8 +2,11 @@
 # The single umbrella target the game links.
 find_package(imgui CONFIG REQUIRED)
 
-file(GLOB ENG_APP_SRC CONFIGURE_DEPENDS src/*.cpp)
-
+file(GLOB_RECURSE ENG_APP_SRC CONFIGURE_DEPENDS
+        src/*.cpp
+        src/*.h
+        include/*.h)
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${ENG_APP_SRC})
 add_library(eng_app STATIC ${ENG_APP_SRC})
 
 if(WIN32)
