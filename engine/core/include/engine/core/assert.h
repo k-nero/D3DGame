@@ -1,18 +1,23 @@
 //
 // Created by thanh.nguyen on 10/8/26.
 //
+#pragma once
 
 #ifndef ENGINE_ASSERT_H
 #define ENGINE_ASSERT_H
 
 #define ENG_DEBUG_BREAK() /* __debugbreak() on MSVC, __builtin_debugtrap() on clang */
-
 #define check(expr) \
     do { if (!(expr)) { \
-        eng::on_check_failed(#expr, __FILE__, __LINE__); \
+        engine::on_check_failed(#expr, __FILE__, __LINE__); \
         ENG_DEBUG_BREAK(); std::abort(); \
     } } while (0)
 
 #define ensure(expr) \
-    ( (expr) ? true : (eng::on_ensure_failed(#expr, __FILE__, __LINE__), false) )
+    ( (expr) ? true : (engine::on_ensure_failed(#expr, __FILE__, __LINE__), false) )
+
+namespace engine {
+	void on_check_failed(const char* expr, const char* file, int line);
+	void on_ensure_failed(const char* expr, const char* file, int line);
+}
 #endif //ENGINE_ASSERT_H

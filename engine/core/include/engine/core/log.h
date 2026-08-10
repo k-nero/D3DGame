@@ -1,6 +1,8 @@
 //
 // Created by thanh.nguyen on 10/8/26.
 //
+#pragma once
+
 
 #ifndef ENGINE_LOG_H
 #define ENGINE_LOG_H
