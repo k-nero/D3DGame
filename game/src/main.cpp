@@ -1,9 +1,6 @@
-#include <iostream>
-#include <ostream>
-
 #include "engine/core/log.h"
+
 int main() {
-    std::cout << "Hello, world!" << std::endl;
     engine::log_trace("{} {}!", "Hello", "world");
     engine::log_info("{} {}!", "Hello", "world");
     engine::log_warn("{} {}!", "Hello", "world");
