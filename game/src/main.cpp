@@ -1,6 +1,11 @@
 #include <iostream>
 #include <ostream>
-// TODO: class MyGame : public eng::Application { void tick(float) override; };
+
+#include "engine/core/log.h"
 int main() {
     std::cout << "Hello, world!" << std::endl;
+    engine::log_trace("{} {}!", "Hello", "world");
+    engine::log_info("{} {}!", "Hello", "world");
+    engine::log_warn("{} {}!", "Hello", "world");
+    engine::log_error("{} {}!", "Hello", "world");
 }

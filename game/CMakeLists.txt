@@ -1,4 +1,10 @@
-add_executable(game src/main.cpp)
+
+file(GLOB_RECURSE GAME_SRC CONFIGURE_DEPENDS
+        src/*.cpp
+        src/*.h
+        include/*.h)
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${GAME_SRC})
+add_executable(game ${GAME_SRC})
 
 target_link_libraries(game PRIVATE eng_app eng_common)
 
