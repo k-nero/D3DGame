@@ -1,4 +1,4 @@
-# eng_add_shader_target(<target> <shader_dir>)
+# engine_add_shader_target(<target> <shader_dir>)
 #
 # Compiles every *.hlsl under <shader_dir> with DXC into
 # ${CMAKE_BINARY_DIR}/shaders/. Profile is chosen by filename suffix:
@@ -8,26 +8,26 @@
 # install DXC via the Vulkan SDK or `brew install directx-shader-compiler`.
 # Mac compiles are a syntax/semantic check only - PSO-level validation
 # happens on the Windows machine.
-function(eng_add_shader_target TARGET_NAME SHADER_DIR)
-    find_program(ENG_DXC dxc
+function(engine_add_shader_target TARGET_NAME SHADER_DIR)
+    find_program(ENGINE_DXC dxc
         PATHS "$ENV{VCPKG_ROOT}/installed/x64-windows/tools/directx-dxc"
               "${CMAKE_BINARY_DIR}/vcpkg_installed/x64-windows/tools/directx-dxc")
 
-    if(NOT ENG_DXC)
+    if(NOT ENGINE_DXC)
         message(STATUS "dxc not found - shader target '${TARGET_NAME}' skipped")
         return()
     endif()
 
-    file(GLOB_RECURSE ENG_SHADERS CONFIGURE_DEPENDS "${SHADER_DIR}/*.hlsl")
-    if(NOT ENG_SHADERS)
+    file(GLOB_RECURSE ENGINE_SHADERS CONFIGURE_DEPENDS "${SHADER_DIR}/*.hlsl")
+    if(NOT ENGINE_SHADERS)
         return()
     endif()
 
-    set(ENG_SHADER_OUT_DIR "${CMAKE_BINARY_DIR}/shaders")
-    file(MAKE_DIRECTORY "${ENG_SHADER_OUT_DIR}")
+    set(ENGINE_SHADER_OUT_DIR "${CMAKE_BINARY_DIR}/shaders")
+    file(MAKE_DIRECTORY "${ENGINE_SHADER_OUT_DIR}")
 
-    set(ENG_SHADER_OUTPUTS "")
-    foreach(SHADER ${ENG_SHADERS})
+    set(ENGINE_SHADER_OUTPUTS "")
+    foreach(SHADER ${ENGINE_SHADERS})
         get_filename_component(NAME_WLE ${SHADER} NAME_WLE)   # strips .hlsl
         if(NAME_WLE MATCHES "\\.vs$")
             set(PROFILE vs_6_6)
@@ -40,18 +40,18 @@ function(eng_add_shader_target TARGET_NAME SHADER_DIR)
             continue()
         endif()
 
-        set(OUT "${ENG_SHADER_OUT_DIR}/${NAME_WLE}.cso")
+        set(OUT "${ENGINE_SHADER_OUT_DIR}/${NAME_WLE}.cso")
         add_custom_command(
             OUTPUT  ${OUT}
-            COMMAND ${ENG_DXC} -T ${PROFILE} -E main
+            COMMAND ${ENGINE_DXC} -T ${PROFILE} -E main
                     $<$<CONFIG:Debug>:-Zi> $<$<CONFIG:Debug>:-Qembed_debug>
                     -Fo ${OUT} ${SHADER}
             DEPENDS ${SHADER}
             COMMENT "DXC ${PROFILE}: ${NAME_WLE}")
-        list(APPEND ENG_SHADER_OUTPUTS ${OUT})
+        list(APPEND ENGINE_SHADER_OUTPUTS ${OUT})
     endforeach()
 
-    if(ENG_SHADER_OUTPUTS)
-        add_custom_target(${TARGET_NAME} DEPENDS ${ENG_SHADER_OUTPUTS})
+    if(ENGINE_SHADER_OUTPUTS)
+        add_custom_target(${TARGET_NAME} DEPENDS ${ENGINE_SHADER_OUTPUTS})
     endif()
 endfunction()

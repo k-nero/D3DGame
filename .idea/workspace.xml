@@ -19,15 +19,15 @@
   </component>
   <component name="CMakeRunConfigurationManager">
     <generated>
-      <config projectName="engine" targetName="eng_app" />
+      <config projectName="engine" targetName="engine_assets" />
+      <config projectName="engine" targetName="engine_app" />
+      <config projectName="engine" targetName="engine_core" />
+      <config projectName="engine" targetName="engine_renderer" />
+      <config projectName="engine" targetName="engine_rendergraph" />
       <config projectName="engine" targetName="eng_tests" />
-      <config projectName="engine" targetName="eng_rhi" />
-      <config projectName="engine" targetName="eng_renderer" />
-      <config projectName="engine" targetName="eng_core" />
-      <config projectName="engine" targetName="eng_scene" />
+      <config projectName="engine" targetName="engine_scene" />
+      <config projectName="engine" targetName="engine_rhi" />
       <config projectName="engine" targetName="game" />
-      <config projectName="engine" targetName="eng_rendergraph" />
-      <config projectName="engine" targetName="eng_assets" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -37,7 +37,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="add logger">
+      <change afterPath="$PROJECT_DIR$/engine/core/include/engine/core/arena.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engine/core/src/arena.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/cmake.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/cmake.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/CompileShaders.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/CompileShaders.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/app/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/app/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/assets/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/assets/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/core/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/core/include/engine/core/color.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/include/engine/core/color.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/core/src/log.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/src/log.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/renderer/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/renderer/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/rendergraph/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rendergraph/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/rhi/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/scene/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/scene/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/game/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -56,7 +71,6 @@
   </component>
   <component name="EmbeddingIndexingInfo">
     <option name="cachedIndexableFilesCount" value="55" />
-    <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:debug" />
   <component name="FileTemplateManagerImpl">
@@ -95,61 +109,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.000733802032016" />
-      <entry key="MS500" value="1.348477951859568" />
-      <entry key="S2" value="2.2767179754540914" />
-      <entry key="S5" value="2.677948990837903" />
-      <entry key="S10" value="3.070079999549614" />
-      <entry key="S30" value="5.791040776898622" />
-      <entry key="S60" value="9.13444784777458" />
-      <entry key="M2" value="14.883714884319266" />
-      <entry key="M5" value="28.18460551404008" />
-      <entry key="M10" value="39.734907301466365" />
-      <entry key="M15" value="46.359674021048114" />
-      <entry key="M30" value="64.67082046649533" />
-      <entry key="H1" value="102.5138785541446" />
-      <entry key="H2" value="149.91834308339773" />
-      <entry key="H4" value="189.10081689571723" />
-      <entry key="D1" value="234.2339769062158" />
-      <entry key="W1" value="243.42196478054439" />
+      <entry key="MS100" value="1.000000000672382" />
+      <entry key="MS500" value="1.0151887426051407" />
+      <entry key="S2" value="1.504583270067568" />
+      <entry key="S5" value="2.3770867253404027" />
+      <entry key="S10" value="3.7917083658852513" />
+      <entry key="S30" value="7.77721445989117" />
+      <entry key="S60" value="10.431161006136495" />
+      <entry key="M2" value="12.391608542551229" />
+      <entry key="M5" value="13.864200525251977" />
+      <entry key="M10" value="14.415258593444864" />
+      <entry key="M15" value="14.606322077673543" />
+      <entry key="M30" value="14.826986500004093" />
+      <entry key="H1" value="17.023293595342615" />
+      <entry key="H2" value="38.93176832019011" />
+      <entry key="H4" value="102.32033431268978" />
+      <entry key="D1" value="283.02472045458904" />
+      <entry key="W1" value="341.1226775387171" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="2.1545472380800875E-92" />
-      <entry key="MS500" value="4.641637328178178E-19" />
-      <entry key="S2" value="2.6157138994367276E-5" />
-      <entry key="S5" value="0.015946714258626423" />
-      <entry key="S10" value="0.16086070306505862" />
-      <entry key="S30" value="1.1685646532970428" />
-      <entry key="S60" value="2.847172173449299" />
-      <entry key="M2" value="5.820748551578087" />
-      <entry key="M5" value="11.369359670119264" />
-      <entry key="M10" value="15.355653799638361" />
-      <entry key="M15" value="17.20998848807661" />
-      <entry key="M30" value="19.722854772689153" />
-      <entry key="H1" value="21.928677834505976" />
-      <entry key="H2" value="23.83654177877656" />
-      <entry key="H4" value="25.20290168355904" />
-      <entry key="D1" value="26.66367617675614" />
-      <entry key="W1" value="26.9509451624283" />
+      <entry key="MS100" value="9.587861332897883E-11" />
+      <entry key="MS500" value="0.009942045495708238" />
+      <entry key="S2" value="0.49437719119977447" />
+      <entry key="S5" value="1.785977068762938" />
+      <entry key="S10" value="3.0585686949630886" />
+      <entry key="S30" value="4.874930442687578" />
+      <entry key="S60" value="5.725879119179369" />
+      <entry key="M2" value="6.2921394049636055" />
+      <entry key="M5" value="6.696747917406172" />
+      <entry key="M10" value="6.844717922479294" />
+      <entry key="M15" value="6.895642110550268" />
+      <entry key="M30" value="6.949773456366005" />
+      <entry key="H1" value="7.2320603715915315" />
+      <entry key="H2" value="9.90354516021792" />
+      <entry key="H4" value="17.011067435100028" />
+      <entry key="D1" value="35.375251834183594" />
+      <entry key="W1" value="40.96531865149771" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.9733732667337502" />
-      <entry key="MS500" value="1.3410323509574182" />
-      <entry key="S2" value="2.273425165297686" />
-      <entry key="S5" value="2.6910165530009174" />
-      <entry key="S10" value="3.220836484102833" />
-      <entry key="S30" value="6.923964882413462" />
-      <entry key="S60" value="11.930370508093024" />
-      <entry key="M2" value="20.642194450793728" />
-      <entry key="M5" value="39.49438360027124" />
-      <entry key="M10" value="55.04626423314294" />
-      <entry key="M15" value="63.53528609169921" />
-      <entry key="M30" value="84.37277762577807" />
-      <entry key="H1" value="124.42999877929556" />
-      <entry key="H2" value="173.74750702217173" />
-      <entry key="H4" value="214.29959817244108" />
-      <entry key="D1" value="260.89688519385084" />
-      <entry key="W1" value="270.37279790305524" />
+      <entry key="MS100" value="7.801436537039543E-7" />
+      <entry key="MS500" value="0.0749450214248547" />
+      <entry key="S2" value="1.3051764143767626" />
+      <entry key="S5" value="3.582162308844087" />
+      <entry key="S10" value="6.368616929723274" />
+      <entry key="S30" value="12.377293965439318" />
+      <entry key="S60" value="15.990560261738713" />
+      <entry key="M2" value="18.590692547401247" />
+      <entry key="M5" value="20.520904836162526" />
+      <entry key="M10" value="21.23943762514716" />
+      <entry key="M15" value="21.488152874983182" />
+      <entry key="M30" value="21.76978786674778" />
+      <entry key="H1" value="24.251573549388798" />
+      <entry key="H2" value="48.83205609529654" />
+      <entry key="H4" value="119.32798211496758" />
+      <entry key="D1" value="318.39863162612977" />
+      <entry key="W1" value="382.08777104960853" />
     </decayedShown>
   </component>
   <component name="ProjectApplicationVersion">
@@ -202,11 +216,6 @@
   }
 }]]></component>
   <component name="RunManager" selected="CMake Application.game">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="eng_tests" type="CMakeDoctestTestRunConfigurationType" factoryName="doctest Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="engine" TARGET_NAME="eng_tests" CONFIG_NAME="debug" RUN_TARGET_PROJECT_NAME="engine" RUN_TARGET_NAME="eng_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -216,37 +225,42 @@
     <configuration name="engine" type="CMakeListConfigurationType" factoryName="CMakeListConfigurationFactory">
       <method v="2" />
     </configuration>
-    <configuration name="eng_app" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="engine" TARGET_NAME="eng_app" CONFIG_NAME="debug">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="eng_assets" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="engine" TARGET_NAME="eng_assets" CONFIG_NAME="debug">
+    <configuration name="engine_app" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="engine" TARGET_NAME="engine_app" CONFIG_NAME="debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="eng_core" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="engine" TARGET_NAME="eng_core" CONFIG_NAME="debug">
+    <configuration name="engine_assets" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="engine" TARGET_NAME="engine_assets" CONFIG_NAME="debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="eng_renderer" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="engine" TARGET_NAME="eng_renderer" CONFIG_NAME="debug">
+    <configuration name="engine_core" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="engine" TARGET_NAME="engine_core" CONFIG_NAME="debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="eng_rendergraph" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="engine" TARGET_NAME="eng_rendergraph" CONFIG_NAME="debug">
+    <configuration name="engine_renderer" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="engine" TARGET_NAME="engine_renderer" CONFIG_NAME="debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="eng_rhi" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="engine" TARGET_NAME="eng_rhi" CONFIG_NAME="debug">
+    <configuration name="engine_rendergraph" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="engine" TARGET_NAME="engine_rendergraph" CONFIG_NAME="debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="eng_scene" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="engine" TARGET_NAME="eng_scene" CONFIG_NAME="debug">
+    <configuration name="engine_rhi" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="engine" TARGET_NAME="engine_rhi" CONFIG_NAME="debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="engine_scene" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="engine" TARGET_NAME="engine_scene" CONFIG_NAME="debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -263,13 +277,13 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="CMake Application.eng_app" />
-      <item itemvalue="CMake Application.eng_assets" />
-      <item itemvalue="CMake Application.eng_core" />
-      <item itemvalue="CMake Application.eng_renderer" />
-      <item itemvalue="CMake Application.eng_rendergraph" />
-      <item itemvalue="CMake Application.eng_rhi" />
-      <item itemvalue="CMake Application.eng_scene" />
+      <item itemvalue="CMake Application.engine_app" />
+      <item itemvalue="CMake Application.engine_assets" />
+      <item itemvalue="CMake Application.engine_core" />
+      <item itemvalue="CMake Application.engine_renderer" />
+      <item itemvalue="CMake Application.engine_rendergraph" />
+      <item itemvalue="CMake Application.engine_rhi" />
+      <item itemvalue="CMake Application.engine_scene" />
       <item itemvalue="CMake Application.game" />
       <item itemvalue="CMake Debug.engine" />
       <item itemvalue="CTest Application.All CTest" />
@@ -280,13 +294,27 @@
   "profileIdByStamp": [
     {
       "first": {
+        "##RUN_CONFIGURATION##": "CMake Application.game",
+        "cmake": "CMakeBuildProfile:release"
+      },
+      "second": "709e70d3-a3df-4e6f-82ec-bc4a45afb4dd"
+    },
+    {
+      "first": {
         "##RUN_CONFIGURATION##": "CMake Application.eng_core",
+        "cmake": "CMakeBuildProfile:debug"
+      },
+      "second": "709e70d3-a3df-4e6f-82ec-bc4a45afb4dd"
+    },
+    {
+      "first": {
+        "##RUN_CONFIGURATION##": "CMake Application.game",
         "cmake": "CMakeBuildProfile:debug"
       },
       "second": "709e70d3-a3df-4e6f-82ec-bc4a45afb4dd"
     }
   ],
-  "modificationCount": 47
+  "modificationCount": 53
 }]]></component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -298,6 +326,7 @@
       <workItem from="1786179146293" duration="355000" />
       <workItem from="1786180092046" duration="7894000" />
       <workItem from="1786189812947" duration="1527000" />
+      <workItem from="1786414492489" duration="11358000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -355,7 +384,15 @@
       <option name="project" value="LOCAL" />
       <updated>1786357465540</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="add logger">
+      <option name="closed" value="true" />
+      <created>1786357514979</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1786357514979</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

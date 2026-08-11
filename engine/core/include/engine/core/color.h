@@ -5,11 +5,13 @@
 
 #ifndef ENGINE_COLOR_H
 #define ENGINE_COLOR_H
-#define RESET   "\033[0m"
-#define RED     "\033[31m"      /* Red */
-#define GREEN   "\033[32m"      /* Green */
-#define YELLOW  "\033[33m"      /* Yellow */
-#define BLUE    "\033[34m"      /* Blue */
-#define MAGENTA "\033[35m"      /* Magenta */
-#define CYAN    "\033[36m"      /* Cyan */
+#define RESET   "\x1b[0m"
+#define RED     "\x1b[31m"      /* Red */
+#define GREEN   "\x1b[32m"      /* Green */
+#define YELLOW  "\x1b[33m"      /* Yellow */
+#define BLUE    "\x1b[34m"      /* Blue */
+#define MAGENTA "\x1b[35m"      /* Magenta */
+#define CYAN    "\x1b[36m"      /* Cyan */
+#define WHITE   "\x1b[97m"
+#define GRAY    "\x1b[90m"
 #endif //ENGINE_COLOR_H

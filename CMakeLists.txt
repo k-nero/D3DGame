@@ -10,7 +10,7 @@ set(VCPKG_MANIFEST_MODE ON)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-option(ENG_BUILD_TESTS "Build unit tests" ON)
+option(ENGINE_BUILD_TESTS "Build unit tests" ON)
 
 project(engine VERSION 0.1.0 LANGUAGES CXX C )
 
@@ -21,23 +21,23 @@ endif()
 
 
 # ------------------------------------------------------------------
-# eng_common: warnings + defines shared by every target.
+# engine_common: warnings + defines shared by every target.
 # INTERFACE target so it adds flags without being a real library.
 # ------------------------------------------------------------------
-add_library(eng_common INTERFACE)
+add_library(engine_common INTERFACE)
 
 if(MSVC)
-    target_compile_options(eng_common INTERFACE /W4 /permissive- /MP /utf-8)
-    target_compile_definitions(eng_common INTERFACE
+    target_compile_options(engine_common INTERFACE /W4 /permissive- /MP /utf-8)
+    target_compile_definitions(engine_common INTERFACE
         NOMINMAX WIN32_LEAN_AND_MEAN _CRT_SECURE_NO_WARNINGS)
 else()
-    target_compile_options(eng_common INTERFACE -Wall -Wextra -Wshadow)
+    target_compile_options(engine_common INTERFACE -Wall -Wextra -Wshadow)
 endif()
 
-target_compile_definitions(eng_common INTERFACE
-    $<$<CONFIG:Debug>:ENG_DEBUG=1>
-    $<$<PLATFORM_ID:Windows>:ENG_PLATFORM_WINDOWS=1>
-    $<$<PLATFORM_ID:Darwin>:ENG_PLATFORM_MACOS=1>
+target_compile_definitions(engine_common INTERFACE
+    $<$<CONFIG:Debug>:ENGINE_DEBUG=1>
+    $<$<PLATFORM_ID:Windows>:ENGINE_PLATFORM_WINDOWS=1>
+    $<$<PLATFORM_ID:Darwin>:ENGINE_PLATFORM_MACOS=1>
 )
 
 include(cmake/CompileShaders.cmake)
@@ -45,7 +45,7 @@ include(cmake/CompileShaders.cmake)
 add_subdirectory(engine)
 add_subdirectory(game)
 
-if(ENG_BUILD_TESTS)
+if(ENGINE_BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()

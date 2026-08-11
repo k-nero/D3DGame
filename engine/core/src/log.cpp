@@ -5,25 +5,39 @@
 #include <ostream>
 #include <chrono>
 
+#ifdef _WIN32
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
+
 namespace engine {
     void log_msg(const LogLevel lv, const std::string_view str) {
         auto sec_precision = std::chrono::floor<std::chrono::seconds>(std::chrono::system_clock::now());
-		std::string time = std::format("[{}]", std::chrono::zoned_time{ std::chrono::current_zone(), sec_precision });
+        const std::string time = std::format("{:%FT%TZ}", sec_precision);
         switch (lv) {
             case LogLevel::Trace:
-                std::cout << CYAN << time << " [TRACE]: " << RESET << str << std::endl;
+                std::cout << GRAY << time << RESET << WHITE << " TRC " << RESET << str << std::endl;
                 break;
             case LogLevel::Info:
-                std::cout << GREEN << time << " [INFO]: " << RESET << str << std::endl;
+                std::cout << GRAY << time << RESET << GREEN << " INF " << RESET << str << std::endl;
                 break;
             case LogLevel::Warn:
-                std::cout << YELLOW << time << " [WARN]: " << RESET << str << std::endl;
+                std::cout << GRAY << time << RESET << YELLOW << " WRN " << RESET << str << std::endl;
                 break;
             case LogLevel::Error:
-                std::cout << RED << time << " [ERROR]: " << RESET << str << std::endl;
+                std::cout << GRAY << time << RESET << RED << " ERR " << RESET << str << std::endl;
                 break;
             default:
-                std::cout << time << " [UNKNOWN]: " << str << std::endl;
+                std::cout << GRAY << time << RESET << " UKN " << str << std::endl;
         }
+    }
+
+    inline bool stdout_is_terminal() {
+#ifdef _WIN32
+        return _isatty(_fileno(stdout)) != 0; // <io.h>
+#else
+        return isatty(fileno(stdout)) != 0; // <unistd.h>
+#endif
     }
 }

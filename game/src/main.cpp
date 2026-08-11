@@ -1,5 +1,4 @@
 #include "engine/core/log.h"
-#include "engine/core/assert.h"
 
 int main() {
     engine::log_trace("{} {}!", "Hello", "world");

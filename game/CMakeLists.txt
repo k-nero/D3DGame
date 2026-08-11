@@ -6,7 +6,7 @@ file(GLOB_RECURSE GAME_SRC CONFIGURE_DEPENDS
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${GAME_SRC})
 add_executable(game ${GAME_SRC})
 
-target_link_libraries(game PRIVATE eng_app eng_common)
+target_link_libraries(game PRIVATE engine_app engine_common)
 
 # Keep the console subsystem in dev builds so logs are visible.
 # Switch to WIN32 (GUI subsystem) for release polish later.
@@ -23,13 +23,13 @@ if(WIN32)
         COMMAND_EXPAND_LISTS)
 
     # dxil.dll ships beside the dxc tool in the vcpkg package.
-    find_file(ENG_DXIL_DLL dxil.dll
+    find_file(ENGINE_DXIL_DLL dxil.dll
         PATHS "$ENV{VCPKG_ROOT}/installed/x64-windows/tools/directx-dxc"
               "${CMAKE_BINARY_DIR}/vcpkg_installed/x64-windows/tools/directx-dxc")
-    if(ENG_DXIL_DLL)
+    if(ENGINE_DXIL_DLL)
         add_custom_command(TARGET game POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                "${ENG_DXIL_DLL}" "$<TARGET_FILE_DIR:game>")
+                "${ENGINE_DXIL_DLL}" "$<TARGET_FILE_DIR:game>")
     else()
         message(WARNING "dxil.dll not found - shaders will compile but fail signing at PSO creation")
     endif()
@@ -54,7 +54,7 @@ endif()
 
 # Offline shader compilation (see cmake/CompileShaders.cmake).
 # Catches HLSL syntax errors on the Mac; real PSO validation is Windows work.
-eng_add_shader_target(game_shaders "${CMAKE_SOURCE_DIR}/shaders")
+engine_add_shader_target(game_shaders "${CMAKE_SOURCE_DIR}/shaders")
 if(TARGET game_shaders)
     add_dependencies(game game_shaders)
 endif()
