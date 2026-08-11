@@ -1,4 +1,6 @@
+#include "engine/core/arena.h"
 #include "engine/core/log.h"
+#include "engine/core/pool.h"
 
 int main() {
     engine::log_trace("{} {}!", "Hello", "world");

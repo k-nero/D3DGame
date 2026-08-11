@@ -36,23 +36,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="add logger">
-      <change afterPath="$PROJECT_DIR$/engine/core/include/engine/core/arena.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/engine/core/src/arena.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/cmake.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/cmake.xml" afterDir="false" />
+    <list default="true" id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="add arena">
+      <change afterPath="$PROJECT_DIR$/engine/core/include/engine/core/pool.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/CompileShaders.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/CompileShaders.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/app/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/app/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/assets/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/assets/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/core/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/core/include/engine/core/color.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/include/engine/core/color.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/core/src/log.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/src/log.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/renderer/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/renderer/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/rendergraph/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rendergraph/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/rhi/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/scene/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/scene/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/game/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/core/src/arena.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/src/arena.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -109,61 +96,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.000000000672382" />
-      <entry key="MS500" value="1.0151887426051407" />
-      <entry key="S2" value="1.504583270067568" />
-      <entry key="S5" value="2.3770867253404027" />
-      <entry key="S10" value="3.7917083658852513" />
-      <entry key="S30" value="7.77721445989117" />
-      <entry key="S60" value="10.431161006136495" />
-      <entry key="M2" value="12.391608542551229" />
-      <entry key="M5" value="13.864200525251977" />
-      <entry key="M10" value="14.415258593444864" />
-      <entry key="M15" value="14.606322077673543" />
-      <entry key="M30" value="14.826986500004093" />
-      <entry key="H1" value="17.023293595342615" />
-      <entry key="H2" value="38.93176832019011" />
-      <entry key="H4" value="102.32033431268978" />
-      <entry key="D1" value="283.02472045458904" />
-      <entry key="W1" value="341.1226775387171" />
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0" />
+      <entry key="S5" value="1.0000000030258167" />
+      <entry key="S10" value="1.0001623341763335" />
+      <entry key="S30" value="1.2618379199077154" />
+      <entry key="S60" value="2.6905857923011958" />
+      <entry key="M2" value="5.350012079751687" />
+      <entry key="M5" value="10.3499817447486" />
+      <entry key="M10" value="17.485619971048425" />
+      <entry key="M15" value="22.813489839053844" />
+      <entry key="M30" value="31.50464328603004" />
+      <entry key="H1" value="39.354623454586566" />
+      <entry key="H2" value="62.15647719838469" />
+      <entry key="H4" value="124.55319523104961" />
+      <entry key="D1" value="310.1912327114134" />
+      <entry key="W1" value="371.4645895729594" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="9.587861332897883E-11" />
-      <entry key="MS500" value="0.009942045495708238" />
-      <entry key="S2" value="0.49437719119977447" />
-      <entry key="S5" value="1.785977068762938" />
-      <entry key="S10" value="3.0585686949630886" />
-      <entry key="S30" value="4.874930442687578" />
-      <entry key="S60" value="5.725879119179369" />
-      <entry key="M2" value="6.2921394049636055" />
-      <entry key="M5" value="6.696747917406172" />
-      <entry key="M10" value="6.844717922479294" />
-      <entry key="M15" value="6.895642110550268" />
-      <entry key="M30" value="6.949773456366005" />
-      <entry key="H1" value="7.2320603715915315" />
-      <entry key="H2" value="9.90354516021792" />
-      <entry key="H4" value="17.011067435100028" />
-      <entry key="D1" value="35.375251834183594" />
-      <entry key="W1" value="40.96531865149771" />
+      <entry key="MS100" value="1.7636470835205768E-20" />
+      <entry key="MS500" value="1.1201658719621146E-4" />
+      <entry key="S2" value="0.10287931416518728" />
+      <entry key="S5" value="0.40765415471832345" />
+      <entry key="S10" value="0.7053343566845653" />
+      <entry key="S30" value="1.345043512701795" />
+      <entry key="S60" value="2.0316451654461236" />
+      <entry key="M2" value="2.9943420492627038" />
+      <entry key="M5" value="6.054628376181852" />
+      <entry key="M10" value="12.26487590859317" />
+      <entry key="M15" value="16.99725778344147" />
+      <entry key="M30" value="24.599838578971134" />
+      <entry key="H1" value="30.223087584586995" />
+      <entry key="H2" value="35.796249845187155" />
+      <entry key="H4" value="44.36012587155395" />
+      <entry key="D1" value="64.68461061751836" />
+      <entry key="W1" value="70.85581900008535" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="7.801436537039543E-7" />
-      <entry key="MS500" value="0.0749450214248547" />
-      <entry key="S2" value="1.3051764143767626" />
-      <entry key="S5" value="3.582162308844087" />
-      <entry key="S10" value="6.368616929723274" />
-      <entry key="S30" value="12.377293965439318" />
-      <entry key="S60" value="15.990560261738713" />
-      <entry key="M2" value="18.590692547401247" />
-      <entry key="M5" value="20.520904836162526" />
-      <entry key="M10" value="21.23943762514716" />
-      <entry key="M15" value="21.488152874983182" />
-      <entry key="M30" value="21.76978786674778" />
-      <entry key="H1" value="24.251573549388798" />
-      <entry key="H2" value="48.83205609529654" />
-      <entry key="H4" value="119.32798211496758" />
-      <entry key="D1" value="318.39863162612977" />
-      <entry key="W1" value="382.08777104960853" />
+      <entry key="MS100" value="0.1285142283320083" />
+      <entry key="MS500" value="0.663422655650569" />
+      <entry key="S2" value="0.9195942688019346" />
+      <entry key="S5" value="1.1603632825765136" />
+      <entry key="S10" value="1.4876779522898318" />
+      <entry key="S30" value="2.484830200321156" />
+      <entry key="S60" value="4.634970749469504" />
+      <entry key="M2" value="8.280955535014467" />
+      <entry key="M5" value="16.360085828859948" />
+      <entry key="M10" value="29.711498112424334" />
+      <entry key="M15" value="39.77636981285436" />
+      <entry key="M30" value="56.08055954557553" />
+      <entry key="H1" value="69.56313315676293" />
+      <entry key="H2" value="97.94352788214778" />
+      <entry key="H4" value="168.9068140103618" />
+      <entry key="D1" value="374.873942559689" />
+      <entry key="W1" value="442.32010086042175" />
     </decayedShown>
   </component>
   <component name="ProjectApplicationVersion">
@@ -326,7 +313,7 @@
       <workItem from="1786179146293" duration="355000" />
       <workItem from="1786180092046" duration="7894000" />
       <workItem from="1786189812947" duration="1527000" />
-      <workItem from="1786414492489" duration="11358000" />
+      <workItem from="1786414492489" duration="13769000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -392,7 +379,15 @@
       <option name="project" value="LOCAL" />
       <updated>1786357514979</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="add arena">
+      <option name="closed" value="true" />
+      <created>1786440656147</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1786440656147</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -420,7 +415,8 @@
     <MESSAGE value="initial commit" />
     <MESSAGE value="update" />
     <MESSAGE value="add logger" />
-    <option name="LAST_COMMIT_MESSAGE" value="add logger" />
+    <MESSAGE value="add arena" />
+    <option name="LAST_COMMIT_MESSAGE" value="add arena" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
