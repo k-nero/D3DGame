@@ -56,20 +56,25 @@ namespace engine::log {
 #endif
         }
 
+        std::string common_attributes(const logging::record_view &rec) {
+
+            const auto ts = logging::extract<boost::posix_time::ptime>("TimeStamp", rec);
+            const auto pid = logging::extract<boost::log::process_id>("ProcessID", rec);
+            return boost::posix_time::to_iso_extended_string(*ts) + " PID: " + std::to_string(pid.get().native_id());
+        }
         void console_formatter(const logging::record_view &rec,
                                logging::formatting_ostream &strm,
                                const bool colors) {
-            const auto ts = logging::extract<boost::posix_time::ptime>("TimeStamp", rec);
             const auto sev = rec[logging::trivial::severity];
 
             if (colors && sev) {
                 if (sev == boost::log::trivial::fatal) {
-                    strm << color_for(*sev) << boost::posix_time::to_iso_extended_string(*ts) << " ";
+                    strm << color_for(*sev) << common_attributes(rec) << " ";
                 } else {
-                    strm << GRAY << boost::posix_time::to_iso_extended_string(*ts) << RESET <<" " << color_for(*sev);
+                    strm << GRAY << common_attributes(rec) << RESET <<" " << color_for(*sev);
                 }
             } else {
-                strm << boost::posix_time::to_iso_extended_string(*ts) << " ";
+                strm << common_attributes(rec) << " ";
             }
 
             strm << std::setw(7) << std::left << *sev << " ";
@@ -102,13 +107,15 @@ namespace engine::log {
         }
 #endif
     } // anonymous namespace
-    void init(const bool enable_colors) {
+    void init(boost::log::trivial::severity_level level, const bool enable_colors) {
+        logging::add_common_attributes(); // TimeStamp, ThreadID, etc.
 #ifdef _WIN32
         attach_console();
 #endif
         const bool colors = enable_colors && enable_vt_mode();
         // Console sink — colored
         using console_sink_t = sinks::synchronous_sink<sinks::text_ostream_backend>;
+
         const auto console_sink = boost::make_shared<console_sink_t>();
         console_sink->locked_backend()->add_stream(
             boost::shared_ptr<std::ostream>(&std::cout, boost::null_deleter()));
@@ -119,13 +126,11 @@ namespace engine::log {
             });
         logging::core::get()->add_sink(console_sink);
 
-        // File sink — no colors, rotating
         auto file_sink = logging::add_file_log(
-            logging::keywords::file_name = "engine_%N.log",
-            logging::keywords::rotation_size = 10 * 1024 * 1024,
-            logging::keywords::auto_flush = true,
-            logging::keywords::format = "%TimeStamp% %Severity% %Message%");
-
+           logging::keywords::file_name = "engine_%N.log",
+           logging::keywords::rotation_size = 10 * 1024 * 1024,
+           logging::keywords::auto_flush = true,
+           logging::keywords::format = "%TimeStamp% %Severity% %Message%");
 
 #ifdef _WIN32
         using debug_sink_t = sinks::synchronous_sink<sinks::debug_output_backend>;
@@ -138,14 +143,12 @@ namespace engine::log {
         logging::core::get()->add_sink(debug_sink);
 #endif
 
-        logging::add_common_attributes(); // TimeStamp, ThreadID, etc.
-
 #ifdef NDEBUG
-        logging::core::get()->set_filter(logging::trivial::severity >= logging::trivial::info);
+        logging::core::get()->set_filter(logging::trivial::severity >= level);
 #else
-        logging::core::get()->set_filter([](const logging::attribute_value_set &attrs) {
+        logging::core::get()->set_filter([level](const logging::attribute_value_set &attrs) {
             const auto sev = logging::extract<boost::log::trivial::severity_level>("Severity", attrs);
-            return sev && *sev >= logging::trivial::trace;
+            return sev && *sev >= level;
         });
 #endif
     }
