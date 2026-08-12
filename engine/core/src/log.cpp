@@ -161,8 +161,10 @@ namespace engine::log {
         // Only emit when a debugger is actually listening
         debug_sink->set_filter(expr::is_debugger_present());
         debug_sink->set_formatter(
-            expr::stream << "[" << logging::trivial::severity << "] "
-            << expr::smessage << "\n");
+            [](const logging::record_view& rec, logging::formatting_ostream& strm) {
+                console_formatter(rec, strm, false);
+				strm << std::endl; // Add a newline for debugger output
+            });
         logging::core::get()->add_sink(debug_sink);
 #endif
 
