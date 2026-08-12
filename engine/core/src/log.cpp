@@ -14,6 +14,7 @@
 #include <boost/core/null_deleter.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/file.hpp>
+#include <boost/phoenix/bind.hpp>
 
 #include "engine/core/color.h"
 
@@ -57,11 +58,12 @@ namespace engine::log {
         }
 
         std::string common_attributes(const logging::record_view &rec) {
-
             const auto ts = logging::extract<boost::posix_time::ptime>("TimeStamp", rec);
             const auto pid = logging::extract<boost::log::process_id>("ProcessID", rec);
+            const auto scope = logging::extract<boost::log::attributes::named_scope>("Scope", rec);
             return boost::posix_time::to_iso_extended_string(*ts) + " PID: " + std::to_string(pid.get().native_id());
         }
+
         void console_formatter(const logging::record_view &rec,
                                logging::formatting_ostream &strm,
                                const bool colors) {
@@ -71,7 +73,7 @@ namespace engine::log {
                 if (sev == boost::log::trivial::fatal) {
                     strm << color_for(*sev) << common_attributes(rec) << " ";
                 } else {
-                    strm << GRAY << common_attributes(rec) << RESET <<" " << color_for(*sev);
+                    strm << GRAY << common_attributes(rec) << RESET << " " << color_for(*sev);
                 }
             } else {
                 strm << common_attributes(rec) << " ";
@@ -106,9 +108,14 @@ namespace engine::log {
             std::cerr.clear();
         }
 #endif
+        using pid_value = boost::log::attributes::current_process_id::value_type; // = process_id
+        unsigned long native_pid(logging::value_ref<pid_value> const &ref) {
+            return ref ? static_cast<unsigned long>(ref->native_id()) : 0ul;
+        }
     } // anonymous namespace
     void init(boost::log::trivial::severity_level level, const bool enable_colors) {
         logging::add_common_attributes(); // TimeStamp, ThreadID, etc.
+        logging::core::get()->add_global_attribute("Scope", boost::log::attributes::named_scope());
 #ifdef _WIN32
         attach_console();
 #endif
@@ -127,10 +134,24 @@ namespace engine::log {
         logging::core::get()->add_sink(console_sink);
 
         auto file_sink = logging::add_file_log(
-           logging::keywords::file_name = "engine_%N.log",
-           logging::keywords::rotation_size = 10 * 1024 * 1024,
-           logging::keywords::auto_flush = true,
-           logging::keywords::format = "%TimeStamp% %Severity% %Message%");
+            logging::keywords::file_name = "engine_%N.log",
+            logging::keywords::rotation_size = 10 * 1024 * 1024,
+            logging::keywords::auto_flush = true,
+            logging::keywords::format = (
+                (
+                    expr::stream
+                    << expr::attr<unsigned int>("LineID")
+                    << " " << expr::format_date_time<boost::posix_time::ptime>("TimeStamp", "%Y-%m-%dT%H:%M:%S")
+                    << " PID: " << boost::phoenix::bind(&native_pid, expr::attr<pid_value>("ProcessID").or_none())
+                    << " " << expr::format_named_scope("Scope",
+                                                logging::keywords::format = "%n (%f:%l)",
+                                                // name, file, line of the scope
+                                                logging::keywords::depth = 2, // only innermost 2 entries
+                                                logging::keywords::delimiter = " <- ")
+                    << " " << std::left << std::setw(7) << logging::trivial::severity
+                    << " " << expr::smessage
+                )
+            ));
 
 #ifdef _WIN32
         using debug_sink_t = sinks::synchronous_sink<sinks::debug_output_backend>;
