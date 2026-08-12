@@ -15,11 +15,13 @@
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/file.hpp>
 #include <boost/phoenix/bind.hpp>
+#include <boost/log/sinks/debug_output_backend.hpp>
 
 #include "engine/core/color.h"
 
 #ifdef _WIN32
 #include <io.h>
+#include <windows.h>
 #else
 #include <unistd.h>
 #endif
