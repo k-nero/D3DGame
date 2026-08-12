@@ -6,14 +6,14 @@
 #ifndef ENGINE_ASSERT_H
 #define ENGINE_ASSERT_H
 
-#define ENG_DEBUG_BREAK() /* __debugbreak() on MSVC, __builtin_debugtrap() on clang */
-#define check(expr) \
+#define ENGINE_DEBUG_BREAK() /* __debugbreak() on MSVC, __builtin_debugtrap() on clang */
+#define engine_check(expr) \
     do { if (!(expr)) { \
         engine::on_check_failed(#expr, __FILE__, __LINE__); \
-        ENG_DEBUG_BREAK(); std::abort(); \
+        ENGINE_DEBUG_BREAK(); std::abort(); \
     } } while (0)
 
-#define ensure(expr) \
+#define engine_ensure(expr) \
     ( (expr) ? true : (engine::on_ensure_failed(#expr, __FILE__, __LINE__), false) )
 
 namespace engine {

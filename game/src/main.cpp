@@ -1,11 +1,12 @@
-#include "engine/core/arena.h"
 #include "engine/core/log.h"
-#include "engine/core/pool.h"
 
 int main() {
-    engine::log_trace("{} {}!", "Hello", "world");
-    engine::log_info("{} {}!", "Hello", "world");
-    engine::log_warn("{} {}!", "Hello", "world");
-    engine::log_error("{} {}!", "Hello", "world");
+	engine::log::init(true);
+    engine::log::trace("{} {}!", "Hello", "world");
+    engine::log::debug("{} {}!", "Hello", "world");
+    engine::log::info("{} {}!", "Hello", "world");
+    engine::log::warn("{} {}!", "Hello", "world");
+    engine::log::error("{} {}!", "Hello", "world");
+    engine::log::fatal("{} {}!", "Hello", "world");
 	return 0;
 }

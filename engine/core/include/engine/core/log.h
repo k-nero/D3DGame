@@ -7,30 +7,39 @@
 #ifndef ENGINE_LOG_H
 #define ENGINE_LOG_H
 #include <format>
+#include <boost/log/trivial.hpp>
 
-namespace engine {
-    enum class LogLevel { Trace, Info, Warn, Error };
-
-    void log_msg(LogLevel, std::string_view);
+namespace engine::log {
+    void init(bool enable_colors);
 
     template<class... Args>
-    void log_trace(std::format_string<Args...> fmt, Args &&... args) {
-        log_msg(LogLevel::Trace, std::format(fmt, std::forward<Args>(args)...));
+    void trace(std::format_string<Args...> fmt, Args &&... args) {
+        BOOST_LOG_TRIVIAL(trace) << std::format(fmt, std::forward<Args>(args)...);
     }
 
     template<class... Args>
-    void log_info(std::format_string<Args...> fmt, Args &&... args) {
-        log_msg(LogLevel::Info, std::format(fmt, std::forward<Args>(args)...));
+    void debug(std::format_string<Args...> fmt, Args &&... args) {
+        BOOST_LOG_TRIVIAL(debug) << std::format(fmt, std::forward<Args>(args)...);
     }
 
     template<class... Args>
-    void log_warn(std::format_string<Args...> fmt, Args &&... args) {
-        log_msg(LogLevel::Warn, std::format(fmt, std::forward<Args>(args)...));
+    void info(std::format_string<Args...> fmt, Args &&... args) {
+        BOOST_LOG_TRIVIAL(info) << std::format(fmt, std::forward<Args>(args)...);
     }
 
     template<class... Args>
-    void log_error(std::format_string<Args...> fmt, Args &&... args) {
-        log_msg(LogLevel::Error, std::format(fmt, std::forward<Args>(args)...));
+    void warn(std::format_string<Args...> fmt, Args &&... args) {
+        BOOST_LOG_TRIVIAL(warning) << std::format(fmt, std::forward<Args>(args)...);
+    }
+
+    template<class... Args>
+    void error(std::format_string<Args...> fmt, Args &&... args) {
+        BOOST_LOG_TRIVIAL(error) << std::format(fmt, std::forward<Args>(args)...);
+    }
+
+    template<class... Args>
+    void fatal(std::format_string<Args...> fmt, Args &&... args) {
+        BOOST_LOG_TRIVIAL(fatal) << std::format(fmt, std::forward<Args>(args)...);
     }
 }
 #endif //ENGINE_LOG_H

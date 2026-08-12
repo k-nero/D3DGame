@@ -1,9 +1,21 @@
 #include "engine/core/log.h"
-#include "engine/core/color.h"
 
 #include <iostream>
 #include <ostream>
-#include <chrono>
+#include <iomanip>
+#include <boost/log/core.hpp>
+#include <boost/log/expressions.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/sinks/sync_frontend.hpp>
+#include <boost/log/sinks/text_ostream_backend.hpp>
+#include <boost/log/sinks/text_file_backend.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/support/date_time.hpp>
+#include <boost/core/null_deleter.hpp>
+#include <boost/log/utility/setup/console.hpp>
+#include <boost/log/utility/setup/file.hpp>
+
+#include "engine/core/color.h"
 
 #ifdef _WIN32
 #include <io.h>
@@ -11,33 +23,130 @@
 #include <unistd.h>
 #endif
 
-namespace engine {
-    void log_msg(const LogLevel lv, const std::string_view str) {
-        auto sec_precision = std::chrono::floor<std::chrono::seconds>(std::chrono::system_clock::now());
-        const std::string time = std::format("{:%FT%TZ}", sec_precision);
-        switch (lv) {
-            case LogLevel::Trace:
-                std::cout << GRAY << time << RESET << WHITE << " TRC " << RESET << str << std::endl;
-                break;
-            case LogLevel::Info:
-                std::cout << GRAY << time << RESET << GREEN << " INF " << RESET << str << std::endl;
-                break;
-            case LogLevel::Warn:
-                std::cout << GRAY << time << RESET << YELLOW << " WRN " << RESET << str << std::endl;
-                break;
-            case LogLevel::Error:
-                std::cout << GRAY << time << RESET << RED << " ERR " << RESET << str << std::endl;
-                break;
-            default:
-                std::cout << GRAY << time << RESET << " UKN " << str << std::endl;
-        }
-    }
+namespace logging = boost::log;
+namespace sinks = boost::log::sinks;
+namespace expr = boost::log::expressions;
 
-    inline bool stdout_is_terminal() {
+namespace engine::log {
+    namespace {
+        // ANSI escape codes per severity
+        const char *color_for(const boost::log::trivial::severity_level lvl) {
+            switch (lvl) {
+                case boost::log::trivial::trace: return GRAY; // bright black (gray)
+                case boost::log::trivial::debug: return CYAN; // cyan
+                case boost::log::trivial::info: return GREEN; // green
+                case boost::log::trivial::warning: return YELLOW; // yellow
+                case boost::log::trivial::error: return RED; // red
+                case boost::log::trivial::fatal: return BRIGHT_RED; // white on red
+                default: return "";
+            }
+        }
+
+        constexpr auto reset = RESET;
+
+        bool enable_vt_mode() {
 #ifdef _WIN32
-        return _isatty(_fileno(stdout)) != 0; // <io.h>
+            HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+            if (h == INVALID_HANDLE_VALUE) return false;
+            DWORD mode = 0;
+            if (!GetConsoleMode(h, &mode)) return false; // fails if redirected to a file/pipe
+            return SetConsoleMode(h, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING) != 0;
 #else
-        return isatty(fileno(stdout)) != 0; // <unistd.h>
+            return isatty(fileno(stdout));
+#endif
+        }
+
+        void console_formatter(const logging::record_view &rec,
+                               logging::formatting_ostream &strm,
+                               const bool colors) {
+            const auto ts = logging::extract<boost::posix_time::ptime>("TimeStamp", rec);
+            const auto sev = rec[logging::trivial::severity];
+
+            if (colors && sev) {
+                if (sev == boost::log::trivial::fatal) {
+                    strm << color_for(*sev) << boost::posix_time::to_iso_extended_string(*ts) << " ";
+                } else {
+                    strm << GRAY << boost::posix_time::to_iso_extended_string(*ts) << RESET <<" " << color_for(*sev);
+                }
+            } else {
+                strm << boost::posix_time::to_iso_extended_string(*ts) << " ";
+            }
+
+            strm << std::setw(7) << std::left << *sev << " ";
+
+            if (colors && sev) {
+                if (sev == boost::log::trivial::fatal) {
+                    strm << rec[expr::smessage] << reset;
+                } else {
+                    strm << reset << rec[expr::smessage];
+                }
+            } else {
+                strm << rec[expr::smessage];
+            }
+        }
+
+#ifdef _WIN32
+        void attach_console() {
+            // Reuse the parent console if launched from a terminal, else make one
+            if (!AttachConsole(ATTACH_PARENT_PROCESS)) {
+                if (!AllocConsole()) return;
+            }
+            FILE *f;
+            freopen_s(&f, "CONOUT$", "w", stdout);
+            freopen_s(&f, "CONOUT$", "w", stderr);
+            freopen_s(&f, "CONIN$", "r", stdin);
+            std::ios::sync_with_stdio(true);
+            std::clog.clear();
+            std::cout.clear();
+            std::cerr.clear();
+        }
+#endif
+    } // anonymous namespace
+    void init(const bool enable_colors) {
+#ifdef _WIN32
+        attach_console();
+#endif
+        const bool colors = enable_colors && enable_vt_mode();
+        // Console sink — colored
+        using console_sink_t = sinks::synchronous_sink<sinks::text_ostream_backend>;
+        const auto console_sink = boost::make_shared<console_sink_t>();
+        console_sink->locked_backend()->add_stream(
+            boost::shared_ptr<std::ostream>(&std::cout, boost::null_deleter()));
+        console_sink->locked_backend()->auto_flush(true);
+        console_sink->set_formatter(
+            [colors](const logging::record_view &rec, logging::formatting_ostream &strm) {
+                console_formatter(rec, strm, colors);
+            });
+        logging::core::get()->add_sink(console_sink);
+
+        // File sink — no colors, rotating
+        auto file_sink = logging::add_file_log(
+            logging::keywords::file_name = "engine_%N.log",
+            logging::keywords::rotation_size = 10 * 1024 * 1024,
+            logging::keywords::auto_flush = true,
+            logging::keywords::format = "%TimeStamp% %Severity% %Message%");
+
+
+#ifdef _WIN32
+        using debug_sink_t = sinks::synchronous_sink<sinks::debug_output_backend>;
+        auto debug_sink = boost::make_shared<debug_sink_t>();
+        // Only emit when a debugger is actually listening
+        debug_sink->set_filter(expr::is_debugger_present());
+        debug_sink->set_formatter(
+            expr::stream << "[" << logging::trivial::severity << "] "
+            << expr::smessage << "\n");
+        logging::core::get()->add_sink(debug_sink);
+#endif
+
+        logging::add_common_attributes(); // TimeStamp, ThreadID, etc.
+
+#ifdef NDEBUG
+        logging::core::get()->set_filter(logging::trivial::severity >= logging::trivial::info);
+#else
+        logging::core::get()->set_filter([](const logging::attribute_value_set &attrs) {
+            const auto sev = logging::extract<boost::log::trivial::severity_level>("Severity", attrs);
+            return sev && *sev >= logging::trivial::trace;
+        });
 #endif
     }
 }
