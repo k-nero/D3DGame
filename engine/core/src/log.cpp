@@ -63,7 +63,7 @@ namespace engine::log {
             const auto ts = logging::extract<boost::posix_time::ptime>("TimeStamp", rec);
             const auto pid = logging::extract<boost::log::process_id>("ProcessID", rec);
             const auto scope = logging::extract<boost::log::attributes::named_scope>("Scope", rec);
-            return boost::posix_time::to_iso_extended_string(*ts) + " PID: " + std::to_string(pid.get().native_id());
+            return boost::posix_time::to_iso_extended_string(*ts) + " PID:" + std::to_string(pid.get().native_id());
         }
 
         void console_formatter(const logging::record_view &rec,
@@ -144,7 +144,7 @@ namespace engine::log {
                     expr::stream
                     << expr::attr<unsigned int>("LineID")
                     << " " << expr::format_date_time<boost::posix_time::ptime>("TimeStamp", "%Y-%m-%dT%H:%M:%S")
-                    << " PID: " << boost::phoenix::bind(&native_pid, expr::attr<pid_value>("ProcessID").or_none())
+                    << " PID:" << boost::phoenix::bind(&native_pid, expr::attr<pid_value>("ProcessID").or_none())
                     << " " << expr::format_named_scope("Scope",
                                                        logging::keywords::format = "%n (%f:%l)",
                                                        // name, file, line of the scope

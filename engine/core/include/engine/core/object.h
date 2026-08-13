@@ -7,22 +7,22 @@
 #include "refcount.h"
 
 namespace engine {
-    struct ClassID {
+    struct ClassId {
         const char *name; // string literal — static storage, nobody frees it
-        const ClassID *parent; // another function-local static — same deal
+        const ClassId *parent; // another function-local static — same deal
     };
 
     class Object : public RefCounted {
     public:
-        static const ClassID *static_class() {
+        static const ClassId *static_class() {
             // Function-local static: lazily initialized, thread-safe, and immune
             // to the cross-TU static-initialization-order fiasco — a parent's ID
             // always exists by the time a child's initializer asks for it.
-            static constexpr ClassID id{.name = "Object", .parent = nullptr};
+            static constexpr ClassId id{.name = "Object", .parent = nullptr};
             return &id;
         }
 
-        virtual const ClassID *get_class() const { return static_class(); }
+        virtual const ClassId *get_class() const { return static_class(); }
 
         [[nodiscard]] const char *class_name() const { return get_class()->name; }
 
@@ -40,11 +40,11 @@ namespace engine {
 #define ENGINE_CLASS(Type, Super)                                          \
 public:                                                                    \
     using SuperClass = Super;                                              \
-    static const ::engine::ClassID* static_class() {                       \
-        static const ::engine::ClassID id{#Type, Super::static_class()};   \
+    static const ::engine::ClassId* static_class() {                       \
+        static const ::engine::ClassId id{#Type, Super::static_class()};   \
         return &id;                                                        \
     }                                                                      \
-    const ::engine::ClassID* get_class() const override {                  \
+    const ::engine::ClassId* get_class() const override {                  \
         return static_class();                                             \
     }                                                                      \
 private:
@@ -55,7 +55,7 @@ private:
     template<std::derived_from<Object> T>
     [[nodiscard]] bool is_a(const Object *o) {
         if (!o) return false;
-        for (const ClassID *c = o->get_class(); c; c = c->parent)
+        for (const ClassId *c = o->get_class(); c; c = c->parent)
             if (c == T::static_class())
                 return true;
         return false;
