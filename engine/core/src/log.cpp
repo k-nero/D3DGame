@@ -15,13 +15,13 @@
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/file.hpp>
 #include <boost/phoenix/bind.hpp>
-#include <boost/log/sinks/debug_output_backend.hpp>
 
 #include "engine/core/color.h"
 
 #ifdef _WIN32
 #include <io.h>
 #include <windows.h>
+#include <boost/log/sinks/debug_output_backend.hpp>
 #else
 #include <unistd.h>
 #endif
@@ -112,7 +112,7 @@ namespace engine::log {
 #endif
         using pid_value = boost::log::attributes::current_process_id::value_type; // = process_id
         unsigned long native_pid(logging::value_ref<pid_value> const &ref) {
-            return ref ? static_cast<unsigned long>(ref->native_id()) : 0ul;
+            return ref ? ref->native_id() : 0ul;
         }
     } // anonymous namespace
     void init(boost::log::trivial::severity_level level, const bool enable_colors) {

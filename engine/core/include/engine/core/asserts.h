@@ -5,7 +5,7 @@
 
 #ifndef ENGINE_ASSERT_H
 #define ENGINE_ASSERT_H
-
+#include <cstdlib>
 #define ENGINE_DEBUG_BREAK() /* __debugbreak() on MSVC, __builtin_debugtrap() on clang */
 #define engine_check(expr) \
     do { if (!(expr)) { \

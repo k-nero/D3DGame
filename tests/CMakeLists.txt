@@ -10,6 +10,7 @@ target_link_libraries(engine_tests PRIVATE
     doctest::doctest
     engine_scene          # pulls renderer -> rendergraph -> rhi -> core
     engine_assets
+    engine_core
     engine_common)
 
 include(doctest)
