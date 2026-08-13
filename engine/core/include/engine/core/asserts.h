@@ -17,7 +17,8 @@
     ( (expr) ? true : (engine::on_ensure_failed(#expr, __FILE__, __LINE__), false) )
 
 namespace engine {
-	void on_check_failed(const char* expr, const char* file, int line);
-	void on_ensure_failed(const char* expr, const char* file, int line);
+    void on_check_failed(const char *expr, const char *file, int line);
+
+    void on_ensure_failed(const char *expr, const char *file, int line);
 }
 #endif //ENGINE_ASSERT_H

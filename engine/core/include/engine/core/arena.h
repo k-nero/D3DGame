@@ -28,8 +28,11 @@ namespace engine {
 
         // An allocator with copy semantics is a bug factory — forbid it.
         Arena(const Arena &) = delete;
+
         Arena &operator=(const Arena &) = delete;
+
         [[nodiscard]] void *push(size_t size, size_t align);
+
         template<class T, class... Args>
         [[nodiscard]] T *create(Args &&... args) {
             static_assert(std::is_trivially_destructible_v<T>,
@@ -46,6 +49,7 @@ namespace engine {
             for (T &e: s) ::new(&e) T{};
             return s;
         }
+
         template<class T>
         [[nodiscard]] std::span<T> push_array_uninit(size_t count) {
             static_assert(std::is_trivially_destructible_v<T>,
@@ -58,7 +62,9 @@ namespace engine {
 
         void reset(); // frees EVERYTHING. one instruction.
         [[nodiscard]] Marker mark() const;
+
         void pop_to(Marker m);
+
         [[nodiscard]] size_t used() const { return offset_; }
         [[nodiscard]] size_t high_water() const { return high_water_; } // size the arena from this
         [[nodiscard]] size_t capacity() const { return capacity_; }

@@ -11,6 +11,7 @@
 
 namespace engine::log {
     void use_console_log_sink(bool enable_colors);
+
     void use_file_log_sink();
 #ifdef _WIN32
     void use_debug_log_sink();

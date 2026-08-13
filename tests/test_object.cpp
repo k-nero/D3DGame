@@ -7,17 +7,32 @@
 using namespace engine;
 
 namespace {
-// 3-deep chain plus a sibling branch:  Object <- Actor <- Pawn <- Enemy
-//                                                    ^--- Decor
-class Actor : public Object { ENGINE_CLASS(Actor, Object) public: int hp = 0; };
-class Pawn  : public Actor  { ENGINE_CLASS(Pawn, Actor)   };
-class Enemy : public Pawn   { ENGINE_CLASS(Enemy, Pawn)  public: int dmg = 5; };
-class Decor : public Actor  { ENGINE_CLASS(Decor, Actor)  };
+    // 3-deep chain plus a sibling branch:  Object <- Actor <- Pawn <- Enemy
+    //                                                    ^--- Decor
+    class Actor : public Object {
+        ENGINE_CLASS(Actor, Object)
+    public:
+        int hp = 0;
+    };
+
+    class Pawn : public Actor {
+        ENGINE_CLASS(Pawn, Actor)
+    };
+
+    class Enemy : public Pawn {
+        ENGINE_CLASS(Enemy, Pawn)
+    public:
+        int dmg = 5;
+    };
+
+    class Decor : public Actor {
+        ENGINE_CLASS(Decor, Actor)
+    };
 } // namespace
 
 TEST_CASE("is_a walks the whole parent chain") {
     auto e = make_ref<Enemy>();
-    Object* base = e.get();                   // erased — dynamic type is the question
+    Object *base = e.get(); // erased — dynamic type is the question
 
     CHECK(is_a<Enemy>(base));
     CHECK(is_a<Pawn>(base));
@@ -37,9 +52,9 @@ TEST_CASE("sibling branches don't match") {
 
 TEST_CASE("cast: typed pointer on match, nullptr across branches, nullptr-safe") {
     auto e = make_ref<Enemy>();
-    Object* base = e.get();
+    Object *base = e.get();
 
-    auto* back = cast<Enemy>(base);
+    auto *back = cast<Enemy>(base);
     REQUIRE(back != nullptr);
     CHECK(back->dmg == 5);
 
@@ -51,18 +66,18 @@ TEST_CASE("cast: typed pointer on match, nullptr across branches, nullptr-safe")
 TEST_CASE("one ClassID per class — address identity") {
     auto a = make_ref<Enemy>();
     auto b = make_ref<Enemy>();
-    CHECK(a->get_class() == b->get_class());              // same static object
+    CHECK(a->get_class() == b->get_class()); // same static object
     CHECK(a->get_class() == Enemy::static_class());
     CHECK(a->get_class()->parent == Pawn::static_class()); // chain wiring
 }
 
 TEST_CASE("class_name and const cast overload") {
     auto e = make_ref<Enemy>();
-    const Object* cbase = e.get();
+    const Object *cbase = e.get();
 
     CHECK(std::string_view(cbase->class_name()) == "Enemy");
 
-    const auto* ce = cast<Enemy>(cbase);
+    const auto *ce = cast<Enemy>(cbase);
     CHECK(ce != nullptr);
 }
 

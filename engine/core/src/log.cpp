@@ -146,10 +146,10 @@ namespace engine::log {
                     << " " << expr::format_date_time<boost::posix_time::ptime>("TimeStamp", "%Y-%m-%dT%H:%M:%S")
                     << " PID: " << boost::phoenix::bind(&native_pid, expr::attr<pid_value>("ProcessID").or_none())
                     << " " << expr::format_named_scope("Scope",
-                                                logging::keywords::format = "%n (%f:%l)",
-                                                // name, file, line of the scope
-                                                logging::keywords::depth = 2, // only innermost 2 entries
-                                                logging::keywords::delimiter = " <- ")
+                                                       logging::keywords::format = "%n (%f:%l)",
+                                                       // name, file, line of the scope
+                                                       logging::keywords::depth = 2, // only innermost 2 entries
+                                                       logging::keywords::delimiter = " <- ")
                     << " " << std::left << std::setw(7) << logging::trivial::severity
                     << " " << expr::smessage
                 )
@@ -161,9 +161,9 @@ namespace engine::log {
         // Only emit when a debugger is actually listening
         debug_sink->set_filter(expr::is_debugger_present());
         debug_sink->set_formatter(
-            [](const logging::record_view& rec, logging::formatting_ostream& strm) {
+            [](const logging::record_view &rec, logging::formatting_ostream &strm) {
                 console_formatter(rec, strm, false);
-				strm << std::endl; // Add a newline for debugger output
+                strm << std::endl; // Add a newline for debugger output
             });
         logging::core::get()->add_sink(debug_sink);
 #endif

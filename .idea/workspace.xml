@@ -36,22 +36,17 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="enhance logger">
-      <change afterPath="$PROJECT_DIR$/engine/core/include/engine/core/object.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/engine/core/include/engine/core/refcount.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_arena.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_object.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_pool.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_refcount.cpp" afterDir="false" />
+    <list default="true" id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="complete milestone 1">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/core/include/engine/core/arena.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/include/engine/core/arena.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/core/include/engine/core/assert.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/include/engine/core/asserts.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/core/include/engine/core/pool.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/include/engine/core/pool.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/core/src/arena.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/src/arena.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/core/src/assert.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/src/asserts.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/core/include/engine/core/asserts.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/include/engine/core/asserts.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/core/include/engine/core/log.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/include/engine/core/log.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/core/include/engine/core/refcount.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/include/engine/core/refcount.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/core/src/log.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/src/log.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tests/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_smoke.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_arena.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_arena.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_object.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_object.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_pool.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_pool.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_refcount.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_refcount.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,61 +105,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.2055073728384054E-5" />
-      <entry key="MS500" value="0.10380875301136176" />
-      <entry key="S2" value="0.5676210510730323" />
-      <entry key="S5" value="0.7973032810971785" />
-      <entry key="S10" value="0.893699917197636" />
-      <entry key="S30" value="1.1562408878280745" />
-      <entry key="S60" value="1.8418700921639735" />
-      <entry key="M2" value="3.0702026598214363" />
-      <entry key="M5" value="6.32441456321838" />
-      <entry key="M10" value="10.949099162363304" />
-      <entry key="M15" value="14.606476498073013" />
-      <entry key="M30" value="22.051681706107384" />
-      <entry key="H1" value="38.17374910254489" />
-      <entry key="H2" value="83.77117068296546" />
-      <entry key="H4" value="173.583083816976" />
-      <entry key="D1" value="512.5332612409127" />
-      <entry key="W1" value="664.8564307771115" />
+      <entry key="MS100" value="1.001161335073263" />
+      <entry key="MS500" value="1.2616656684802205" />
+      <entry key="S2" value="2.218290404819104" />
+      <entry key="S5" value="3.3393255018982217" />
+      <entry key="S10" value="4.030445422913639" />
+      <entry key="S30" value="4.688829219800084" />
+      <entry key="S60" value="5.195764332453374" />
+      <entry key="M2" value="6.302814368908403" />
+      <entry key="M5" value="9.577562266033366" />
+      <entry key="M10" value="14.334564547865364" />
+      <entry key="M15" value="18.13790291780646" />
+      <entry key="M30" value="25.91750537222396" />
+      <entry key="H1" value="42.181571860314314" />
+      <entry key="H2" value="87.67729676794497" />
+      <entry key="H4" value="177.44690963716013" />
+      <entry key="D1" value="516.9728669864115" />
+      <entry key="W1" value="669.7525389399683" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0" />
-      <entry key="S2" value="1.0" />
-      <entry key="S5" value="1.0" />
-      <entry key="S10" value="1.0" />
-      <entry key="S30" value="1.0000063300322053" />
-      <entry key="S60" value="1.005887784205526" />
-      <entry key="M2" value="1.2123401613838702" />
-      <entry key="M5" value="3.0083068438182314" />
-      <entry key="M10" value="5.669178259375367" />
-      <entry key="M15" value="7.543157849549018" />
-      <entry key="M30" value="11.021716916427616" />
-      <entry key="H1" value="16.940454516283065" />
-      <entry key="H2" value="31.7286304382336" />
-      <entry key="H4" value="59.04313124903014" />
-      <entry key="D1" value="136.30610308268365" />
-      <entry key="W1" value="164.50062200885816" />
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="8.328356790466441E-83" />
+      <entry key="S2" value="3.020924216179225E-21" />
+      <entry key="S5" value="6.1952085723213105E-9" />
+      <entry key="S10" value="7.870964726335211E-5" />
+      <entry key="S30" value="0.042856043198229166" />
+      <entry key="S60" value="0.20823522428295954" />
+      <entry key="M2" value="0.5516032582734735" />
+      <entry key="M5" value="2.1954475388697294" />
+      <entry key="M10" value="4.843068136134062" />
+      <entry key="M15" value="6.791309244736012" />
+      <entry key="M30" value="10.458018547156298" />
+      <entry key="H1" value="16.5015650615988" />
+      <entry key="H2" value="31.314924220915845" />
+      <entry key="H4" value="58.65693970554346" />
+      <entry key="D1" value="136.15710380471768" />
+      <entry key="W1" value="164.47492148856927" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="6.496441429350897E-5" />
-      <entry key="MS500" value="0.1586755389444844" />
-      <entry key="S2" value="0.9569991615845937" />
-      <entry key="S5" value="1.4737587697532502" />
-      <entry key="S10" value="1.7145116496025086" />
-      <entry key="S30" value="2.088186998426263" />
-      <entry key="S60" value="2.8060391703646532" />
-      <entry key="M2" value="4.253875506327024" />
-      <entry key="M5" value="9.31090569429205" />
-      <entry key="M10" value="16.600228238052228" />
-      <entry key="M15" value="22.1338404053358" />
-      <entry key="M30" value="33.06129624947484" />
-      <entry key="H1" value="55.10287000950199" />
-      <entry key="H2" value="115.48683239521858" />
-      <entry key="H4" value="232.61338031487864" />
-      <entry key="D1" value="648.8343721055103" />
-      <entry key="W1" value="829.356191135521" />
+      <entry key="MS100" value="0.9737536373387572" />
+      <entry key="MS500" value="1.2532626430524898" />
+      <entry key="S2" value="2.214023366871609" />
+      <entry key="S5" value="3.3367313284122475" />
+      <entry key="S10" value="4.028944256909819" />
+      <entry key="S30" value="4.728168004517953" />
+      <entry key="S60" value="5.3950515763790765" />
+      <entry key="M2" value="6.84121556506347" />
+      <entry key="M5" value="11.75702459995956" />
+      <entry key="M10" value="19.162181394940657" />
+      <entry key="M15" value="24.914970938600373" />
+      <entry key="M30" value="36.36402974547689" />
+      <entry key="H1" value="58.672091553434385" />
+      <entry key="H2" value="118.97941866599137" />
+      <entry key="H4" value="236.09109719402826" />
+      <entry key="D1" value="653.1249838055244" />
+      <entry key="W1" value="834.2265988806178" />
     </decayedShown>
   </component>
   <component name="ProjectApplicationVersion">
@@ -182,53 +177,48 @@
     <option name="showLibraryContents" value="true" />
     <option name="showVisibilityIcons" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "CMake Application.game.executor": "Run",
-    "CMake Debug.engine.executor": "Debug",
-    "CTest Application.All CTest.executor": "Run",
-    "CidrDebugProfileConversion": "true",
-    "Doctest.engine_tests.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.RadMigrateCodeStyle": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "copilot.chat.legacySessionMetadata.migrated": "true",
-    "ctest.advertisement.all.test.configuration.is.created": "true",
-    "git-widget-placeholder": "master",
-    "javascript.preferred.runtime.type.id": "node",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/Users/thanh.nguyen/Documents/dev/D3DGame/tests",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "/Users/thanh.nguyen/Documents/dev/untitled/main.cpp",
-    "settings.editor.selected.configurable": "CMakeSettings",
-    "to.speed.mode.migration.done": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;CMake Application.game.executor&quot;: &quot;Run&quot;,
+    &quot;CMake Debug.engine.executor&quot;: &quot;Debug&quot;,
+    &quot;CTest Application.All CTest.executor&quot;: &quot;Run&quot;,
+    &quot;CidrDebugProfileConversion&quot;: &quot;true&quot;,
+    &quot;Doctest.engine_tests.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.RadMigrateCodeStyle&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;copilot.chat.legacySessionMetadata.migrated&quot;: &quot;true&quot;,
+    &quot;ctest.advertisement.all.test.configuration.is.created&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/thanh.nguyen/Documents/dev/D3DGame/tests&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;/Users/thanh.nguyen/Documents/dev/untitled/main.cpp&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;CMakeSettings&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/tests" />
     </key>
   </component>
   <component name="RunManager" selected="CTest Application.All CTest">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="engine_tests" type="CMakeDoctestTestRunConfigurationType" factoryName="doctest Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="engine" TARGET_NAME="engine_tests" CONFIG_NAME="debug" RUN_TARGET_PROJECT_NAME="engine" RUN_TARGET_NAME="engine_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -298,46 +288,46 @@
       <item itemvalue="Doctest.engine_tests" />
     </list>
   </component>
-  <component name="SelectedDebugProfileService"><![CDATA[{
-  "profileIdByStamp": [
+  <component name="SelectedDebugProfileService">{
+  &quot;profileIdByStamp&quot;: [
     {
-      "first": {
-        "##RUN_CONFIGURATION##": "CMake Application.game",
-        "cmake": "CMakeBuildProfile:release"
+      &quot;first&quot;: {
+        &quot;##RUN_CONFIGURATION##&quot;: &quot;CMake Application.game&quot;,
+        &quot;cmake&quot;: &quot;CMakeBuildProfile:release&quot;
       },
-      "second": "709e70d3-a3df-4e6f-82ec-bc4a45afb4dd"
+      &quot;second&quot;: &quot;709e70d3-a3df-4e6f-82ec-bc4a45afb4dd&quot;
     },
     {
-      "first": {
-        "##RUN_CONFIGURATION##": "CMake Application.engine_core",
-        "cmake": "CMakeBuildProfile:debug"
+      &quot;first&quot;: {
+        &quot;##RUN_CONFIGURATION##&quot;: &quot;CMake Application.engine_core&quot;,
+        &quot;cmake&quot;: &quot;CMakeBuildProfile:debug&quot;
       },
-      "second": "709e70d3-a3df-4e6f-82ec-bc4a45afb4dd"
+      &quot;second&quot;: &quot;709e70d3-a3df-4e6f-82ec-bc4a45afb4dd&quot;
     },
     {
-      "first": {
-        "##RUN_CONFIGURATION##": "Doctest.engine_tests",
-        "cmake": "CMakeBuildProfile:debug"
+      &quot;first&quot;: {
+        &quot;##RUN_CONFIGURATION##&quot;: &quot;Doctest.engine_tests&quot;,
+        &quot;cmake&quot;: &quot;CMakeBuildProfile:debug&quot;
       },
-      "second": "709e70d3-a3df-4e6f-82ec-bc4a45afb4dd"
+      &quot;second&quot;: &quot;709e70d3-a3df-4e6f-82ec-bc4a45afb4dd&quot;
     },
     {
-      "first": {
-        "##RUN_CONFIGURATION##": "CTest Application.All CTest",
-        "cmake": "CMakeBuildProfile:debug"
+      &quot;first&quot;: {
+        &quot;##RUN_CONFIGURATION##&quot;: &quot;CTest Application.All CTest&quot;,
+        &quot;cmake&quot;: &quot;CMakeBuildProfile:debug&quot;
       },
-      "second": "709e70d3-a3df-4e6f-82ec-bc4a45afb4dd"
+      &quot;second&quot;: &quot;709e70d3-a3df-4e6f-82ec-bc4a45afb4dd&quot;
     },
     {
-      "first": {
-        "##RUN_CONFIGURATION##": "CMake Application.game",
-        "cmake": "CMakeBuildProfile:debug"
+      &quot;first&quot;: {
+        &quot;##RUN_CONFIGURATION##&quot;: &quot;CMake Application.game&quot;,
+        &quot;cmake&quot;: &quot;CMakeBuildProfile:debug&quot;
       },
-      "second": "709e70d3-a3df-4e6f-82ec-bc4a45afb4dd"
+      &quot;second&quot;: &quot;709e70d3-a3df-4e6f-82ec-bc4a45afb4dd&quot;
     }
   ],
-  "modificationCount": 77
-}]]></component>
+  &quot;modificationCount&quot;: 77
+}</component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="" />
@@ -351,7 +341,9 @@
       <workItem from="1786414492489" duration="13781000" />
       <workItem from="1786505492918" duration="4253000" />
       <workItem from="1786509892657" duration="13604000" />
-      <workItem from="1786591288556" duration="8948000" />
+      <workItem from="1786591288556" duration="10962000" />
+      <workItem from="1786611354868" duration="598000" />
+      <workItem from="1786614383227" duration="437000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -457,7 +449,15 @@
       <option name="project" value="LOCAL" />
       <updated>1786527110497</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="complete milestone 1">
+      <option name="closed" value="true" />
+      <created>1786607768978</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1786607768978</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -487,7 +487,8 @@
     <MESSAGE value="add logger" />
     <MESSAGE value="add arena" />
     <MESSAGE value="enhance logger" />
-    <option name="LAST_COMMIT_MESSAGE" value="enhance logger" />
+    <MESSAGE value="complete milestone 1" />
+    <option name="LAST_COMMIT_MESSAGE" value="complete milestone 1" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
