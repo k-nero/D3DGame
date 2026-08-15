@@ -37,17 +37,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="add d3d12">
-      <change afterPath="$PROJECT_DIR$/engine/rhi/src/vulkan/vulkan_device.cpp" afterDir="false" />
+    <list default="true" id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="remove null">
+      <change afterPath="$PROJECT_DIR$/engine/app/include/engine/app/application.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engine/app/include/engine/app/window/window.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/rhi/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/rhi/include/engine/rhi/rhi.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/include/engine/rhi/rhi.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/rhi/include/engine/rhi/rhi_null.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/rhi/src/metal/metal_stub.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/src/metal/metal_device.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/rhi/src/null/rhi_null.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/rhi/src/rhi_registry.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/src/rhi_registry.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tests/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_rhi_null.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/app/src/application.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/app/src/application.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/app/src/win32/app_win32.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/app/src/win32/app_win32.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/rhi/src/d3d12/d3d12_device.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/src/d3d12/d3d12_device.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,61 +109,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.4244870533928837" />
-      <entry key="MS500" value="3.238329523714066" />
-      <entry key="S2" value="4.993564890677648" />
-      <entry key="S5" value="5.5616253874264405" />
-      <entry key="S10" value="5.795067058419163" />
-      <entry key="S30" value="6.533110977633133" />
-      <entry key="S60" value="7.812696059435677" />
-      <entry key="M2" value="9.622471481623545" />
-      <entry key="M5" value="13.997523968274518" />
-      <entry key="M10" value="21.408743007379183" />
-      <entry key="M15" value="28.991476032642353" />
-      <entry key="M30" value="52.773697861227944" />
-      <entry key="H1" value="92.87777704138568" />
-      <entry key="H2" value="154.17564420402744" />
-      <entry key="H4" value="255.08352249402336" />
-      <entry key="D1" value="645.155285744489" />
-      <entry key="W1" value="832.0166192798644" />
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0000000000588567" />
+      <entry key="S2" value="1.004487961102579" />
+      <entry key="S5" value="1.2142609062744092" />
+      <entry key="S10" value="1.9536092876513558" />
+      <entry key="S30" value="4.509848947526498" />
+      <entry key="S60" value="6.626285161755522" />
+      <entry key="M2" value="9.409174544707646" />
+      <entry key="M5" value="14.100639301184122" />
+      <entry key="M10" value="20.0512279757357" />
+      <entry key="M15" value="26.535250853062813" />
+      <entry key="M30" value="48.357329446504814" />
+      <entry key="H1" value="89.24664658668497" />
+      <entry key="H2" value="153.8709385967923" />
+      <entry key="H4" value="258.30714462734403" />
+      <entry key="D1" value="659.6446714628818" />
+      <entry key="W1" value="853.44256113855" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="1.551775594071886E-168" />
-      <entry key="MS500" value="2.7426209140108784E-34" />
-      <entry key="S2" value="4.069503682916967E-9" />
-      <entry key="S5" value="4.4036883710070793E-4" />
-      <entry key="S10" value="0.020984966931132103" />
-      <entry key="S30" value="0.27582656865118627" />
-      <entry key="S60" value="0.5252066335729352" />
-      <entry key="M2" value="0.7285351638421136" />
-      <entry key="M5" value="0.9875706596665847" />
-      <entry key="M10" value="1.3370414256189633" />
-      <entry key="M15" value="1.843130105002069" />
-      <entry key="M30" value="4.3512300573623195" />
-      <entry key="H1" value="10.555228018594223" />
-      <entry key="H2" value="24.293117977881604" />
-      <entry key="H4" value="51.636115440425584" />
-      <entry key="D1" value="142.98379972930033" />
-      <entry key="W1" value="179.68339187016713" />
+      <entry key="MS100" value="3.262724321523035E-138" />
+      <entry key="MS500" value="3.182116504221589E-28" />
+      <entry key="S2" value="1.3356080224444575E-7" />
+      <entry key="S5" value="0.001779391906323189" />
+      <entry key="S10" value="0.04218647176350857" />
+      <entry key="S30" value="0.36508371606629186" />
+      <entry key="S60" value="0.7540996961150261" />
+      <entry key="M2" value="1.320584977534039" />
+      <entry key="M5" value="2.106366241875676" />
+      <entry key="M10" value="2.6857017511699017" />
+      <entry key="M15" value="3.162794673777028" />
+      <entry key="M30" value="5.125430581585349" />
+      <entry key="H1" value="10.598478220248065" />
+      <entry key="H2" value="23.692205421802033" />
+      <entry key="H4" value="50.68691422569144" />
+      <entry key="D1" value="144.10811733066507" />
+      <entry key="W1" value="182.34490896083506" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.3589175147644703" />
-      <entry key="MS500" value="3.202954625254461" />
-      <entry key="S2" value="4.979922460505776" />
-      <entry key="S5" value="5.555895088797503" />
-      <entry key="S10" value="5.809879932366649" />
-      <entry key="S30" value="6.793493750699436" />
-      <entry key="S60" value="8.323359368503738" />
-      <entry key="M2" value="10.340536965586077" />
-      <entry key="M5" value="14.975878830714832" />
-      <entry key="M10" value="22.73530123505261" />
-      <entry key="M15" value="30.823593681791877" />
-      <entry key="M30" value="57.11335530950566" />
-      <entry key="H1" value="103.42154295001826" />
-      <entry key="H2" value="178.45684199936986" />
-      <entry key="H4" value="306.707479068996" />
-      <entry key="D1" value="788.1336854181166" />
-      <entry key="W1" value="1011.6990463970964" />
+      <entry key="MS100" value="1.179121495269587E-4" />
+      <entry key="MS500" value="0.1637991755006178" />
+      <entry key="S2" value="0.639458391211655" />
+      <entry key="S5" value="1.0270846283006057" />
+      <entry key="S10" value="1.852877844613456" />
+      <entry key="S30" value="4.7641508186313235" />
+      <entry key="S60" value="7.297335583892848" />
+      <entry key="M2" value="10.67112971611943" />
+      <entry key="M5" value="16.17383394140232" />
+      <entry key="M10" value="22.71615459339166" />
+      <entry key="M15" value="29.68138953554311" />
+      <entry key="M30" value="53.46942091707332" />
+      <entry key="H1" value="99.83306119169362" />
+      <entry key="H2" value="177.55108298588164" />
+      <entry key="H4" value="308.9818745596123" />
+      <entry key="D1" value="803.7473000787058" />
+      <entry key="W1" value="1035.7864843707973" />
     </decayedShown>
   </component>
   <component name="ProjectApplicationVersion">
@@ -232,6 +229,8 @@
       <recent name="$PROJECT_DIR$/tests" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/engine/app/src/win32" />
+      <recent name="$PROJECT_DIR$/engine/app/include/engine/app/window" />
       <recent name="$PROJECT_DIR$/engine/rhi/src/d3d12" />
       <recent name="$PROJECT_DIR$/third_party" />
     </key>
@@ -362,7 +361,7 @@
       <workItem from="1786614383227" duration="437000" />
       <workItem from="1786681723667" duration="1534000" />
       <workItem from="1786778703608" duration="6252000" />
-      <workItem from="1786818684662" duration="3627000" />
+      <workItem from="1786818684662" duration="5039000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -516,7 +515,15 @@
       <option name="project" value="LOCAL" />
       <updated>1786821272862</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="remove null">
+      <option name="closed" value="true" />
+      <created>1786823162702</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1786823162702</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -551,7 +558,8 @@
     <MESSAGE value="add RHI" />
     <MESSAGE value="fix build" />
     <MESSAGE value="add d3d12" />
-    <option name="LAST_COMMIT_MESSAGE" value="add d3d12" />
+    <MESSAGE value="remove null" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove null" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

@@ -8,8 +8,8 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${ENGINE_RENDERER_SRC})
 add_library(engine_renderer STATIC ${ENGINE_RENDERER_SRC})
 
 target_include_directories(engine_renderer
-    PUBLIC  include
-    PRIVATE src)
+        PUBLIC include
+        PRIVATE src)
 
 target_link_libraries(engine_renderer
-    PUBLIC engine_rendergraph)
+        PUBLIC engine_rendergraph)

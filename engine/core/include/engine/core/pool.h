@@ -104,6 +104,7 @@ namespace engine::pool {
             for (auto &s: slots_)
                 if (s.alive) fn(s.value);
         }
+
         template<class Fn>
         void for_each(Fn &&fn) const {
             for (const auto &s: slots_)

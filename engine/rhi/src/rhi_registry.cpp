@@ -5,17 +5,17 @@
 
 namespace engine::rhi {
 #ifdef ENGINE_RHI_D3D12
-    IDevice* create_d3d12_device(const DeviceDesc&);
+    IDevice *create_d3d12_device(const DeviceDesc &);
 #endif
 #ifdef ENGINE_RHI_METAL
-    IDevice* create_metal_device(const DeviceDesc&);
+    IDevice *create_metal_device(const DeviceDesc &);
 #endif
 #ifdef ENGINE_RHI_VULKAN
-    IDevice* create_vulkan_device(const DeviceDesc&);
+    IDevice *create_vulkan_device(const DeviceDesc &);
 #endif
 
 
-    IDevice* create_device(const Backend backend, const DeviceDesc& desc) {
+    IDevice *create_device(const Backend backend, const DeviceDesc &desc) {
         switch (backend) {
             case Backend::D3D12:
 #ifdef ENGINE_RHI_D3D12
@@ -44,10 +44,9 @@ namespace engine::rhi {
         }
     }
 
-    void destroy_device(IDevice* dev) {
+    void destroy_device(IDevice *dev) {
         if (!dev) return;
         dev->wait_idle();
         delete dev;
     }
-
 } // namespace eng::rhi

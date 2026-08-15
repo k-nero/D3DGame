@@ -9,25 +9,25 @@ file(GLOB_RECURSE ENGINE_APP_SRC CONFIGURE_DEPENDS
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${ENGINE_APP_SRC})
 add_library(engine_app STATIC ${ENGINE_APP_SRC})
 
-if(WIN32)
+if (WIN32)
     file(GLOB ENGINE_APP_WIN32 CONFIGURE_DEPENDS src/win32/*.cpp)
     target_sources(engine_app PRIVATE ${ENGINE_APP_WIN32})
-elseif(APPLE)
+elseif (APPLE)
     file(GLOB ENGINE_APP_MACOS CONFIGURE_DEPENDS src/macos/*.mm src/macos/*.cpp)
     target_sources(engine_app PRIVATE ${ENGINE_APP_MACOS})
-endif()
+endif ()
 
 target_include_directories(engine_app
-    PUBLIC  include
-    PRIVATE src)
+        PUBLIC include
+        PRIVATE src)
 
 target_link_libraries(engine_app
-    PUBLIC
+        PUBLIC
         engine_scene
         engine_assets
-    PRIVATE
+        PRIVATE
         imgui::imgui)
 
-if(APPLE)
+if (APPLE)
     target_link_libraries(engine_app PRIVATE "-framework Cocoa" "-framework QuartzCore")
-endif()
+endif ()

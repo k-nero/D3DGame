@@ -58,7 +58,7 @@ namespace engine::refcount {
     public:
         Ref() = default;
 
-        explicit Ref(std::nullptr_t) {
+        explicit Ref (std::nullptr_t){
         }
 
         // explicit on purpose: adoption must be visible at the call site.

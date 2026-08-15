@@ -14,26 +14,26 @@ add_library(engine_rhi STATIC ${ENGINE_RHI_SRC}
         src/vulkan/vulkan_device.cpp)
 
 target_include_directories(engine_rhi
-        PUBLIC  include        # eng/rhi/rhi.h — NO platform types allowed in here
+        PUBLIC include        # eng/rhi/rhi.h — NO platform types allowed in here
         PRIVATE src)
 
 target_link_libraries(engine_rhi
-        PUBLIC  engine_core)
+        PUBLIC engine_core)
 
 
 # ------------------------------------------------------------------
 # D3D12 backend — Windows only. This block is the only place in the
 # whole build that links graphics APIs.
 # ------------------------------------------------------------------
-if(WIN32)
+if (WIN32)
     file(GLOB ENGINE_RHI_D3D12_SRC CONFIGURE_DEPENDS
             src/d3d12/*.cpp
             src/d3d12/*.h)
     target_sources(engine_rhi PRIVATE ${ENGINE_RHI_D3D12_SRC})
 
     find_package(D3D12MemoryAllocator CONFIG REQUIRED)
-    find_package(directx12-agility    CONFIG REQUIRED)
-    find_package(directx-dxc          CONFIG REQUIRED)
+    find_package(directx12-agility CONFIG REQUIRED)
+    find_package(directx-dxc CONFIG REQUIRED)
 
     target_link_libraries(engine_rhi PRIVATE
             d3d12 dxgi dxguid
@@ -42,9 +42,9 @@ if(WIN32)
             Microsoft::DirectXShaderCompiler)
 
     target_compile_definitions(engine_rhi PRIVATE ENGINE_RHI_D3D12=1)
-endif()
+endif ()
 
-if(APPLE)
+if (APPLE)
     file(GLOB ENGINE_RHI_METAL_SRC CONFIGURE_DEPENDS
             src/metal/*.cpp
             src/metal/*.h)
@@ -55,7 +55,7 @@ if(APPLE)
     target_link_libraries(engine_rhi PRIVATE
             "-framework Foundation" "-framework Metal" "-framework QuartzCore")
     target_compile_definitions(engine_rhi PRIVATE ENGINE_RHI_METAL=1)
-endif()
+endif ()
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
         $<TARGET_PROPERTY:engine_rhi,SOURCES>)

@@ -7,8 +7,8 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${ENGINE_RENDERGRAPH_SRC})
 add_library(engine_rendergraph STATIC ${ENGINE_RENDERGRAPH_SRC})
 
 target_include_directories(engine_rendergraph
-    PUBLIC  include
-    PRIVATE src)
+        PUBLIC include
+        PRIVATE src)
 
 target_link_libraries(engine_rendergraph
-    PUBLIC engine_rhi)
+        PUBLIC engine_rhi)
