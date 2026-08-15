@@ -296,10 +296,8 @@ namespace engine::rhi {
     enum class Backend : uint8_t {
         Null, // everywhere: tests, Mac development
         D3D12, // Windows
-        Metal, // toolchain-proof stub only (see DECISIONS.md)
-        OpenGL,
-        Vulkan,
-        D3D11,
+        Metal, // MacOS
+        Vulkan, // Linux
     };
 
     struct DeviceDesc {

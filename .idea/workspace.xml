@@ -37,9 +37,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="add RHI">
+    <list default="true" id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="fix build">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/rhi/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/rhi/include/engine/rhi/rhi.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/include/engine/rhi/rhi.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/rhi/src/rhi_registry.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/src/rhi_registry.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,61 +105,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0077588841858331" />
-      <entry key="MS500" value="1.4295230769022562" />
-      <entry key="S2" value="2.259806544716917" />
-      <entry key="S5" value="2.6501701293534836" />
-      <entry key="S10" value="2.814977011266167" />
-      <entry key="S30" value="3.0290410128238245" />
-      <entry key="S60" value="3.71168988387698" />
-      <entry key="M2" value="7.663022586013552" />
-      <entry key="M5" value="23.451870993636142" />
-      <entry key="M10" value="41.179856742443484" />
-      <entry key="M15" value="53.01327688099299" />
-      <entry key="M30" value="75.86288698823503" />
-      <entry key="H1" value="104.29915109015487" />
-      <entry key="H2" value="153.30359142373015" />
-      <entry key="H4" value="245.11259989774368" />
-      <entry key="D1" value="608.8397770681789" />
-      <entry key="W1" value="779.6426684731535" />
+      <entry key="MS100" value="1.5069797399010323" />
+      <entry key="MS500" value="1.8827767358105008" />
+      <entry key="S2" value="2.4955811891299886" />
+      <entry key="S5" value="3.16132923177672" />
+      <entry key="S10" value="3.5260741656218597" />
+      <entry key="S30" value="3.828022754553242" />
+      <entry key="S60" value="3.91260594102872" />
+      <entry key="M2" value="4.045380450022842" />
+      <entry key="M5" value="7.895116864106943" />
+      <entry key="M10" value="20.98277282050747" />
+      <entry key="M15" value="33.61711744724527" />
+      <entry key="M30" value="61.34799468151664" />
+      <entry key="H1" value="95.50035976670347" />
+      <entry key="H2" value="148.33886987407698" />
+      <entry key="H4" value="242.42750215357114" />
+      <entry key="D1" value="611.792986063178" />
+      <entry key="W1" value="785.9010650007907" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
-      <entry key="MS500" value="2.8578429023685584E-154" />
-      <entry key="S2" value="4.111587981479556E-39" />
-      <entry key="S5" value="4.4218550793362995E-16" />
-      <entry key="S10" value="2.105620938717708E-8" />
-      <entry key="S30" value="0.0033145015801479554" />
-      <entry key="S60" value="0.10936816538821807" />
-      <entry key="M2" value="0.9249819224945303" />
-      <entry key="M5" value="3.9886793381585393" />
-      <entry key="M10" value="6.967958311990661" />
-      <entry key="M15" value="8.719639237754008" />
-      <entry key="M30" value="12.386479709793658" />
-      <entry key="H1" value="18.770960446076295" />
-      <entry key="H2" value="32.81736735973848" />
-      <entry key="H4" value="60.15490686456673" />
-      <entry key="D1" value="145.55816409788272" />
-      <entry key="W1" value="178.49545240021217" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="1.2943963696788489E-163" />
+      <entry key="S5" value="6.995642126888982E-66" />
+      <entry key="S10" value="2.6484497073609044E-33" />
+      <entry key="S30" value="1.660690661880084E-11" />
+      <entry key="S60" value="7.741518993522877E-6" />
+      <entry key="M2" value="0.007782172863218752" />
+      <entry key="M5" value="0.5899513167623764" />
+      <entry key="M10" value="2.6797795547350316" />
+      <entry key="M15" value="4.611344137077451" />
+      <entry key="M30" value="9.00766869125258" />
+      <entry key="H1" value="16.007324492660782" />
+      <entry key="H2" value="30.30538919206595" />
+      <entry key="H4" value="57.80682574454824" />
+      <entry key="D1" value="144.59543424241602" />
+      <entry key="W1" value="178.3263182349452" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.980201657514814" />
-      <entry key="MS500" value="1.4214070726279842" />
-      <entry key="S2" value="2.256182518236304" />
-      <entry key="S5" value="2.6483922414881946" />
-      <entry key="S10" value="2.8139687205705157" />
-      <entry key="S30" value="3.0293430628540263" />
-      <entry key="S60" value="3.813119347391132" />
-      <entry key="M2" value="8.568772104080436" />
-      <entry key="M5" value="27.409944023058596" />
-      <entry key="M10" value="48.11979616850223" />
-      <entry key="M15" value="61.70860326815354" />
-      <entry key="M30" value="88.23139040388853" />
-      <entry key="H1" value="123.05609521523976" />
-      <entry key="H2" value="186.10762752244955" />
-      <entry key="H4" value="305.2546197778738" />
-      <entry key="D1" value="754.3926428483787" />
-      <entry key="W1" value="958.1371905684249" />
+      <entry key="MS100" value="0.6506709624352003" />
+      <entry key="MS500" value="0.9547421303909273" />
+      <entry key="S2" value="1.7687942082034203" />
+      <entry key="S5" value="2.690406781619777" />
+      <entry key="S10" value="3.2387797407736976" />
+      <entry key="S30" value="3.7174004613625615" />
+      <entry key="S60" value="3.855187045088868" />
+      <entry key="M2" value="4.023735892520558" />
+      <entry key="M5" value="8.468689462286433" />
+      <entry key="M10" value="23.645818752635634" />
+      <entry key="M15" value="38.21162302422435" />
+      <entry key="M30" value="70.34059514980869" />
+      <entry key="H1" value="111.49473232394315" />
+      <entry key="H2" value="178.63144823118057" />
+      <entry key="H4" value="300.2216938397974" />
+      <entry key="D1" value="756.3831153330426" />
+      <entry key="W1" value="964.2264478550625" />
     </decayedShown>
   </component>
   <component name="ProjectApplicationVersion">
@@ -227,7 +228,7 @@
       <recent name="$PROJECT_DIR$/third_party" />
     </key>
   </component>
-  <component name="RunManager" selected="CTest Application.All CTest">
+  <component name="RunManager" selected="CMake Application.game">
     <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />
@@ -282,7 +283,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="All CTest" type="CTestRunConfiguration" factoryName="CTestRun" PROGRAM_PARAMS="--extra-verbose" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" WORKING_DIR="file://$CMakeCurrentLocalGenerationDir$" PASS_PARENT_ENVS_2="true" CONFIG_NAME="debug" RUN_PATH="$CTestCurrentExecutableName$" EXPLICIT_BUILD_TARGET_NAME="all" TEST_MODE="SUITE_TEST">
+    <configuration name="All CTest" type="CTestRunConfiguration" factoryName="CTestRun" PROGRAM_PARAMS="--extra-verbose" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" WORKING_DIR="file://$CMakeCurrentLocalGenerationDir$" PASS_PARENT_ENVS_2="true" CONFIG_NAME="debug" RUN_PATH="$CTestCurrentExecutableName$" EXPLICIT_BUILD_TARGET_NAME="all" TEST_MODE="PATTERN">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
         <option name="BeforeTestRunTask" enabled="true" />
@@ -302,25 +303,39 @@
       <item itemvalue="Doctest.engine_tests" />
     </list>
   </component>
-  <component name="SelectedDebugProfileService">{
-  &quot;profileIdByStamp&quot;: [
+  <component name="SelectedDebugProfileService"><![CDATA[{
+  "profileIdByStamp": [
     {
-      &quot;first&quot;: {
-        &quot;##RUN_CONFIGURATION##&quot;: &quot;CTest Application.All CTest&quot;,
-        &quot;cmake&quot;: &quot;CMakeBuildProfile:debug&quot;
+      "first": {
+        "##RUN_CONFIGURATION##": "CMake Application.engine_rendergraph",
+        "cmake": "CMakeBuildProfile:debug"
       },
-      &quot;second&quot;: &quot;3bc06641-7e70-4113-9127-7e3b85e4afc6&quot;
+      "second": "3bc06641-7e70-4113-9127-7e3b85e4afc6"
     },
     {
-      &quot;first&quot;: {
-        &quot;##RUN_CONFIGURATION##&quot;: &quot;CMake Debug.engine&quot;,
-        &quot;cmake&quot;: &quot;CMakeBuildProfile:debug&quot;
+      "first": {
+        "##RUN_CONFIGURATION##": "CTest Application.All CTest",
+        "cmake": "CMakeBuildProfile:debug"
       },
-      &quot;second&quot;: &quot;3bc06641-7e70-4113-9127-7e3b85e4afc6&quot;
+      "second": "3bc06641-7e70-4113-9127-7e3b85e4afc6"
+    },
+    {
+      "first": {
+        "##RUN_CONFIGURATION##": "CMake Debug.engine",
+        "cmake": "CMakeBuildProfile:debug"
+      },
+      "second": "3bc06641-7e70-4113-9127-7e3b85e4afc6"
+    },
+    {
+      "first": {
+        "##RUN_CONFIGURATION##": "CMake Application.game",
+        "cmake": "CMakeBuildProfile:debug"
+      },
+      "second": "3bc06641-7e70-4113-9127-7e3b85e4afc6"
     }
   ],
-  &quot;modificationCount&quot;: 99
-}</component>
+  "modificationCount": 105
+}]]></component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="" />
@@ -339,7 +354,7 @@
       <workItem from="1786614383227" duration="437000" />
       <workItem from="1786681723667" duration="1534000" />
       <workItem from="1786778703608" duration="6252000" />
-      <workItem from="1786818684662" duration="171000" />
+      <workItem from="1786818684662" duration="1823000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -477,7 +492,15 @@
       <option name="project" value="LOCAL" />
       <updated>1786784306945</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="fix build">
+      <option name="closed" value="true" />
+      <created>1786818994964</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1786818994964</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -510,7 +533,8 @@
     <MESSAGE value="complete milestone 1" />
     <MESSAGE value="add math.h" />
     <MESSAGE value="add RHI" />
-    <option name="LAST_COMMIT_MESSAGE" value="add RHI" />
+    <MESSAGE value="fix build" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix build" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

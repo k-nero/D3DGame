@@ -14,7 +14,7 @@ namespace engine::rhi {
     IDevice* create_metal_stub_device(const DeviceDesc&);
 #endif
 
-    IDevice* create_device(Backend backend, const DeviceDesc& desc) {
+    IDevice* create_device(const Backend backend, const DeviceDesc& desc) {
         switch (backend) {
             case Backend::Null:
                 return create_null_device(desc);
