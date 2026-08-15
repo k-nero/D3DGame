@@ -27,93 +27,84 @@
 #include "MTLPrivate.hpp"
 #include "MTLResource.hpp"
 
-namespace MTL
-{
-class Buffer;
-class Device;
-class Tensor;
-class TensorDescriptor;
-class Texture;
-class TextureDescriptor;
+namespace MTL {
+    class Buffer;
+    class Device;
+    class Tensor;
+    class TensorDescriptor;
+    class Texture;
+    class TextureDescriptor;
 
-class Buffer : public NS::Referencing<Buffer, Resource>
-{
-public:
-    void             addDebugMarker(const NS::String* marker, NS::Range range);
+    class Buffer : public NS::Referencing<Buffer, Resource> {
+    public:
+        void addDebugMarker(const NS::String *marker, NS::Range range);
 
-    void*            contents();
+        void *contents();
 
-    void             didModifyRange(NS::Range range);
+        void didModifyRange(NS::Range range);
 
-    GPUAddress       gpuAddress() const;
+        GPUAddress gpuAddress() const;
 
-    NS::UInteger     length() const;
+        NS::UInteger length() const;
 
-    Buffer*          newRemoteBufferViewForDevice(const MTL::Device* device);
+        Buffer *newRemoteBufferViewForDevice(const MTL::Device *device);
 
-    Tensor*          newTensor(const MTL::TensorDescriptor* descriptor, NS::UInteger offset, NS::Error** error);
+        Tensor *newTensor(const MTL::TensorDescriptor *descriptor, NS::UInteger offset, NS::Error **error);
 
-    Texture*         newTexture(const MTL::TextureDescriptor* descriptor, NS::UInteger offset, NS::UInteger bytesPerRow);
+        Texture *newTexture(const MTL::TextureDescriptor *descriptor, NS::UInteger offset, NS::UInteger bytesPerRow);
 
-    Buffer*          remoteStorageBuffer() const;
+        Buffer *remoteStorageBuffer() const;
 
-    void             removeAllDebugMarkers();
+        void removeAllDebugMarkers();
 
-    BufferSparseTier sparseBufferTier() const;
-};
-
+        BufferSparseTier sparseBufferTier() const;
+    };
 }
-_MTL_INLINE void MTL::Buffer::addDebugMarker(const NS::String* marker, NS::Range range)
-{
+
+_MTL_INLINE void MTL::Buffer::addDebugMarker(const NS::String *marker, NS::Range range) {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(addDebugMarker_range_), marker, range);
 }
 
-_MTL_INLINE void* MTL::Buffer::contents()
-{
-    return Object::sendMessage<void*>(this, _MTL_PRIVATE_SEL(contents));
+_MTL_INLINE void *MTL::Buffer::contents() {
+    return Object::sendMessage<void *>(this, _MTL_PRIVATE_SEL(contents));
 }
 
-_MTL_INLINE void MTL::Buffer::didModifyRange(NS::Range range)
-{
+_MTL_INLINE void MTL::Buffer::didModifyRange(NS::Range range) {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(didModifyRange_), range);
 }
 
-_MTL_INLINE MTL::GPUAddress MTL::Buffer::gpuAddress() const
-{
+_MTL_INLINE MTL::GPUAddress MTL::Buffer::gpuAddress() const {
     return Object::sendMessage<MTL::GPUAddress>(this, _MTL_PRIVATE_SEL(gpuAddress));
 }
 
-_MTL_INLINE NS::UInteger MTL::Buffer::length() const
-{
+_MTL_INLINE NS::UInteger MTL::Buffer::length() const {
     return Object::sendMessage<NS::UInteger>(this, _MTL_PRIVATE_SEL(length));
 }
 
-_MTL_INLINE MTL::Buffer* MTL::Buffer::newRemoteBufferViewForDevice(const MTL::Device* device)
-{
-    return Object::sendMessage<MTL::Buffer*>(this, _MTL_PRIVATE_SEL(newRemoteBufferViewForDevice_), device);
+_MTL_INLINE MTL::Buffer *MTL::Buffer::newRemoteBufferViewForDevice(const MTL::Device *device) {
+    return Object::sendMessage<MTL::Buffer *>(this, _MTL_PRIVATE_SEL(newRemoteBufferViewForDevice_), device);
 }
 
-_MTL_INLINE MTL::Tensor* MTL::Buffer::newTensor(const MTL::TensorDescriptor* descriptor, NS::UInteger offset, NS::Error** error)
-{
-    return Object::sendMessage<MTL::Tensor*>(this, _MTL_PRIVATE_SEL(newTensorWithDescriptor_offset_error_), descriptor, offset, error);
+_MTL_INLINE MTL::Tensor *MTL::Buffer::newTensor(const MTL::TensorDescriptor *descriptor, NS::UInteger offset,
+                                                NS::Error **error) {
+    return Object::sendMessage<MTL::Tensor *>(this, _MTL_PRIVATE_SEL(newTensorWithDescriptor_offset_error_), descriptor,
+                                              offset, error);
 }
 
-_MTL_INLINE MTL::Texture* MTL::Buffer::newTexture(const MTL::TextureDescriptor* descriptor, NS::UInteger offset, NS::UInteger bytesPerRow)
-{
-    return Object::sendMessage<MTL::Texture*>(this, _MTL_PRIVATE_SEL(newTextureWithDescriptor_offset_bytesPerRow_), descriptor, offset, bytesPerRow);
+_MTL_INLINE MTL::Texture *MTL::Buffer::newTexture(const MTL::TextureDescriptor *descriptor, NS::UInteger offset,
+                                                  NS::UInteger bytesPerRow) {
+    return Object::sendMessage<MTL::Texture *>(this, _MTL_PRIVATE_SEL(newTextureWithDescriptor_offset_bytesPerRow_),
+                                               descriptor, offset, bytesPerRow);
 }
 
-_MTL_INLINE MTL::Buffer* MTL::Buffer::remoteStorageBuffer() const
-{
-    return Object::sendMessage<MTL::Buffer*>(this, _MTL_PRIVATE_SEL(remoteStorageBuffer));
+_MTL_INLINE MTL::Buffer *MTL::Buffer::remoteStorageBuffer() const {
+    return Object::sendMessage<MTL::Buffer *>(this, _MTL_PRIVATE_SEL(remoteStorageBuffer));
 }
 
-_MTL_INLINE void MTL::Buffer::removeAllDebugMarkers()
-{
+_MTL_INLINE void MTL::Buffer::removeAllDebugMarkers() {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(removeAllDebugMarkers));
 }
 
-_MTL_INLINE MTL::BufferSparseTier MTL::Buffer::sparseBufferTier() const
-{
+_MTL_INLINE MTL::BufferSparseTier MTL::Buffer::sparseBufferTier() const {
     return Object::sendMessage<MTL::BufferSparseTier>(this, _MTL_PRIVATE_SEL(sparseBufferTier));
 }

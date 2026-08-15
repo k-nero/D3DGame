@@ -60,12 +60,10 @@
     using Fn##name = signature; \
     Fn##name name = reinterpret_cast< Fn##name >( dlsym( RTLD_DEFAULT, #name ) )
 
-namespace MTL::Private
-{
-    template <typename _Type>
-    inline _Type const LoadSymbol(const char* pSymbol)
-    {
-        const _Type* pAddress = static_cast<_Type*>(dlsym(RTLD_DEFAULT, pSymbol));
+namespace MTL::Private {
+    template<typename _Type>
+    inline _Type const LoadSymbol(const char *pSymbol) {
+        const _Type *pAddress = static_cast<_Type *>(dlsym(RTLD_DEFAULT, pSymbol));
 
         return pAddress ? *pAddress : nullptr;
     }
@@ -114,45 +112,33 @@ namespace MTL::Private
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-namespace MTL
-{
-namespace Private
-{
-    namespace Class
-    {
-
-    } // Class
-} // Private
+namespace MTL {
+    namespace Private {
+        namespace Class {
+        } // Class
+    } // Private
 } // MTL
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-namespace MTL
-{
-namespace Private
-{
-    namespace Protocol
-    {
-
-    } // Protocol
-} // Private
+namespace MTL {
+    namespace Private {
+        namespace Protocol {
+        } // Protocol
+    } // Private
 } // MTL
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-namespace MTL
-{
-namespace Private
-{
-    namespace Selector
-    {
-
-        _MTL_PRIVATE_DEF_SEL(beginScope,
-            "beginScope");
-        _MTL_PRIVATE_DEF_SEL(endScope,
-            "endScope");
-    } // Class
-} // Private
+namespace MTL {
+    namespace Private {
+        namespace Selector {
+            _MTL_PRIVATE_DEF_SEL(beginScope,
+                                 "beginScope");
+            _MTL_PRIVATE_DEF_SEL(endScope,
+                                 "endScope");
+        } // Class
+    } // Private
 } // MTL
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------

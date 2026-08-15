@@ -30,20 +30,17 @@
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-namespace MTL4FX
-{
-    class TemporalScaler : public NS::Referencing< TemporalScaler, MTLFX::TemporalScalerBase >
-    {
+namespace MTL4FX {
+    class TemporalScaler : public NS::Referencing<TemporalScaler, MTLFX::TemporalScalerBase> {
     public:
-        void encodeToCommandBuffer( MTL4::CommandBuffer* pCommandBuffer );
+        void encodeToCommandBuffer(MTL4::CommandBuffer *pCommandBuffer);
     };
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-_MTLFX_INLINE void MTL4FX::TemporalScaler::encodeToCommandBuffer( MTL4::CommandBuffer* pCommandBuffer )
-{
-    Object::sendMessage< void >( this, _MTLFX_PRIVATE_SEL( encodeToCommandBuffer_ ), pCommandBuffer );
+_MTLFX_INLINE void MTL4FX::TemporalScaler::encodeToCommandBuffer(MTL4::CommandBuffer *pCommandBuffer) {
+    Object::sendMessage<void>(this, _MTLFX_PRIVATE_SEL(encodeToCommandBuffer_), pCommandBuffer);
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------

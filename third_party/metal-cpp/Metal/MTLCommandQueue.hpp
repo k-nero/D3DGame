@@ -25,134 +25,121 @@
 #include "MTLHeaderBridge.hpp"
 #include "MTLPrivate.hpp"
 
-namespace MTL
-{
-class CommandBuffer;
-class CommandBufferDescriptor;
-class CommandQueueDescriptor;
-class Device;
-class LogState;
-class ResidencySet;
+namespace MTL {
+    class CommandBuffer;
+    class CommandBufferDescriptor;
+    class CommandQueueDescriptor;
+    class Device;
+    class LogState;
+    class ResidencySet;
 
-class CommandQueue : public NS::Referencing<CommandQueue>
-{
-public:
-    void           addResidencySet(const MTL::ResidencySet* residencySet);
-    void           addResidencySets(const MTL::ResidencySet* const residencySets[], NS::UInteger count);
+    class CommandQueue : public NS::Referencing<CommandQueue> {
+    public:
+        void addResidencySet(const MTL::ResidencySet *residencySet);
 
-    CommandBuffer* commandBuffer();
-    CommandBuffer* commandBuffer(const MTL::CommandBufferDescriptor* descriptor);
-    CommandBuffer* commandBufferWithUnretainedReferences();
+        void addResidencySets(const MTL::ResidencySet *const residencySets[], NS::UInteger count);
 
-    Device*        device() const;
+        CommandBuffer *commandBuffer();
 
-    void           insertDebugCaptureBoundary();
+        CommandBuffer *commandBuffer(const MTL::CommandBufferDescriptor *descriptor);
 
-    NS::String*    label() const;
+        CommandBuffer *commandBufferWithUnretainedReferences();
 
-    void           removeResidencySet(const MTL::ResidencySet* residencySet);
-    void           removeResidencySets(const MTL::ResidencySet* const residencySets[], NS::UInteger count);
+        Device *device() const;
 
-    void           setLabel(const NS::String* label);
-};
-class CommandQueueDescriptor : public NS::Copying<CommandQueueDescriptor>
-{
-public:
-    static CommandQueueDescriptor* alloc();
+        void insertDebugCaptureBoundary();
 
-    CommandQueueDescriptor*        init();
+        NS::String *label() const;
 
-    LogState*                      logState() const;
+        void removeResidencySet(const MTL::ResidencySet *residencySet);
 
-    NS::UInteger                   maxCommandBufferCount() const;
+        void removeResidencySets(const MTL::ResidencySet *const residencySets[], NS::UInteger count);
 
-    void                           setLogState(const MTL::LogState* logState);
+        void setLabel(const NS::String *label);
+    };
 
-    void                           setMaxCommandBufferCount(NS::UInteger maxCommandBufferCount);
-};
+    class CommandQueueDescriptor : public NS::Copying<CommandQueueDescriptor> {
+    public:
+        static CommandQueueDescriptor *alloc();
 
+        CommandQueueDescriptor *init();
+
+        LogState *logState() const;
+
+        NS::UInteger maxCommandBufferCount() const;
+
+        void setLogState(const MTL::LogState *logState);
+
+        void setMaxCommandBufferCount(NS::UInteger maxCommandBufferCount);
+    };
 }
-_MTL_INLINE void MTL::CommandQueue::addResidencySet(const MTL::ResidencySet* residencySet)
-{
+
+_MTL_INLINE void MTL::CommandQueue::addResidencySet(const MTL::ResidencySet *residencySet) {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(addResidencySet_), residencySet);
 }
 
-_MTL_INLINE void MTL::CommandQueue::addResidencySets(const MTL::ResidencySet* const residencySets[], NS::UInteger count)
-{
+_MTL_INLINE void
+MTL::CommandQueue::addResidencySets(const MTL::ResidencySet *const residencySets[], NS::UInteger count) {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(addResidencySets_count_), residencySets, count);
 }
 
-_MTL_INLINE MTL::CommandBuffer* MTL::CommandQueue::commandBuffer()
-{
-    return Object::sendMessage<MTL::CommandBuffer*>(this, _MTL_PRIVATE_SEL(commandBuffer));
+_MTL_INLINE MTL::CommandBuffer *MTL::CommandQueue::commandBuffer() {
+    return Object::sendMessage<MTL::CommandBuffer *>(this, _MTL_PRIVATE_SEL(commandBuffer));
 }
 
-_MTL_INLINE MTL::CommandBuffer* MTL::CommandQueue::commandBuffer(const MTL::CommandBufferDescriptor* descriptor)
-{
-    return Object::sendMessage<MTL::CommandBuffer*>(this, _MTL_PRIVATE_SEL(commandBufferWithDescriptor_), descriptor);
+_MTL_INLINE MTL::CommandBuffer *MTL::CommandQueue::commandBuffer(const MTL::CommandBufferDescriptor *descriptor) {
+    return Object::sendMessage<MTL::CommandBuffer *>(this, _MTL_PRIVATE_SEL(commandBufferWithDescriptor_), descriptor);
 }
 
-_MTL_INLINE MTL::CommandBuffer* MTL::CommandQueue::commandBufferWithUnretainedReferences()
-{
-    return Object::sendMessage<MTL::CommandBuffer*>(this, _MTL_PRIVATE_SEL(commandBufferWithUnretainedReferences));
+_MTL_INLINE MTL::CommandBuffer *MTL::CommandQueue::commandBufferWithUnretainedReferences() {
+    return Object::sendMessage<MTL::CommandBuffer *>(this, _MTL_PRIVATE_SEL(commandBufferWithUnretainedReferences));
 }
 
-_MTL_INLINE MTL::Device* MTL::CommandQueue::device() const
-{
-    return Object::sendMessage<MTL::Device*>(this, _MTL_PRIVATE_SEL(device));
+_MTL_INLINE MTL::Device *MTL::CommandQueue::device() const {
+    return Object::sendMessage<MTL::Device *>(this, _MTL_PRIVATE_SEL(device));
 }
 
-_MTL_INLINE void MTL::CommandQueue::insertDebugCaptureBoundary()
-{
+_MTL_INLINE void MTL::CommandQueue::insertDebugCaptureBoundary() {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(insertDebugCaptureBoundary));
 }
 
-_MTL_INLINE NS::String* MTL::CommandQueue::label() const
-{
-    return Object::sendMessage<NS::String*>(this, _MTL_PRIVATE_SEL(label));
+_MTL_INLINE NS::String *MTL::CommandQueue::label() const {
+    return Object::sendMessage<NS::String *>(this, _MTL_PRIVATE_SEL(label));
 }
 
-_MTL_INLINE void MTL::CommandQueue::removeResidencySet(const MTL::ResidencySet* residencySet)
-{
+_MTL_INLINE void MTL::CommandQueue::removeResidencySet(const MTL::ResidencySet *residencySet) {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(removeResidencySet_), residencySet);
 }
 
-_MTL_INLINE void MTL::CommandQueue::removeResidencySets(const MTL::ResidencySet* const residencySets[], NS::UInteger count)
-{
+_MTL_INLINE void MTL::CommandQueue::removeResidencySets(const MTL::ResidencySet *const residencySets[],
+                                                        NS::UInteger count) {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(removeResidencySets_count_), residencySets, count);
 }
 
-_MTL_INLINE void MTL::CommandQueue::setLabel(const NS::String* label)
-{
+_MTL_INLINE void MTL::CommandQueue::setLabel(const NS::String *label) {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setLabel_), label);
 }
 
-_MTL_INLINE MTL::CommandQueueDescriptor* MTL::CommandQueueDescriptor::alloc()
-{
+_MTL_INLINE MTL::CommandQueueDescriptor *MTL::CommandQueueDescriptor::alloc() {
     return NS::Object::alloc<MTL::CommandQueueDescriptor>(_MTL_PRIVATE_CLS(MTLCommandQueueDescriptor));
 }
 
-_MTL_INLINE MTL::CommandQueueDescriptor* MTL::CommandQueueDescriptor::init()
-{
+_MTL_INLINE MTL::CommandQueueDescriptor *MTL::CommandQueueDescriptor::init() {
     return NS::Object::init<MTL::CommandQueueDescriptor>();
 }
 
-_MTL_INLINE MTL::LogState* MTL::CommandQueueDescriptor::logState() const
-{
-    return Object::sendMessage<MTL::LogState*>(this, _MTL_PRIVATE_SEL(logState));
+_MTL_INLINE MTL::LogState *MTL::CommandQueueDescriptor::logState() const {
+    return Object::sendMessage<MTL::LogState *>(this, _MTL_PRIVATE_SEL(logState));
 }
 
-_MTL_INLINE NS::UInteger MTL::CommandQueueDescriptor::maxCommandBufferCount() const
-{
+_MTL_INLINE NS::UInteger MTL::CommandQueueDescriptor::maxCommandBufferCount() const {
     return Object::sendMessage<NS::UInteger>(this, _MTL_PRIVATE_SEL(maxCommandBufferCount));
 }
 
-_MTL_INLINE void MTL::CommandQueueDescriptor::setLogState(const MTL::LogState* logState)
-{
+_MTL_INLINE void MTL::CommandQueueDescriptor::setLogState(const MTL::LogState *logState) {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setLogState_), logState);
 }
 
-_MTL_INLINE void MTL::CommandQueueDescriptor::setMaxCommandBufferCount(NS::UInteger maxCommandBufferCount)
-{
+_MTL_INLINE void MTL::CommandQueueDescriptor::setMaxCommandBufferCount(NS::UInteger maxCommandBufferCount) {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setMaxCommandBufferCount_), maxCommandBufferCount);
 }

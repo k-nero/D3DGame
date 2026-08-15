@@ -25,74 +25,63 @@
 #include "MTLHeaderBridge.hpp"
 #include "MTLPrivate.hpp"
 
-namespace MTL4
-{
-class LibraryDescriptor;
+namespace MTL4 {
+    class LibraryDescriptor;
 }
 
-namespace MTL
-{
-class CompileOptions;
+namespace MTL {
+    class CompileOptions;
 }
 
-namespace MTL4
-{
-class LibraryDescriptor : public NS::Copying<LibraryDescriptor>
-{
-public:
-    static LibraryDescriptor* alloc();
+namespace MTL4 {
+    class LibraryDescriptor : public NS::Copying<LibraryDescriptor> {
+    public:
+        static LibraryDescriptor *alloc();
 
-    LibraryDescriptor*        init();
+        LibraryDescriptor *init();
 
-    NS::String*               name() const;
+        NS::String *name() const;
 
-    MTL::CompileOptions*      options() const;
+        MTL::CompileOptions *options() const;
 
-    void                      setName(const NS::String* name);
+        void setName(const NS::String *name);
 
-    void                      setOptions(const MTL::CompileOptions* options);
+        void setOptions(const MTL::CompileOptions *options);
 
-    void                      setSource(const NS::String* source);
-    NS::String*               source() const;
-};
+        void setSource(const NS::String *source);
 
+        NS::String *source() const;
+    };
 }
-_MTL_INLINE MTL4::LibraryDescriptor* MTL4::LibraryDescriptor::alloc()
-{
+
+_MTL_INLINE MTL4::LibraryDescriptor *MTL4::LibraryDescriptor::alloc() {
     return NS::Object::alloc<MTL4::LibraryDescriptor>(_MTL_PRIVATE_CLS(MTL4LibraryDescriptor));
 }
 
-_MTL_INLINE MTL4::LibraryDescriptor* MTL4::LibraryDescriptor::init()
-{
+_MTL_INLINE MTL4::LibraryDescriptor *MTL4::LibraryDescriptor::init() {
     return NS::Object::init<MTL4::LibraryDescriptor>();
 }
 
-_MTL_INLINE NS::String* MTL4::LibraryDescriptor::name() const
-{
-    return Object::sendMessage<NS::String*>(this, _MTL_PRIVATE_SEL(name));
+_MTL_INLINE NS::String *MTL4::LibraryDescriptor::name() const {
+    return Object::sendMessage<NS::String *>(this, _MTL_PRIVATE_SEL(name));
 }
 
-_MTL_INLINE MTL::CompileOptions* MTL4::LibraryDescriptor::options() const
-{
-    return Object::sendMessage<MTL::CompileOptions*>(this, _MTL_PRIVATE_SEL(options));
+_MTL_INLINE MTL::CompileOptions *MTL4::LibraryDescriptor::options() const {
+    return Object::sendMessage<MTL::CompileOptions *>(this, _MTL_PRIVATE_SEL(options));
 }
 
-_MTL_INLINE void MTL4::LibraryDescriptor::setName(const NS::String* name)
-{
+_MTL_INLINE void MTL4::LibraryDescriptor::setName(const NS::String *name) {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setName_), name);
 }
 
-_MTL_INLINE void MTL4::LibraryDescriptor::setOptions(const MTL::CompileOptions* options)
-{
+_MTL_INLINE void MTL4::LibraryDescriptor::setOptions(const MTL::CompileOptions *options) {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setOptions_), options);
 }
 
-_MTL_INLINE void MTL4::LibraryDescriptor::setSource(const NS::String* source)
-{
+_MTL_INLINE void MTL4::LibraryDescriptor::setSource(const NS::String *source) {
     Object::sendMessage<void>(this, _MTL_PRIVATE_SEL(setSource_), source);
 }
 
-_MTL_INLINE NS::String* MTL4::LibraryDescriptor::source() const
-{
-    return Object::sendMessage<NS::String*>(this, _MTL_PRIVATE_SEL(source));
+_MTL_INLINE NS::String *MTL4::LibraryDescriptor::source() const {
+    return Object::sendMessage<NS::String *>(this, _MTL_PRIVATE_SEL(source));
 }

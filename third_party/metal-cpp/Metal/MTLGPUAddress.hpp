@@ -30,7 +30,6 @@
 
 #endif // __METAL_VERSION__
 
-namespace MTL
-{
+namespace MTL {
     using GPUAddress = uint64_t;
 }
