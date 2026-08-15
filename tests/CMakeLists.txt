@@ -2,8 +2,7 @@ find_package(doctest CONFIG REQUIRED)
 
 file(GLOB ENGINE_TEST_SRC CONFIGURE_DEPENDS *.cpp)
 
-add_executable(engine_tests ${ENGINE_TEST_SRC}
-        test_rhi_null.cpp)
+add_executable(engine_tests ${ENGINE_TEST_SRC})
 add_compile_definitions(DOCTEST_CONFIG_USE_STD_HEADERS)
 # Tests link everything portable. On macOS this pulls the Null RHI,
 # which is exactly the point: render-graph logic is testable without a GPU.

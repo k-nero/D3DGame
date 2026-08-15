@@ -37,10 +37,17 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="fix build">
+    <list default="true" id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="add d3d12">
+      <change afterPath="$PROJECT_DIR$/engine/rhi/src/vulkan/vulkan_device.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/rhi/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/rhi/include/engine/rhi/rhi.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/include/engine/rhi/rhi.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/rhi/include/engine/rhi/rhi_null.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/rhi/src/metal/metal_stub.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/src/metal/metal_device.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/rhi/src/null/rhi_null.cpp" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/engine/rhi/src/rhi_registry.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/src/rhi_registry.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tests/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_rhi_null.cpp" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,7 +101,7 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/engine/rhi/src/null/rhi_null.cpp" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="oooJaPYB" />
@@ -105,61 +112,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.5069797399010323" />
-      <entry key="MS500" value="1.8827767358105008" />
-      <entry key="S2" value="2.4955811891299886" />
-      <entry key="S5" value="3.16132923177672" />
-      <entry key="S10" value="3.5260741656218597" />
-      <entry key="S30" value="3.828022754553242" />
-      <entry key="S60" value="3.91260594102872" />
-      <entry key="M2" value="4.045380450022842" />
-      <entry key="M5" value="7.895116864106943" />
-      <entry key="M10" value="20.98277282050747" />
-      <entry key="M15" value="33.61711744724527" />
-      <entry key="M30" value="61.34799468151664" />
-      <entry key="H1" value="95.50035976670347" />
-      <entry key="H2" value="148.33886987407698" />
-      <entry key="H4" value="242.42750215357114" />
-      <entry key="D1" value="611.792986063178" />
-      <entry key="W1" value="785.9010650007907" />
+      <entry key="MS100" value="1.4244870533928837" />
+      <entry key="MS500" value="3.238329523714066" />
+      <entry key="S2" value="4.993564890677648" />
+      <entry key="S5" value="5.5616253874264405" />
+      <entry key="S10" value="5.795067058419163" />
+      <entry key="S30" value="6.533110977633133" />
+      <entry key="S60" value="7.812696059435677" />
+      <entry key="M2" value="9.622471481623545" />
+      <entry key="M5" value="13.997523968274518" />
+      <entry key="M10" value="21.408743007379183" />
+      <entry key="M15" value="28.991476032642353" />
+      <entry key="M30" value="52.773697861227944" />
+      <entry key="H1" value="92.87777704138568" />
+      <entry key="H2" value="154.17564420402744" />
+      <entry key="H4" value="255.08352249402336" />
+      <entry key="D1" value="645.155285744489" />
+      <entry key="W1" value="832.0166192798644" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="0.0" />
-      <entry key="MS500" value="0.0" />
-      <entry key="S2" value="1.2943963696788489E-163" />
-      <entry key="S5" value="6.995642126888982E-66" />
-      <entry key="S10" value="2.6484497073609044E-33" />
-      <entry key="S30" value="1.660690661880084E-11" />
-      <entry key="S60" value="7.741518993522877E-6" />
-      <entry key="M2" value="0.007782172863218752" />
-      <entry key="M5" value="0.5899513167623764" />
-      <entry key="M10" value="2.6797795547350316" />
-      <entry key="M15" value="4.611344137077451" />
-      <entry key="M30" value="9.00766869125258" />
-      <entry key="H1" value="16.007324492660782" />
-      <entry key="H2" value="30.30538919206595" />
-      <entry key="H4" value="57.80682574454824" />
-      <entry key="D1" value="144.59543424241602" />
-      <entry key="W1" value="178.3263182349452" />
+      <entry key="MS100" value="1.551775594071886E-168" />
+      <entry key="MS500" value="2.7426209140108784E-34" />
+      <entry key="S2" value="4.069503682916967E-9" />
+      <entry key="S5" value="4.4036883710070793E-4" />
+      <entry key="S10" value="0.020984966931132103" />
+      <entry key="S30" value="0.27582656865118627" />
+      <entry key="S60" value="0.5252066335729352" />
+      <entry key="M2" value="0.7285351638421136" />
+      <entry key="M5" value="0.9875706596665847" />
+      <entry key="M10" value="1.3370414256189633" />
+      <entry key="M15" value="1.843130105002069" />
+      <entry key="M30" value="4.3512300573623195" />
+      <entry key="H1" value="10.555228018594223" />
+      <entry key="H2" value="24.293117977881604" />
+      <entry key="H4" value="51.636115440425584" />
+      <entry key="D1" value="142.98379972930033" />
+      <entry key="W1" value="179.68339187016713" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.6506709624352003" />
-      <entry key="MS500" value="0.9547421303909273" />
-      <entry key="S2" value="1.7687942082034203" />
-      <entry key="S5" value="2.690406781619777" />
-      <entry key="S10" value="3.2387797407736976" />
-      <entry key="S30" value="3.7174004613625615" />
-      <entry key="S60" value="3.855187045088868" />
-      <entry key="M2" value="4.023735892520558" />
-      <entry key="M5" value="8.468689462286433" />
-      <entry key="M10" value="23.645818752635634" />
-      <entry key="M15" value="38.21162302422435" />
-      <entry key="M30" value="70.34059514980869" />
-      <entry key="H1" value="111.49473232394315" />
-      <entry key="H2" value="178.63144823118057" />
-      <entry key="H4" value="300.2216938397974" />
-      <entry key="D1" value="756.3831153330426" />
-      <entry key="W1" value="964.2264478550625" />
+      <entry key="MS100" value="1.3589175147644703" />
+      <entry key="MS500" value="3.202954625254461" />
+      <entry key="S2" value="4.979922460505776" />
+      <entry key="S5" value="5.555895088797503" />
+      <entry key="S10" value="5.809879932366649" />
+      <entry key="S30" value="6.793493750699436" />
+      <entry key="S60" value="8.323359368503738" />
+      <entry key="M2" value="10.340536965586077" />
+      <entry key="M5" value="14.975878830714832" />
+      <entry key="M10" value="22.73530123505261" />
+      <entry key="M15" value="30.823593681791877" />
+      <entry key="M30" value="57.11335530950566" />
+      <entry key="H1" value="103.42154295001826" />
+      <entry key="H2" value="178.45684199936986" />
+      <entry key="H4" value="306.707479068996" />
+      <entry key="D1" value="788.1336854181166" />
+      <entry key="W1" value="1011.6990463970964" />
     </decayedShown>
   </component>
   <component name="ProjectApplicationVersion">
@@ -225,10 +232,11 @@
       <recent name="$PROJECT_DIR$/tests" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/engine/rhi/src/d3d12" />
       <recent name="$PROJECT_DIR$/third_party" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake Application.game">
+  <component name="RunManager" selected="CTest Application.All CTest">
     <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />
@@ -354,7 +362,7 @@
       <workItem from="1786614383227" duration="437000" />
       <workItem from="1786681723667" duration="1534000" />
       <workItem from="1786778703608" duration="6252000" />
-      <workItem from="1786818684662" duration="1823000" />
+      <workItem from="1786818684662" duration="3627000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -500,7 +508,15 @@
       <option name="project" value="LOCAL" />
       <updated>1786818994964</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="add d3d12">
+      <option name="closed" value="true" />
+      <created>1786821272862</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1786821272862</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -534,7 +550,8 @@
     <MESSAGE value="add math.h" />
     <MESSAGE value="add RHI" />
     <MESSAGE value="fix build" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix build" />
+    <MESSAGE value="add d3d12" />
+    <option name="LAST_COMMIT_MESSAGE" value="add d3d12" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

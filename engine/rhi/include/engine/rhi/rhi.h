@@ -294,7 +294,6 @@ namespace engine::rhi {
 
     // ------------------------------------------------------------------ factory
     enum class Backend : uint8_t {
-        Null, // everywhere: tests, Mac development
         D3D12, // Windows
         Metal, // MacOS
         Vulkan, // Linux

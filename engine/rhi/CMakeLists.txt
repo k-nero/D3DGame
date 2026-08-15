@@ -10,7 +10,8 @@ file(GLOB ENGINE_RHI_SRC CONFIGURE_DEPENDS
 file(GLOB_RECURSE ENGINE_RHI_PUBLIC_HEADERS CONFIGURE_DEPENDS include/*.h)
 list(APPEND ENGINE_RHI_SRC ${ENGINE_RHI_PUBLIC_HEADERS})
 
-add_library(engine_rhi STATIC ${ENGINE_RHI_SRC})
+add_library(engine_rhi STATIC ${ENGINE_RHI_SRC}
+        src/vulkan/vulkan_device.cpp)
 
 target_include_directories(engine_rhi
         PUBLIC  include        # eng/rhi/rhi.h — NO platform types allowed in here
@@ -40,23 +41,20 @@ if(WIN32)
             Microsoft::DirectX12-Agility
             Microsoft::DirectXShaderCompiler)
 
-    target_compile_definitions(engine_rhi PRIVATE ENG_RHI_D3D12=1)
+    target_compile_definitions(engine_rhi PRIVATE ENGINE_RHI_D3D12=1)
 endif()
 
 if(APPLE)
-    option(ENGINE_RHI_METAL_STUB "Build the Metal toolchain-proof stub" ON)
-    if(ENGINE_RHI_METAL_STUB)
-        file(GLOB ENGINE_RHI_METAL_SRC CONFIGURE_DEPENDS
-                src/metal/*.cpp
-                src/metal/*.h)
-        target_sources(engine_rhi PRIVATE ${ENGINE_RHI_METAL_SRC})
-        # vendored path (skip if using a vcpkg port):
-        target_include_directories(engine_rhi PRIVATE
-                ${CMAKE_SOURCE_DIR}/third_party/metal-cpp)
-        target_link_libraries(engine_rhi PRIVATE
-                "-framework Foundation" "-framework Metal" "-framework QuartzCore")
-        target_compile_definitions(engine_rhi PRIVATE ENG_RHI_METAL_STUB=1)
-    endif()
+    file(GLOB ENGINE_RHI_METAL_SRC CONFIGURE_DEPENDS
+            src/metal/*.cpp
+            src/metal/*.h)
+    target_sources(engine_rhi PRIVATE ${ENGINE_RHI_METAL_SRC})
+    # vendored path (skip if using a vcpkg port):
+    target_include_directories(engine_rhi PRIVATE
+            ${CMAKE_SOURCE_DIR}/third_party/metal-cpp)
+    target_link_libraries(engine_rhi PRIVATE
+            "-framework Foundation" "-framework Metal" "-framework QuartzCore")
+    target_compile_definitions(engine_rhi PRIVATE ENGINE_RHI_METAL=1)
 endif()
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES

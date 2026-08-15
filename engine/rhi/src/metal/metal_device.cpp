@@ -26,17 +26,14 @@
 
 namespace engine::rhi {
 
-    // Provided by the null backend TU:
-    IDevice* create_null_device();
-
-    static IDevice* create_metal_stub_device() {
+    IDevice *create_metal_device(const DeviceDesc &desc) {
         // NS::Object follows Cocoa ownership: Create/alloc-init results are OWNED
         // by us — release when done. (Same convention family as COM's "out-params
         // arrive AddRef'd", spelled Apple-style.)
         MTL::Device* dev = MTL::CreateSystemDefaultDevice();
         if (!dev) {
             log::warn("metal-stub: no Metal device available");
-            return create_null_device();
+            return nullptr;
         }
 
         log::info("metal-stub: device '{}', unified memory: {}, max buffer: {} MB",
@@ -47,7 +44,7 @@ namespace engine::rhi {
         dev->release();   // proof complete; a real backend would keep this
 
         // The "backend" is Null wearing a name tag.
-        return create_null_device();
+        return nullptr;
     }
 
 } // namespace eng::rhi
