@@ -7,8 +7,6 @@
 #include <algorithm>
 #include <chrono>
 
-#include "engine/core/asserts.h"
-
 #ifdef _WIN32
 namespace engine::rhi {
     void d3d12_report_live_objects();

@@ -42,7 +42,7 @@ namespace engine::app {
         const WNDCLASSW wc{
             .lpfnWndProc = &WndProcThunk::proc,
             .hInstance = inst,
-            .hCursor = LoadCursorW(nullptr, IDC_ARROW),
+            .hCursor = LoadCursor(nullptr, IDC_ARROW),
             .lpszClassName = L"eng_window",
         };
         RegisterClassW(&wc); // idempotent enough for one window; fine for now
@@ -59,7 +59,7 @@ namespace engine::app {
             CW_USEDEFAULT, CW_USEDEFAULT,
             r.right - r.left, r.bottom - r.top,
             nullptr, nullptr, inst, this);
-        check(hwnd);
+        engine_check(hwnd);
         native_ = hwnd;
 
         ShowWindow(hwnd, SW_SHOW);
