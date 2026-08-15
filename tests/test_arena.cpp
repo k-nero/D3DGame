@@ -2,7 +2,7 @@
 
 #include <engine/core/arena.h>
 
-using engine::Arena;
+using engine::arena::Arena;
 
 TEST_CASE("push respects alignment across mixed sizes") {
     Arena a(4096);

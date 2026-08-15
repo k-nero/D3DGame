@@ -10,7 +10,7 @@
 #include "asserts.h"
 
 
-namespace engine {
+namespace engine::pool {
     template<class T>
     concept Poolable = std::movable<T>; // vector growth relocates slots by move
 

@@ -27,7 +27,7 @@ endif()
 add_library(engine_common INTERFACE)
 
 if(MSVC)
-    target_compile_options(engine_common INTERFACE /W4 /permissive- /MP /utf-8)
+    target_compile_options(eng_common INTERFACE /W4 /permissive- /MP /utf-8 /arch:AVX2)
     target_compile_definitions(engine_common INTERFACE
         NOMINMAX WIN32_LEAN_AND_MEAN _CRT_SECURE_NO_WARNINGS)
 else()

@@ -4,7 +4,8 @@
 
 #include <string_view>
 
-using namespace engine;
+using namespace engine::object;
+using namespace engine::refcount;
 
 namespace {
     // 3-deep chain plus a sibling branch:  Object <- Actor <- Pawn <- Enemy
@@ -72,7 +73,7 @@ TEST_CASE("one ClassID per class — address identity") {
 }
 
 TEST_CASE("class_name and const cast overload") {
-    auto e = make_ref<Enemy>();
+    const auto e = make_ref<Enemy>();
     const Object *cbase = e.get();
 
     CHECK(std::string_view(cbase->class_name()) == "Enemy");

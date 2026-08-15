@@ -10,7 +10,7 @@
 #include <span>
 #include <type_traits>
 
-namespace engine {
+namespace engine::arena {
     class Arena {
     public:
         // Opaque bookmark for scoped scratch allocations within a frame.

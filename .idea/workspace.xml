@@ -37,12 +37,169 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="complete milestone 1">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/engine/core/include/engine/core/math.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_math.cpp" afterDir="false" />
+    <list default="true" id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="add math.h">
+      <change afterPath="$PROJECT_DIR$/engine/rhi/include/engine/rhi/rhi.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engine/rhi/include/engine/rhi/rhi_null.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/engine/rhi/src/metal/metal_stub.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_rhi_null.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/Foundation.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSArray.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSAutoreleasePool.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSBundle.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSData.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSDate.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSDefines.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSDictionary.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSEnumerator.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSError.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSLock.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSNotification.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSNumber.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSObjCRuntime.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSObject.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSPrivate.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSProcessInfo.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSRange.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSSet.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSSharedPtr.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSString.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSTypes.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Foundation/NSURL.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/LICENSE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4AccelerationStructure.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4Archive.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4ArgumentTable.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4BinaryFunction.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4BinaryFunctionDescriptor.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4CommandAllocator.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4CommandBuffer.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4CommandEncoder.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4CommandQueue.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4CommitFeedback.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4Compiler.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4CompilerTask.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4ComputeCommandEncoder.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4ComputePipeline.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4Counters.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4FunctionDescriptor.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4LibraryDescriptor.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4LibraryFunctionDescriptor.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4LinkingDescriptor.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4MachineLearningCommandEncoder.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4MachineLearningPipeline.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4MeshRenderPipeline.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4PipelineDataSetSerializer.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4PipelineState.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4RenderCommandEncoder.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4RenderPass.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4RenderPipeline.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4SpecializedFunctionDescriptor.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4StitchedFunctionDescriptor.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTL4TileRenderPipeline.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLAccelerationStructure.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLAccelerationStructureCommandEncoder.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLAccelerationStructureTypes.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLAllocation.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLArgument.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLArgumentEncoder.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLBinaryArchive.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLBlitCommandEncoder.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLBlitPass.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLBuffer.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLCaptureManager.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLCaptureScope.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLCommandBuffer.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLCommandEncoder.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLCommandQueue.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLComputeCommandEncoder.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLComputePass.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLComputePipeline.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLCounters.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLDataType.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLDefines.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLDepthStencil.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLDevice.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLDrawable.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLDynamicLibrary.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLEvent.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLFence.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLFunctionConstantValues.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLFunctionDescriptor.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLFunctionHandle.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLFunctionLog.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLFunctionStitching.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLGPUAddress.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLHeaderBridge.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLHeap.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLIOCommandBuffer.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLIOCommandQueue.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLIOCompressor.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLIndirectCommandBuffer.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLIndirectCommandEncoder.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLIntersectionFunctionTable.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLLibrary.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLLinkedFunctions.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLLogState.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLParallelRenderCommandEncoder.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLPipeline.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLPixelFormat.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLPrivate.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLRasterizationRate.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLRenderCommandEncoder.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLRenderPass.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLRenderPipeline.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLResidencySet.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLResource.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLResourceStateCommandEncoder.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLResourceStatePass.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLResourceViewPool.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLSampler.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLStageInputOutputDescriptor.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLTensor.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLTexture.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLTextureViewPool.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLTypes.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLVersion.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLVertexDescriptor.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/MTLVisibleFunctionTable.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/Metal/Metal.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/MetalFX/MTL4FXFrameInterpolator.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/MetalFX/MTL4FXSpatialScaler.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/MetalFX/MTL4FXTemporalDenoisedScaler.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/MetalFX/MTL4FXTemporalScaler.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/MetalFX/MTLFXDefines.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/MetalFX/MTLFXFrameInterpolator.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/MetalFX/MTLFXPrivate.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/MetalFX/MTLFXSpatialScaler.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/MetalFX/MTLFXTemporalDenoisedScaler.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/MetalFX/MTLFXTemporalScaler.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/MetalFX/MetalFX.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/QuartzCore/CADefines.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/QuartzCore/CAMetalDrawable.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/QuartzCore/CAMetalLayer.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/QuartzCore/CAPrivate.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/QuartzCore/QuartzCore.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/third_party/metal-cpp/SingleHeader/MakeSingleHeader.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/core/include/engine/core/arena.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/include/engine/core/arena.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/core/include/engine/core/asserts.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/include/engine/core/asserts.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/core/include/engine/core/math.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/include/engine/core/math.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/core/include/engine/core/object.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/include/engine/core/object.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/core/include/engine/core/pool.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/include/engine/core/pool.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/core/include/engine/core/refcount.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/include/engine/core/refcount.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/core/src/arena.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/src/arena.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/core/src/asserts.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/core/src/asserts.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/rhi/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/rhi/src/null/rhi_null.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/src/null/rhi_null.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/rhi/src/rhi_registry.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/src/rhi_registry.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tests/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_arena.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_arena.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_math.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_math.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_object.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_object.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_pool.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_pool.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_refcount.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_refcount.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,61 +264,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0000000458024496" />
-      <entry key="S2" value="1.0146292538661639" />
-      <entry key="S5" value="1.1845393007103542" />
-      <entry key="S10" value="1.4295803774735925" />
-      <entry key="S30" value="1.7545386286776805" />
-      <entry key="S60" value="1.8686419806966965" />
-      <entry key="M2" value="1.933514150450463" />
-      <entry key="M5" value="2.4268396710870297" />
-      <entry key="M10" value="5.611480508640727" />
-      <entry key="M15" value="9.81567500881397" />
-      <entry key="M30" value="20.71672687894059" />
-      <entry key="H1" value="39.444048498714224" />
-      <entry key="H2" value="84.65932522141898" />
-      <entry key="H4" value="174.38259300502727" />
-      <entry key="D1" value="521.1359504358545" />
-      <entry key="W1" value="679.4849093955421" />
+      <entry key="MS100" value="4.594895510007219E-83" />
+      <entry key="MS500" value="3.6734795345223294E-17" />
+      <entry key="S2" value="1.6644964245736825E-4" />
+      <entry key="S5" value="0.07909645219502907" />
+      <entry key="S10" value="0.7051087532226739" />
+      <entry key="S30" value="3.9933217727546864" />
+      <entry key="S60" value="8.70074340326799" />
+      <entry key="M2" value="18.077499397418553" />
+      <entry key="M5" value="35.474495616714734" />
+      <entry key="M10" value="50.08035939043227" />
+      <entry key="M15" value="59.750568979570716" />
+      <entry key="M30" value="79.3247164537312" />
+      <entry key="H1" value="105.36934829791538" />
+      <entry key="H2" value="153.02553867040257" />
+      <entry key="H4" value="244.09612279855978" />
+      <entry key="D1" value="606.0794342529967" />
+      <entry key="W1" value="775.8695374774087" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="0.0" />
-      <entry key="MS500" value="0.0" />
-      <entry key="S2" value="1.44424417714412E-239" />
-      <entry key="S5" value="2.9097538406924797E-96" />
-      <entry key="S10" value="1.7058060357977184E-48" />
-      <entry key="S30" value="1.2129870133815832E-16" />
-      <entry key="S60" value="1.2285943496484607E-8" />
-      <entry key="M2" value="1.4904785623959217E-4" />
-      <entry key="M5" value="0.0761763445940646" />
-      <entry key="M10" value="0.8952010335867179" />
-      <entry key="M15" value="2.2273800527620278" />
-      <entry key="M30" value="6.121863288353043" />
-      <entry key="H1" value="12.789367892452198" />
-      <entry key="H2" value="27.621022904096893" />
-      <entry key="H4" value="55.152591517328226" />
-      <entry key="D1" value="135.37370465318548" />
-      <entry key="W1" value="165.165812050935" />
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0000000000000029" />
+      <entry key="S5" value="1.0000015424201372" />
+      <entry key="S10" value="1.001332409855531" />
+      <entry key="S30" value="1.2008375447565198" />
+      <entry key="S60" value="2.081727794410332" />
+      <entry key="M2" value="4.035522304348419" />
+      <entry key="M5" value="7.190113172356717" />
+      <entry key="M10" value="9.355324262724801" />
+      <entry key="M15" value="10.612084951528374" />
+      <entry key="M30" value="13.66466521844793" />
+      <entry key="H1" value="19.71569290032676" />
+      <entry key="H2" value="33.63307019625516" />
+      <entry key="H4" value="60.89791817061516" />
+      <entry key="D1" value="145.85628032734058" />
+      <entry key="W1" value="178.54763158367925" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.9012504626108302" />
-      <entry key="MS500" value="0.9794203424467757" />
-      <entry key="S2" value="1.0093682850112609" />
-      <entry key="S5" value="1.1820786797261107" />
-      <entry key="S10" value="1.4280947854957955" />
-      <entry key="S30" value="1.7539306572853544" />
-      <entry key="S60" value="1.8683182091938086" />
-      <entry key="M2" value="1.9334915185771453" />
-      <entry key="M5" value="2.5022967051608225" />
-      <entry key="M10" value="6.503447986819943" />
-      <entry key="M15" value="12.037942816831633" />
-      <entry key="M30" value="26.831502781417925" />
-      <entry key="H1" value="52.22470601568457" />
-      <entry key="H2" value="112.2690338515809" />
-      <entry key="H4" value="229.52319471684152" />
-      <entry key="D1" value="656.5046973280533" />
-      <entry key="W1" value="844.6498563634369" />
+      <entry key="MS100" value="2.890999920864865E-6" />
+      <entry key="MS500" value="0.07802065930635074" />
+      <entry key="S2" value="0.5286520947335899" />
+      <entry key="S5" value="0.8498840210975136" />
+      <entry key="S10" value="1.5707293184030657" />
+      <entry key="S30" value="5.121407821452686" />
+      <entry key="S60" value="10.717261803128526" />
+      <entry key="M2" value="22.047232982107843" />
+      <entry key="M5" value="42.613772961466346" />
+      <entry key="M10" value="59.3998926151835" />
+      <entry key="M15" value="70.3342154982734" />
+      <entry key="M30" value="92.97009410843533" />
+      <entry key="H1" value="125.0705836956936" />
+      <entry key="H2" value="186.6450765083738" />
+      <entry key="H4" value="304.9810594795593" />
+      <entry key="D1" value="751.9304161259635" />
+      <entry key="W1" value="954.4162400133179" />
     </decayedShown>
   </component>
   <component name="ProjectApplicationVersion">
@@ -225,6 +382,9 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/tests" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/third_party" />
     </key>
   </component>
   <component name="RunManager" selected="CTest Application.All CTest">
@@ -338,7 +498,7 @@
       <workItem from="1786611354868" duration="598000" />
       <workItem from="1786614383227" duration="437000" />
       <workItem from="1786681723667" duration="1534000" />
-      <workItem from="1786778703608" duration="2211000" />
+      <workItem from="1786778703608" duration="5247000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -452,7 +612,15 @@
       <option name="project" value="LOCAL" />
       <updated>1786607768978</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="add math.h">
+      <option name="closed" value="true" />
+      <created>1786780970875</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1786780970875</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -483,7 +651,8 @@
     <MESSAGE value="add arena" />
     <MESSAGE value="enhance logger" />
     <MESSAGE value="complete milestone 1" />
-    <option name="LAST_COMMIT_MESSAGE" value="complete milestone 1" />
+    <MESSAGE value="add math.h" />
+    <option name="LAST_COMMIT_MESSAGE" value="add math.h" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

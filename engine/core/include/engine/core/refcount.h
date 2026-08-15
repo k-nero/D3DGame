@@ -14,7 +14,7 @@
 #include "asserts.h"
 
 
-namespace engine {
+namespace engine::refcount {
     class RefCounted {
     public:
         RefCounted(const RefCounted &) = delete; // count is identity-bound;

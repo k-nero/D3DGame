@@ -6,13 +6,13 @@
 #define ENGINE_OBJECT_H
 #include "refcount.h"
 
-namespace engine {
+namespace engine::object {
     struct ClassId {
         const char *name; // string literal — static storage, nobody frees it
         const ClassId *parent; // another function-local static — same deal
     };
 
-    class Object : public RefCounted {
+    class Object : public refcount::RefCounted {
     public:
         static const ClassId *static_class() {
             // Function-local static: lazily initialized, thread-safe, and immune
@@ -40,11 +40,11 @@ namespace engine {
 #define ENGINE_CLASS(Type, Super)                                          \
 public:                                                                    \
     using SuperClass = Super;                                              \
-    static const ::engine::ClassId* static_class() {                       \
-        static const ::engine::ClassId id{#Type, Super::static_class()};   \
+    static const ::engine::object::ClassId* static_class() {                       \
+        static const ::engine::object::ClassId id{#Type, Super::static_class()};   \
         return &id;                                                        \
     }                                                                      \
-    const ::engine::ClassId* get_class() const override {                  \
+    const ::engine::object::ClassId* get_class() const override {                  \
         return static_class();                                             \
     }                                                                      \
 private:

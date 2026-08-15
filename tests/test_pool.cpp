@@ -5,8 +5,8 @@
 #include <memory>
 #include <string>
 
-using engine::Handle;
-using engine::Pool;
+using engine::pool::Handle;
+using engine::pool::Pool;
 
 namespace {
     struct Enemy {

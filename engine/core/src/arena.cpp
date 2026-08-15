@@ -8,7 +8,7 @@
 
 #include "engine/core/asserts.h"
 
-namespace engine {
+namespace engine::arena {
     void Arena::pop_to(const Marker m) {
         engine_check(m.offset <= offset_); // popping "forward" = stale marker
         offset_ = m.offset;

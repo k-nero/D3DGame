@@ -4,9 +4,9 @@
 
 #include <utility>
 
-using engine::Ref;
-using engine::RefCounted;
-using engine::make_ref;
+using engine::refcount::Ref;
+using engine::refcount::RefCounted;
+using engine::refcount::make_ref;
 
 namespace {
     int destroyed = 0;

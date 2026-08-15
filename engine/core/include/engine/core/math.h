@@ -7,7 +7,7 @@
 #define ENGINE_MATH_H
 #include <DirectXMath.h>
 
-namespace engine {
+namespace engine::math {
 
     // Aliases so call sites say eng::float3 — if the math library ever changes,
     // the blast radius is this file.
