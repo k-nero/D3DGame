@@ -6,10 +6,10 @@
 #include <dxgi1_6.h>
 #include <wrl/client.h>
 
-#include <engine/core/assert.h>
+#include <engine/core/asserts.h>
 #include <engine/core/log.h>
 
-namespace eng::rhi::d3d12 {
+namespace engine::rhi::d3d12 {
     // The COM smart pointer (same shape as eng::Ref, COM spellings — see the
     // conversation notes: Get() to pass in, IID_PPV_ARGS(&x) to receive out,
     // As() to upgrade interface versions).
@@ -21,7 +21,7 @@ namespace eng::rhi::d3d12 {
     do {                                                                      \
         const HRESULT hr_ = (call);                                           \
         if (FAILED(hr_)) {                                                    \
-            ::engine::error("{} failed: 0x{:08x}", #call,                     \
+            log::error("{} failed: 0x{:08x}", #call,                     \
                              static_cast<uint32_t>(hr_));                     \
             engine_check(false);                                              \
         }                                                                     \
