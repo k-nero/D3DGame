@@ -5,8 +5,7 @@ file(GLOB_RECURSE ENGINE_RHI_SRC CONFIGURE_DEPENDS
         src/*.h
         include/*.h)
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${ENGINE_RHI_SRC})
-add_library(engine_rhi STATIC ${ENGINE_RHI_SRC}
-        src/null/rhi_null.cpp)
+add_library(engine_rhi STATIC ${ENGINE_RHI_SRC})
 
 target_include_directories(engine_rhi
     PUBLIC  include        # eng/rhi/rhi.h — NO platform types allowed in here
@@ -41,7 +40,7 @@ endif()
 
 if(APPLE)
     option(ENGINE_RHI_METAL_STUB "Build the Metal toolchain-proof stub" ON)
-    file(GLOB ENGINE_RHI_D3D12_SRC CONFIGURE_DEPENDS src/metal/*.cpp)
+    file(GLOB ENGINE_RHI_METAL_SRC CONFIGURE_DEPENDS src/metal/*.cpp)
     if(ENGINE_RHI_METAL_STUB)
         target_sources(engine_rhi PRIVATE ${ENGINE_RHI_METAL_SRC})
         # vendored path (skip if using a vcpkg port):
