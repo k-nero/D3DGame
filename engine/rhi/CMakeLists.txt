@@ -25,6 +25,14 @@ target_link_libraries(engine_rhi
 # whole build that links graphics APIs.
 # ------------------------------------------------------------------
 if (WIN32)
+
+    # engine/rhi/CMakeLists.txt, inside the WIN32 block:
+    add_library(engine_agility_exports INTERFACE)
+    target_sources(engine_agility_exports INTERFACE
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/d3d12/d3d12_agility.cpp)
+    target_link_libraries(engine_agility_exports INTERFACE
+            Microsoft::DirectX12-Agility)          # so the source finds the Agility d3d12.h
+
     file(GLOB ENGINE_RHI_D3D12_SRC CONFIGURE_DEPENDS
             src/d3d12/*.cpp
             src/d3d12/*.h)
