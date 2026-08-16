@@ -9,6 +9,10 @@
 #include <engine/core/asserts.h>
 #include <engine/core/log.h>
 
+#ifdef ENGINE_DEBUG
+#include <dxgidebug.h>
+#endif
+
 namespace engine::rhi::d3d12 {
     // The COM smart pointer (same shape as eng::Ref, COM spellings — see the
     // conversation notes: Get() to pass in, IID_PPV_ARGS(&x) to receive out,
@@ -21,7 +25,7 @@ namespace engine::rhi::d3d12 {
     do {                                                                      \
         const HRESULT hr_ = (call);                                           \
         if (FAILED(hr_)) {                                                    \
-            log::error("{} failed: 0x{:08x}", #call,                     \
+            log::error("{} failed: 0x{:08x}", #call,                          \
                              static_cast<uint32_t>(hr_));                     \
             engine_check(false);                                              \
         }                                                                     \

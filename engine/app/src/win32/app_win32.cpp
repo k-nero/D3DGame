@@ -43,7 +43,7 @@ namespace engine::app {
             .lpfnWndProc = &WndProcThunk::proc,
             .hInstance = inst,
             .hCursor = LoadCursor(nullptr, IDC_ARROW),
-            .lpszClassName = L"eng_window",
+            .lpszClassName = L"engine_window",
         };
         RegisterClassW(&wc); // idempotent enough for one window; fine for now
 

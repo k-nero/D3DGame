@@ -66,7 +66,7 @@ namespace engine::rhi {
 
     // -------------------------------------------------------------------- flags
     // enum-class flags need their operators spelled out once:
-#define ENG_RHI_FLAG_OPS(E)                                                   \
+#define ENGINE_RHI_FLAG_OPS(E)                                                   \
     constexpr E operator|(E a, E b) {                                         \
         return E(uint32_t(a) | uint32_t(b));                                  \
     }                                                                         \
@@ -83,7 +83,7 @@ namespace engine::rhi {
         Storage = 1 << 3,
     };
 
-    ENG_RHI_FLAG_OPS(BufferUsage)
+    ENGINE_RHI_FLAG_OPS(BufferUsage)
 
     enum class TextureUsage : uint8_t {
         None = 0,
@@ -93,7 +93,7 @@ namespace engine::rhi {
         Storage = 1 << 3,
     };
 
-    ENG_RHI_FLAG_OPS(TextureUsage)
+    ENGINE_RHI_FLAG_OPS(TextureUsage)
 
     // Where the memory lives — the D3D12 heap-type trio, portable spelling.
     enum class Memory : uint8_t {
@@ -116,7 +116,7 @@ namespace engine::rhi {
         Copy = 1 << 6,
     };
 
-    ENG_RHI_FLAG_OPS(Sync)
+    ENGINE_RHI_FLAG_OPS(Sync)
 
     enum class Access : uint16_t {
         NoAccess = 0,
@@ -128,7 +128,7 @@ namespace engine::rhi {
         CopyDst = 1 << 5,
     };
 
-    ENG_RHI_FLAG_OPS(Access)
+    ENGINE_RHI_FLAG_OPS(Access)
 
     enum class Layout : uint8_t {
         Undefined,

@@ -10,8 +10,7 @@ file(GLOB ENGINE_RHI_SRC CONFIGURE_DEPENDS
 file(GLOB_RECURSE ENGINE_RHI_PUBLIC_HEADERS CONFIGURE_DEPENDS include/*.h)
 list(APPEND ENGINE_RHI_SRC ${ENGINE_RHI_PUBLIC_HEADERS})
 
-add_library(engine_rhi STATIC ${ENGINE_RHI_SRC}
-        src/vulkan/vulkan_device.cpp)
+add_library(engine_rhi STATIC ${ENGINE_RHI_SRC})
 
 target_include_directories(engine_rhi
         PUBLIC include        # eng/rhi/rhi.h — NO platform types allowed in here
@@ -32,15 +31,16 @@ if (WIN32)
     target_sources(engine_rhi PRIVATE ${ENGINE_RHI_D3D12_SRC})
 
     find_package(D3D12MemoryAllocator CONFIG REQUIRED)
-    find_package(directx12-agility CONFIG REQUIRED)
+    find_package(directx12-agility CONFIG REQUIRED GLOBAL)
     find_package(directx-dxc CONFIG REQUIRED)
-
+    find_package(directx-headers CONFIG REQUIRED)
     target_link_libraries(engine_rhi PRIVATE
             d3d12 dxgi dxguid
             GPUOpen::D3D12MemoryAllocator
             Microsoft::DirectX12-Agility
+            Microsoft::DirectX-Headers
+            Microsoft::DirectX-Guids
             Microsoft::DirectXShaderCompiler)
-
     target_compile_definitions(engine_rhi PRIVATE ENGINE_RHI_D3D12=1)
 endif ()
 

@@ -8,7 +8,6 @@
 #include <engine/core/pool.h>
 
 #include <cstring>
-using namespace Microsoft::WRL;
 using engine::pool::Handle;
 using engine::pool::Pool;
 
@@ -149,11 +148,16 @@ namespace engine::rhi {
 				ENGINE_HR(CreateDXGIFactory2(ff, IID_PPV_ARGS(&factory_)));
 
 				ComPtr<IDXGIAdapter1> adapter;
-				for (UINT i = 0; factory_->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_UNSPECIFIED, IID_PPV_ARGS(&adapter)) != DXGI_ERROR_NOT_FOUND; ++i) {
+				for (UINT i = 0; ; ++i) {
+
+					auto hr = factory_->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_UNSPECIFIED, IID_PPV_ARGS(&adapter));
+					if (hr == DXGI_ERROR_NOT_FOUND) break;
+
 					DXGI_ADAPTER_DESC1 ad{};
 					adapter->GetDesc1(&ad);
 					if (ad.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) continue;
-					if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&device_)))) {
+					auto hr_device = D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_12_0, _uuidof(ID3D12Device), &device_);
+					if (SUCCEEDED(hr_device)) {
 						d3d12::wide_to_utf8(ad.Description, caps_.adapter_name, sizeof(caps_.adapter_name));
 						caps_.vram_bytes = ad.DedicatedVideoMemory;
 						break;
@@ -541,7 +545,7 @@ namespace engine::rhi {
 			TextureHandle depth) {
 			engine_check(depth.is_null() && "depth arrives in m3");
 			engine_check(colors.size() <= kMaxColorTargets);
-			D3D12_CPU_DESCRIPTOR_HANDLE rtvs[kMaxColorTargets];
+			D3D12_CPU_DESCRIPTOR_HANDLE rtvs[kMaxColorTargets]{};
 			for (size_t i = 0; i < colors.size(); ++i)
 				rtvs[i] = dev_->texture(colors[i])->rtv;
 			cl_->OMSetRenderTargets(static_cast<UINT>(colors.size()), rtvs, FALSE,
@@ -554,7 +558,7 @@ namespace engine::rhi {
 	}
 
 	void d3d12_report_live_objects() {
-#ifdef ENG_DEBUG
+#ifdef ENGINE_DEBUG
 		d3d12::ComPtr<IDXGIDebug1> dxgi_debug;
 		if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&dxgi_debug))))
 			dxgi_debug->ReportLiveObjects(

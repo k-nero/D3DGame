@@ -34,22 +34,17 @@ if(WIN32)
         message(WARNING "dxil.dll not found - shaders will compile but fail signing at PSO creation")
     endif()
 
-    # Agility SDK core runtime must live in a D3D12/ subfolder matching
-    # the D3D12SDKPath export in your code.
-    # NOTE: verify the imported target name against your port version.
-    if(TARGET Microsoft::DirectX12-Core)
-        add_custom_command(TARGET game POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:game>/D3D12"
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                "$<TARGET_FILE:Microsoft::DirectX12-Core>"
-                "$<TARGET_FILE_DIR:game>/D3D12/")
-        if(TARGET Microsoft::DirectX12-Layers)
-            add_custom_command(TARGET game POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                    "$<TARGET_FILE:Microsoft::DirectX12-Layers>"
-                    "$<TARGET_FILE_DIR:game>/D3D12/")
-        endif()
+    if(TARGET Microsoft::DirectX12-Agility)
+         file(MAKE_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/D3D12")
+         add_custom_command(TARGET game POST_BUILD
+             COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_PROPERTY:Microsoft::DirectX12-Core,IMPORTED_LOCATION_RELEASE> $<TARGET_FILE_DIR:game>/D3D12
+             COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_PROPERTY:Microsoft::DirectX12-Layers,IMPORTED_LOCATION_DEBUG> $<TARGET_FILE_DIR:game>/D3D12
+            COMMAND_EXPAND_LISTS
+         )
+    else()
+         message(WARNING "Microsoft::DirectX12-Agility not found - D3D12Core.dll and D3D12Layers.dll will be missing")
     endif()
+    
 endif()
 
 # Offline shader compilation (see cmake/CompileShaders.cmake).
