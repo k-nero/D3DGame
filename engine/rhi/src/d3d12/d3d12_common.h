@@ -2,7 +2,7 @@
 // PRIVATE header: nothing above rhi/src/d3d12/ may include this.
 #pragma once
 
-#include <d3d12.h>
+#include <directx/d3d12.h>
 #include <dxgi1_6.h>
 #include <wrl/client.h>
 
