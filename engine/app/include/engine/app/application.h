@@ -30,8 +30,10 @@ namespace engine::app {
                 rhi::Backend::D3D12;
 #elif defined(__APPLE__)
                 engine::rhi::Backend::Metal;
+#elif defined(__linux__)
+			    engine::rhi::Backend::Vulkan;
 #else
-        rhi::Backend::Vulkan;
+                rhi::Backend::Vulkan;
 #endif
         bool enable_debug = true;
     };

@@ -4,7 +4,7 @@ file(GLOB_RECURSE GAME_SRC CONFIGURE_DEPENDS
         src/*.h
         include/*.h)
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${GAME_SRC})
-add_executable(game ${GAME_SRC})
+add_executable(game ${GAME_SRC} )
 
 target_link_libraries(game PRIVATE engine_app engine_common)
 
@@ -21,7 +21,7 @@ if(WIN32)
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "$<TARGET_RUNTIME_DLLS:game>" "$<TARGET_FILE_DIR:game>"
         COMMAND_EXPAND_LISTS)
-
+    
     # dxil.dll ships beside the dxc tool in the vcpkg package.
     find_file(ENGINE_DXIL_DLL dxil.dll
         PATHS "$ENV{VCPKG_ROOT}/installed/x64-windows/tools/directx-dxc"
@@ -37,8 +37,8 @@ if(WIN32)
     if(TARGET Microsoft::DirectX12-Agility)
          file(MAKE_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/D3D12")
          add_custom_command(TARGET game POST_BUILD
-             COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_PROPERTY:Microsoft::DirectX12-Core,IMPORTED_LOCATION_RELEASE> $<TARGET_FILE_DIR:game>/D3D12
-             COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_PROPERTY:Microsoft::DirectX12-Layers,IMPORTED_LOCATION_DEBUG> $<TARGET_FILE_DIR:game>/D3D12
+             COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_PROPERTY:Microsoft::DirectX12-Core,IMPORTED_LOCATION_RELEASE> $<TARGET_FILE_DIR:game>/D3D12
+             COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_PROPERTY:Microsoft::DirectX12-Layers,IMPORTED_LOCATION_DEBUG> $<TARGET_FILE_DIR:game>/D3D12
             COMMAND_EXPAND_LISTS
          )
     else()

@@ -6,11 +6,6 @@
       "binaryDir": "${sourceDir}/cmake-build/${presetName}",
       "installDir": "${sourceDir}/cmake-build/${presetName}",
       "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-      "debug": {
-        "find": true,
-        "output": true,
-        "tryCompile": true
-      }
     },
     {
       "name": "mac-dev",
@@ -41,10 +36,6 @@
       "name": "win-dev",
       "inherits": "base",
       "generator": "Visual Studio 18 2026",
-      "trace": {
-        "format": "human",
-        "mode": "on"
-      },
       "architecture": "x64",
       "cacheVariables": {
         "VCPKG_TARGET_TRIPLET": "x64-windows",
