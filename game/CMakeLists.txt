@@ -12,6 +12,9 @@ target_link_libraries(game PRIVATE engine_app engine_common)
 # Switch to WIN32 (GUI subsystem) for release polish later.
 
 if(WIN32)
+    target_link_libraries(game PRIVATE engine_agility_exports)
+
+
     # ------------------------------------------------------------------
     # Runtime DLLs next to the exe: dxcompiler.dll (linked, so covered
     # by TARGET_RUNTIME_DLLS) — dxil.dll and D3D12Core.dll are NOT
@@ -44,7 +47,7 @@ if(WIN32)
     else()
          message(WARNING "Microsoft::DirectX12-Agility not found - D3D12Core.dll and D3D12Layers.dll will be missing")
     endif()
-    
+
 endif()
 
 # Offline shader compilation (see cmake/CompileShaders.cmake).
