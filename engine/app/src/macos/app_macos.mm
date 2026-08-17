@@ -1,6 +1,6 @@
 // eng/app/src/macos/app_macos.mm — NSWindow + CAMetalLayer behind the
 // portable Window interface. Compile with -fobjc-arc (CMake snippet below).
-#include <engine/app/window/window.h>
+#include <engine/app/window.h>
 #include <engine/core/asserts.h>
 
 #import <AppKit/AppKit.h>        // #import = #include with built-in include-guard

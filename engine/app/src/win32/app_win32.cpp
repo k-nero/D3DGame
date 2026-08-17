@@ -1,5 +1,5 @@
 // eng/app/src/win32/app_win32.cpp
-#include <engine/app/window/window.h>
+#include <engine/app/window.h>
 
 #include <engine/core/asserts.h>
 
@@ -32,7 +32,7 @@ namespace engine::app {
                     PostQuitMessage(0);
                     return 0;
                 case WM_CLOSE:                       // user hit the X / Alt+F4
-                    PlatformWindowBridge::request_close(*w);
+                    PostQuitMessage(0);
                     return 0;                        // do NOT DefWindowProc: we destroy in ~Window
             }
             return DefWindowProcW(hwnd, msg, wp, lp);
@@ -43,7 +43,7 @@ namespace engine::app {
         const HINSTANCE inst = GetModuleHandleW(nullptr);
 
         const WNDCLASSW wc{
-            .lpfnWndProc = &WndProcThunk::proc,
+            .lpfnWndProc = &PlatformWindowBridge::proc,
             .hInstance = inst,
             .hCursor = LoadCursor(nullptr, IDC_ARROW),
             .lpszClassName = L"engine_window",
@@ -78,7 +78,9 @@ namespace engine::app {
         if (should_close_) return false;
         MSG msg;
         while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE)) {
-            if (msg.message == WM_QUIT) should_close_ = true;   // belt & braces
+            if (msg.message == WM_QUIT) {
+                should_close_ = true;
+            }// belt & braces
             TranslateMessage(&msg);
             DispatchMessageW(&msg);
         }
