@@ -28,8 +28,7 @@
     },
     {
       "name": "directx12-agility",
-      "platform": "windows",
-      "version>=": "1.619.5"
+      "platform": "windows"
     },
     {
       "name": "directx-dxc",
@@ -37,6 +36,10 @@
     },
     {
       "name": "boost-log"
+    },
+    {
+      "name": "vulkan-sdk-components",
+      "platform": "windows | linux"
     }
   ]
 }

@@ -33,18 +33,17 @@
     </generated>
   </component>
   <component name="CMakeSettings">
-    <configurations />
+    <configurations>
+      <configuration PROFILE_NAME="mac-dev" ENABLED="false" FROM_PRESET="true" GENERATION_DIR="$PROJECT_DIR$/cmake-build/mac-dev" />
+      <configuration PROFILE_NAME="mac-release" ENABLED="false" FROM_PRESET="true" GENERATION_DIR="$PROJECT_DIR$/cmake-build/mac-release" />
+    </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="remove null">
+    <list default="true" id="f39d9146-df77-4704-92e3-e241790829fd" name="Changes" comment="add metal">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakePresets.json" beforeDir="false" afterPath="$PROJECT_DIR$/CMakePresets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/app/include/engine/app/application.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/app/include/engine/app/application.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/app/include/engine/app/window/window.h" beforeDir="false" afterPath="$PROJECT_DIR$/engine/app/include/engine/app/window/window.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/app/src/application.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/app/src/application.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/app/src/macos/app_macos.mm" beforeDir="false" afterPath="$PROJECT_DIR$/engine/app/src/macos/app_macos.mm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/rhi/src/d3d12/d3d12_device.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/src/d3d12/d3d12_device.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/engine/rhi/src/metal/metal_device.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/src/metal/metal_device.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/rhi/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/engine/rhi/src/vulkan/vulkan_device.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/engine/rhi/src/vulkan/vulkan_device.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vcpkg.json" beforeDir="false" afterPath="$PROJECT_DIR$/vcpkg.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,61 +108,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.000000000000028" />
-      <entry key="MS500" value="1.0019477188845372" />
-      <entry key="S2" value="1.2243078152567284" />
-      <entry key="S5" value="1.938309184704174" />
-      <entry key="S10" value="3.0225903849525046" />
-      <entry key="S30" value="6.202748311940553" />
-      <entry key="S60" value="11.0519807542164" />
-      <entry key="M2" value="18.16195205598038" />
-      <entry key="M5" value="29.502213536781543" />
-      <entry key="M10" value="45.4884831636381" />
-      <entry key="M15" value="60.03415369055886" />
-      <entry key="M30" value="89.57719400326955" />
-      <entry key="H1" value="115.96941316075088" />
-      <entry key="H2" value="134.34031750928602" />
-      <entry key="H4" value="149.04261451843615" />
-      <entry key="D1" value="480.9027446873754" />
-      <entry key="W1" value="929.0835323128305" />
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0000000000000002" />
+      <entry key="S5" value="1.0000009286108114" />
+      <entry key="S10" value="1.0013609427002041" />
+      <entry key="S30" value="1.17586044032734" />
+      <entry key="S60" value="1.593885614071009" />
+      <entry key="M2" value="2.247916462681972" />
+      <entry key="M5" value="7.124678631075005" />
+      <entry key="M10" value="20.887551503478036" />
+      <entry key="M15" value="35.522663543078274" />
+      <entry key="M30" value="69.55582288541576" />
+      <entry key="H1" value="103.88566437773943" />
+      <entry key="H2" value="129.47493997144846" />
+      <entry key="H4" value="148.90516638367058" />
+      <entry key="D1" value="483.5920595588525" />
+      <entry key="W1" value="934.169908405798" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="2.3472637923842473E-42" />
-      <entry key="MS500" value="4.72185210151383E-9" />
-      <entry key="S2" value="0.008289495401840593" />
-      <entry key="S5" value="0.14703178867392294" />
-      <entry key="S10" value="0.38348817124099305" />
-      <entry key="S30" value="0.8346525859689807" />
-      <entry key="S60" value="1.7784291380647375" />
-      <entry key="M2" value="3.7574567103708656" />
-      <entry key="M5" value="6.919770355945606" />
-      <entry key="M10" value="10.250936562746116" />
-      <entry key="M15" value="13.387381390891122" />
-      <entry key="M30" value="20.398538688676112" />
-      <entry key="H1" value="27.120589727878336" />
-      <entry key="H2" value="31.90033704163525" />
-      <entry key="H4" value="35.485625061874444" />
-      <entry key="D1" value="108.46335039486688" />
-      <entry key="W1" value="202.73542482092762" />
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="3.357022851159731E-67" />
+      <entry key="S2" value="2.4070691918842258E-17" />
+      <entry key="S5" value="2.2521402366765908E-7" />
+      <entry key="S10" value="4.7456719615630725E-4" />
+      <entry key="S30" value="0.07800083473292325" />
+      <entry key="S60" value="0.2793769081253096" />
+      <entry key="M2" value="0.5552967439269019" />
+      <entry key="M5" value="1.7331904106934848" />
+      <entry key="M10" value="4.695126444982033" />
+      <entry key="M15" value="7.844872912589569" />
+      <entry key="M30" value="15.63089636715438" />
+      <entry key="H1" value="23.98024505851051" />
+      <entry key="H2" value="30.367391571385426" />
+      <entry key="H4" value="35.04850682692043" />
+      <entry key="D1" value="108.7204887514349" />
+      <entry key="W1" value="203.53659027321913" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.0008384145151577E-11" />
-      <entry key="MS500" value="0.0064888598805904925" />
-      <entry key="S2" value="0.4135610805635034" />
-      <entry key="S5" value="1.4945058519765964" />
-      <entry key="S10" value="2.9645743792240693" />
-      <entry key="S30" value="6.754960070776724" />
-      <entry key="S60" value="12.596378624483423" />
-      <entry key="M2" value="21.73620213186926" />
-      <entry key="M5" value="36.30761083419161" />
-      <entry key="M10" value="55.65502228460511" />
-      <entry key="M15" value="73.34859876754652" />
-      <entry key="M30" value="109.92193403378236" />
-      <entry key="H1" value="143.05525398471426" />
-      <entry key="H2" value="166.22056769184746" />
-      <entry key="H4" value="184.51722110698358" />
-      <entry key="D1" value="589.361458649513" />
-      <entry key="W1" value="1131.8177870931459" />
+      <entry key="MS100" value="0.9659363289248455" />
+      <entry key="MS500" value="0.9930924954370359" />
+      <entry key="S2" value="0.9982686325973927" />
+      <entry key="S5" value="0.9993081653246825" />
+      <entry key="S10" value="1.0013941440980958" />
+      <entry key="S30" value="1.2481741521578251" />
+      <entry key="S60" value="1.8630374098228633" />
+      <entry key="M2" value="2.7920983736217613" />
+      <entry key="M5" value="8.83575473234118" />
+      <entry key="M10" value="25.547320982568497" />
+      <entry key="M15" value="43.32690628483628" />
+      <entry key="M30" value="85.14641205162798" />
+      <entry key="H1" value="127.83558494321275" />
+      <entry key="H2" value="159.8233929350744" />
+      <entry key="H4" value="183.94287584526197" />
+      <entry key="D1" value="592.307905852754" />
+      <entry key="W1" value="1137.7053243812159" />
     </decayedShown>
   </component>
   <component name="ProjectApplicationVersion">
@@ -236,7 +235,7 @@
       <recent name="$PROJECT_DIR$/third_party" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake Application.game">
+  <component name="RunManager" selected="CTest Application.All CTest">
     <configuration name="engine_tests" type="CMakeDoctestTestRunConfigurationType" factoryName="doctest Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="engine" TARGET_NAME="engine_tests" CONFIG_NAME="debug" RUN_TARGET_PROJECT_NAME="engine" RUN_TARGET_NAME="engine_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -532,7 +531,15 @@
       <option name="project" value="LOCAL" />
       <updated>1786824660358</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="add metal">
+      <option name="closed" value="true" />
+      <created>1786958653035</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1786958653035</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -568,7 +575,8 @@
     <MESSAGE value="fix build" />
     <MESSAGE value="add d3d12" />
     <MESSAGE value="remove null" />
-    <option name="LAST_COMMIT_MESSAGE" value="remove null" />
+    <MESSAGE value="add metal" />
+    <option name="LAST_COMMIT_MESSAGE" value="add metal" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

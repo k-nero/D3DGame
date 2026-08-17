@@ -52,6 +52,25 @@ if (WIN32)
     target_compile_definitions(engine_rhi PRIVATE ENGINE_RHI_D3D12=1)
 endif ()
 
+# ------------------------------------------------------------------
+# Vulkan backend — Windows + Linux, NOT macOS. The Khronos loader is
+# only a dispatcher; it needs an ICD, and Apple ships no Vulkan driver.
+# The only macOS ICD is MoltenVK, which vcpkg does not package — so
+# vulkan-sdk-components is gated "!osx" in vcpkg.json and this block
+# matches it. On Windows/Linux the GPU vendor driver registers the ICD
+# and the loader finds it with no help from us.
+# ------------------------------------------------------------------
+if (WIN32 OR (UNIX AND NOT APPLE))
+    file(GLOB ENGINE_RHI_VULKAN_SRC CONFIGURE_DEPENDS
+            src/vulkan/*.cpp
+            src/vulkan/*.h)
+    target_sources(engine_rhi PRIVATE ${ENGINE_RHI_VULKAN_SRC})
+
+    find_package(Vulkan REQUIRED)
+    target_link_libraries(engine_rhi PRIVATE Vulkan::Vulkan)
+    target_compile_definitions(engine_rhi PRIVATE ENGINE_RHI_VULKAN=1)
+endif ()
+
 if (APPLE)
     file(GLOB ENGINE_RHI_METAL_SRC CONFIGURE_DEPENDS
             src/metal/*.cpp
