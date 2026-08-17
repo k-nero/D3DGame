@@ -62,8 +62,8 @@ namespace engine::app {
         virtual void on_stop() {
         } // device still live
 
-        [[nodiscard]] rhi::IDevice &device() { return *device_; }
-        [[nodiscard]] Window &window() { return *window_; }
+        [[nodiscard]] rhi::IDevice &device() const { return *device_; }
+        [[nodiscard]] Window &window() const { return *window_; }
         void request_quit() { quit_ = true; }
 
     private:

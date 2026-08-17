@@ -7,7 +7,7 @@
 #include <Windows.h>
 
 namespace engine::app {
-    struct WndProcThunk {
+    struct PlatformWindowBridge {
         static LRESULT CALLBACK proc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
             // Window* stored at creation via CREATESTRUCT — the standard dance.
             if (msg == WM_NCCREATE) {
@@ -31,6 +31,9 @@ namespace engine::app {
                 case WM_DESTROY:
                     PostQuitMessage(0);
                     return 0;
+                case WM_CLOSE:                       // user hit the X / Alt+F4
+                    PlatformWindowBridge::request_close(*w);
+                    return 0;                        // do NOT DefWindowProc: we destroy in ~Window
             }
             return DefWindowProcW(hwnd, msg, wp, lp);
         }
@@ -60,23 +63,26 @@ namespace engine::app {
             r.right - r.left, r.bottom - r.top,
             nullptr, nullptr, inst, this);
         engine_check(hwnd);
-        native_ = hwnd;
+        impl_ = hwnd;
 
         ShowWindow(hwnd, SW_SHOW);
     }
 
     Window::~Window() {
-        if (native_) DestroyWindow(static_cast<HWND>(native_));
+        if (impl_) DestroyWindow(static_cast<HWND>(impl_));
     }
 
+    void* Window::native_handle() const { return impl_; }
+
     bool Window::pump() {
+        if (should_close_) return false;
         MSG msg;
         while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE)) {
-            if (msg.message == WM_QUIT) return false;
+            if (msg.message == WM_QUIT) should_close_ = true;   // belt & braces
             TranslateMessage(&msg);
             DispatchMessageW(&msg);
         }
-        return true;
+        return !should_close_;
     }
 
     bool Window::consume_resize() {

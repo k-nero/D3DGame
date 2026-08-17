@@ -24,7 +24,7 @@ namespace engine::app {
         // Drains the OS message queue. Returns false once the window is closed.
         [[nodiscard]] bool pump();
 
-        [[nodiscard]] void *native_handle() const { return native_; } // HWND
+        [[nodiscard]] void* native_handle() const; // HWND
         [[nodiscard]] uint32_t width() const { return width_; }
         [[nodiscard]] uint32_t height() const { return height_; }
 
@@ -33,9 +33,10 @@ namespace engine::app {
         [[nodiscard]] bool consume_resize();
 
     private:
-        void *native_ = nullptr;
+        void* impl_ = nullptr;
         uint32_t width_ = 0, height_ = 0;
         bool resized_ = false;
-        friend struct WndProcThunk;
+        bool should_close_ = false;
+        friend struct PlatformWindowBridge;
     };
 } // namespace eng::app

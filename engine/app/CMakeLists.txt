@@ -1,11 +1,10 @@
 # Application base class + platform window/input/timer layer.
 # The single umbrella target the game links.
 find_package(imgui CONFIG REQUIRED)
+file(GLOB ENGINE_APP_SRC CONFIGURE_DEPENDS src/*.cpp src/*.h)
+file(GLOB_RECURSE ENGINE_APP_PUBLIC_HEADERS CONFIGURE_DEPENDS include/*.h)
+list(APPEND ENGINE_APP_SRC ${ENGINE_RHI_PUBLIC_HEADERS})
 
-file(GLOB_RECURSE ENGINE_APP_SRC CONFIGURE_DEPENDS
-        src/*.cpp
-        src/*.h
-        include/*.h)
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${ENGINE_APP_SRC})
 add_library(engine_app STATIC ${ENGINE_APP_SRC})
 
@@ -14,6 +13,7 @@ if (WIN32)
     target_sources(engine_app PRIVATE ${ENGINE_APP_WIN32})
 elseif (APPLE)
     file(GLOB ENGINE_APP_MACOS CONFIGURE_DEPENDS src/macos/*.mm src/macos/*.cpp)
+    set_source_files_properties(src/macos/app_macos.mm PROPERTIES COMPILE_OPTIONS "-fobjc-arc")
     target_sources(engine_app PRIVATE ${ENGINE_APP_MACOS})
 endif ()
 
