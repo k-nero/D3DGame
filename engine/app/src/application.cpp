@@ -15,6 +15,12 @@ namespace engine::rhi {
 
 namespace engine::app {
     Application::Application(const ApplicationDesc &desc) {
+#ifdef ENGINE_DEBUG
+        log::init(boost::log::trivial::debug, true);
+#else
+        log::init(boost::log::trivial::error, false);
+#endif
+
         window_ = std::make_unique<Window>(WindowDesc{
             .title = desc.title, .width = desc.width, .height = desc.height
         });

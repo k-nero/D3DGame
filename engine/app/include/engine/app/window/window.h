@@ -22,7 +22,7 @@ namespace engine::app {
         Window &operator=(const Window &) = delete;
 
         // Drains the OS message queue. Returns false once the window is closed.
-        [[nodiscard]] bool pump();
+        [[nodiscard]] bool pump() const;
 
         [[nodiscard]] void* native_handle() const; // HWND
         [[nodiscard]] uint32_t width() const { return width_; }

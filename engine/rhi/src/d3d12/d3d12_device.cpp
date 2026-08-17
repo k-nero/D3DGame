@@ -227,16 +227,16 @@ namespace engine::rhi {
 
 				const uint32_t idx =
 					static_cast<uint32_t>(frame_counter_ % desc_.frames_in_flight);
-				FrameSlot& slot = frame_[idx];
+				auto&[allocator, fence_value] = frame_[idx];
 
 				// THE wait: this slot's previous submission must be fully consumed
 				// before its allocator memory is reused. This single line is the
 				// frames-in-flight design.
-				wait_fence(slot.fence_value);
+				wait_fence(fence_value);
 				collect_deferred(fence_->GetCompletedValue());
 
-				ENGINE_HR(slot.allocator->Reset());
-				ENGINE_HR(cmdlist_->Reset(slot.allocator.Get(), nullptr));
+				ENGINE_HR(allocator->Reset());
+				ENGINE_HR(cmdlist_->Reset(allocator.Get(), nullptr));
 
 				backbuffer_index_ = swapchain_->GetCurrentBackBufferIndex();
 				return FrameContext{
@@ -559,7 +559,7 @@ namespace engine::rhi {
 
 	void d3d12_report_live_objects() {
 #ifdef ENGINE_DEBUG
-		d3d12::ComPtr<IDXGIDebug1> dxgi_debug;
+		ComPtr<IDXGIDebug1> dxgi_debug;
 		if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&dxgi_debug))))
 			dxgi_debug->ReportLiveObjects(
 				DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_FLAGS(DXGI_DEBUG_RLO_DETAIL |

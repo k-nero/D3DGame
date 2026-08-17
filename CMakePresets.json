@@ -5,7 +5,7 @@
       "hidden": true,
       "binaryDir": "${sourceDir}/cmake-build/${presetName}",
       "installDir": "${sourceDir}/cmake-build/${presetName}",
-      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
     },
     {
       "name": "mac-dev",

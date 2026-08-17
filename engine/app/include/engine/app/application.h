@@ -25,7 +25,7 @@ namespace engine::app {
         const char *title = "engine";
         uint32_t width = 1280;
         uint32_t height = 720;
-        engine::rhi::Backend backend =
+        rhi::Backend backend =
 #if defined(_WIN32)
                 rhi::Backend::D3D12;
 #elif defined(__APPLE__)
