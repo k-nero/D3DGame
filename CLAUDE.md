@@ -73,7 +73,13 @@ returning to C++ after a long hiatus.
   op recording via std::variant, Mac dev loop, layering canary — code exists
   in history and chat outputs). If tests/Mac-dev pain appears, recommend
   restoring it; don't relitigate otherwise.
-- **Metal**: currently being brought to m2 parity ONLY (rainbow/resize/shutdown).
+- **Metal**: ✅ at m2 parity (rainbow/resize/shutdown; ClearSample runs
+  UNMODIFIED on both machines — the RHI's first existence proof). FROZEN at
+  parity: m3+ device methods `check(false)` on Metal until a deliberate
+  catch-up (per-milestone or at m8). Since barrier() is a no-op on Metal,
+  Metal rendering correctly NEVER validates barriers — the D3D12 debug layer
+  is the only barrier check until the render graph generates them (m5); keep
+  zero-validation-warnings discipline on Windows especially.
   metal-cpp vendored in third_party/metal-cpp (from Apple zip, VERSION.txt,
   updated with Xcode upgrades). *_PRIVATE_IMPLEMENTATION defines in exactly one TU.
   Known items: barrier() = no-op (auto hazard tracking), clear = render-pass
@@ -83,6 +89,18 @@ returning to C++ after a long hiatus.
   (AppKit not covered by metal-cpp), pump() = manual event loop, never [NSApp run].
 - **Vulkan**: designated after render graph (m5+): Linux native + Mac via
   MoltenVK, reuses DXC via -spirv. Placeholder folder only today.
+- **Linux tiers**: (1) SteamOS/Deck via Proton — the D3D12 backend runs under
+  vkd3d-proton (SM6.6 bindless + enhanced barriers supported), zero work;
+  (2) native = m8 Vulkan + an SDL3 window layer behind the existing Window
+  interface (do NOT hand-roll X11/Wayland).
+- **Out of scope, previous-gen APIs**: D3D11/OpenGL cannot implement this RHI
+  (no explicit barriers/PSOs/fences/bindless — the abstractions have no
+  meaning there; bgfx-style engines abstract higher to span them). WebGPU is
+  same-generation and would slot in IF a browser target ever matters (caveat:
+  no unbounded bindless — would need a binding fallback).
+- **Mobile**: out of scope. One design residue only: render-graph passes (m5)
+  carry explicit per-attachment load/store actions (TBDR platforms live or die
+  by them; Metal already forces the model — the clear-as-load-action lesson).
 
 ## Build system
 - CMake presets (`win-dev` VS gen / `mac-dev` Ninja) with `condition` per
@@ -131,8 +149,8 @@ returning to C++ after a long hiatus.
 2. ✅ D3D12 bring-up: device, debug arsenal, fence, swap chain, frames-in-flight,
    enhanced barriers, deferred delete, resize, clean shutdown. Application base
    + Win32 window + ClearSample.
-   → 2b (CURRENT): Metal to m2 parity, unmodified ClearSample as proof.
-3. Upload ring, buffer/texture creation (D3D12MA), bindless heap, DXC + PSO,
+   → 2b ✅ Metal at m2 parity, unmodified ClearSample as proof.
+3. (CURRENT) Upload ring, buffer/texture creation (D3D12MA), bindless heap, DXC + PSO,
    **triangle** via vertex pulling (draw(3), SV_VertexID, no vertex buffers bound).
 4. Shader hot reload + ImGui overlay (frame time).
 5. Render graph: pass declaration, resource lifetime, barrier generation,
@@ -141,10 +159,21 @@ returning to C++ after a long hiatus.
 6. Renderer: proxies, RenderScene, views, base pass, sorting (command queue inline).
 7. Scene: World/Actor/Component, tick groups, transforms. Sample suite / stress
    scenes as the forcing function (no game).
-8. Vulkan backend (validates RHI).
-9. C ABI + one language binding (C# easiest) — design public structs to be
-   flattenable to C now (handles are u32, descs are POD, no callbacks in API).
+8. Vulkan backend (validates RHI) + SDL3 window layer → Linux native,
+   macOS via MoltenVK.
+9. Audio: miniaudio for the DEVICE layer only; own mixer, voice management
+   (stealing policy), Ref<SoundAsset>, distance/pan spatialization. The audio
+   callback is a real-time thread: no locks, no allocation, no check() aborts —
+   game→audio via lock-free command queue (preview of m10's discipline).
 10. Render thread flip (game/render split, command queue goes real).
+11. C ABI + one language binding (C# easiest) — design public structs to be
+    flattenable to C now (handles are u32, descs are POD, no callbacks in API).
+12. Networking, TIER 1 ONLY: UDP transport + reliability layer (ack/resend/
+    ordering — Gaffer on Games is the curriculum), snapshot replication of
+    transforms via the visit() seam, client interpolation. Needs scene layer +
+    fixed timestep (m7) and realistically m10. Tier 2 (prediction, rollback,
+    lag compensation, interest management) is explicitly OUT — a project, not
+    a milestone.
 
 ## Repo layout
 CMakeLists.txt (workspace root),
@@ -154,5 +183,12 @@ assets,app}/{include,src}, tests/ (doctest, ctest), shaders/ (.vs/.ps/.cs.hlsl
 sample/ (a consumer of engine::engine, sibling of engine/ — NOT inside it).
 
 ## Current task
-Metal m2 parity (see Backends). Then m3 on D3D12. Do not let Metal drift past
-parity into feature work.
+Milestone 3, on D3D12, in dependency order: (1) upload ring buffer (leans on
+begin_frame's fence guarantee), (2) buffer/texture creation via D3D12MA +
+deferred delete in earnest, (3) shader-visible bindless CBV/SRV/UAV heap —
+bindless_index() becomes real, (4) DXC runtime compilation + root signature
+(root constants + heap-direct flags) + PSO, (5) triangle via vertex pulling:
+draw(3), SV_VertexID, positions from a structured buffer via
+ResourceDescriptorHeap — no vertex buffers bound. Also decide & test the HLSL
+matrix convention (transpose-on-upload vs -Zpr) when the first cbuffer lands.
+Metal stays frozen at parity — do not implement m3 there.

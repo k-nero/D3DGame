@@ -10,8 +10,10 @@
 #include <span>
 #include <type_traits>
 
+#include "api.h"
+
 namespace engine::arena {
-    class Arena {
+    class ENGINE_API Arena {
     public:
         // Opaque bookmark for scoped scratch allocations within a frame.
         struct Marker {
