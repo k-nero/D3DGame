@@ -88,3 +88,4 @@ dkms.conf
 cmake-build/
 vcpkg_installed/
 .vs/
+.idea/

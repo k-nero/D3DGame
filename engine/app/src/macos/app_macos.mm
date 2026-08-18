@@ -103,7 +103,7 @@ Window::~Window() {
     }
 }
 
-bool Window::pump() const {
+bool Window::pump()  {
     if (should_close_) return false;
     @autoreleasepool {                 // events are autoreleased — pool per pump
         for (;;) {

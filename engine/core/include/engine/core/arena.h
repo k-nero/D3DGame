@@ -13,7 +13,7 @@
 #include "api.h"
 
 namespace engine::arena {
-    class ENGINE_API Arena {
+    class Arena {
     public:
         // Opaque bookmark for scoped scratch allocations within a frame.
         struct Marker {
@@ -33,7 +33,7 @@ namespace engine::arena {
 
         Arena &operator=(const Arena &) = delete;
 
-        [[nodiscard]] void *push(size_t size, size_t align);
+        [[nodiscard]] ENGINE_API void *push(size_t size, size_t align);
 
         template<class T, class... Args>
         [[nodiscard]] T *create(Args &&... args) {
@@ -62,10 +62,10 @@ namespace engine::arena {
             return {p, count};
         }
 
-        void reset(); // frees EVERYTHING. one instruction.
-        [[nodiscard]] Marker mark() const;
+        ENGINE_API void reset(); // frees EVERYTHING. one instruction.
+        [[nodiscard]] ENGINE_API Marker mark() const;
 
-        void pop_to(Marker m);
+        ENGINE_API void pop_to(Marker m);
 
         [[nodiscard]] size_t used() const { return offset_; }
         [[nodiscard]] size_t high_water() const { return high_water_; } // size the arena from this

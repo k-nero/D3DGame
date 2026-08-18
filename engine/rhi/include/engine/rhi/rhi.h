@@ -26,6 +26,8 @@
 #include <cstddef>
 #include <span>
 
+#include <engine/core/api.h>
+
 namespace engine::rhi {
     // ---------------------------------------------------------------- constants
     inline constexpr uint32_t kMaxFramesInFlight = 3;
@@ -293,6 +295,20 @@ namespace engine::rhi {
     };
 
     // ------------------------------------------------------------------ factory
+    // ENGINE_API note: only these two FUNCTIONS are exported, never IDevice or
+    // ICommandList. That is deliberate and it is what lets this API survive a
+    // shared-library boundary:
+    //   - the consumer only ever holds an IDevice*, and calls its methods
+    //     through the vtable. A virtual call is an indirect jump through the
+    //     object, not a symbol lookup, so hidden visibility cannot break it.
+    //   - the vtable itself needs no export: IDevice has no key function (the
+    //     dtor is `= default`, every other method is pure), so the Itanium ABI
+    //     emits it as a weak symbol wherever it is needed, consumer included.
+    //   - the consumer never `delete`s a device — destroy_device does it INSIDE
+    //     the engine. That keeps operator new/delete on one side of the
+    //     boundary, which is the classic cross-DLL heap corruption.
+    // Exporting the interfaces would add nothing and would drag their layout
+    // into the ABI. Leave them alone.
     enum class Backend : uint8_t {
         D3D12, // Windows
         Metal, // MacOS
@@ -307,9 +323,9 @@ namespace engine::rhi {
         bool enable_debug = true; // debug layer + GPU validation + DRED
     };
 
-    [[nodiscard]] IDevice *create_device(Backend, const DeviceDesc &);
+    [[nodiscard]] ENGINE_API IDevice *create_device(Backend, const DeviceDesc &);
 
-    void destroy_device(IDevice *); // wait_idle + teardown
+    ENGINE_API void destroy_device(IDevice *); // wait_idle + teardown
 } // namespace eng::rhi
 
 #endif //ENGINE_RHI_H

@@ -14,6 +14,7 @@
 #ifndef ENGINE_APPLICATION_H
 #define ENGINE_APPLICATION_H
 
+#include <engine/core/api.h>
 #include <engine/rhi/rhi.h>
 
 #include <memory>
@@ -38,7 +39,24 @@ namespace engine::app {
         bool enable_debug = true;
     };
 
-    class Application {
+    // CLASS-level ENGINE_API, unlike Window and the rhi interfaces, because
+    // consumers DERIVE from this one. ~Application() is out-of-line, which makes
+    // it the class's key function: the Itanium ABI then emits the vtable AND the
+    // typeinfo only in application.cpp, where hidden visibility buries them, and
+    // a derived class in the consumer fails to link on `typeinfo for
+    // engine::app::Application`. Per-method export cannot fix that — typeinfo is
+    // not a method. (rhi.h's IDevice is the opposite case: no key function, so
+    // the vtable is weak-emitted in every TU and needs no export.)
+#if defined(_MSC_VER)
+#  pragma warning(push)
+    // C4251 on window_: MSVC warns that std::unique_ptr has no dll-interface.
+    // Benign here — the member is private and no consumer can touch it. Scoped
+    // to this class rather than pushed into engine_warnings, because that target
+    // is PRIVATE to the engine and would not reach a consumer compiling this
+    // header with /W4.
+#  pragma warning(disable : 4251)
+#endif
+    class ENGINE_API Application {
     public:
         explicit Application(const ApplicationDesc &);
 
@@ -71,5 +89,8 @@ namespace engine::app {
         rhi::IDevice *device_ = nullptr;
         bool quit_ = false;
     };
+#if defined(_MSC_VER)
+#  pragma warning(pop)
+#endif
 } // namespace eng::app
 #endif //ENGINE_APPLICATION_H

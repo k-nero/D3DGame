@@ -19,8 +19,8 @@
     ( (expr) ? true : (engine::assert::on_ensure_failed(#expr, __FILE__, __LINE__), false) )
 
 namespace engine::assert {
-    void ENGINE_API on_check_failed(const char *expr, const char *file, int line);
+    ENGINE_API void on_check_failed(const char *expr, const char *file, int line);
 
-    void ENGINE_API on_ensure_failed(const char *expr, const char *file, int line);
+    ENGINE_API void on_ensure_failed(const char *expr, const char *file, int line);
 }
 #endif //ENGINE_ASSERT_H

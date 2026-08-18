@@ -9,14 +9,10 @@
 #include <format>
 #include <boost/log/trivial.hpp>
 
-namespace engine::log {
-    void use_console_log_sink(bool enable_colors);
+#include "api.h"
 
-    void use_file_log_sink();
-#ifdef _WIN32
-    void use_debug_log_sink();
-#endif
-    void init(boost::log::trivial::severity_level level, bool enable_colors);
+namespace engine::log {
+    ENGINE_API void init(boost::log::trivial::severity_level level, bool enable_colors);
 
     template<class... Args>
     void trace(std::format_string<Args...> fmt, Args &&... args) {

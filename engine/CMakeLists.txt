@@ -175,16 +175,13 @@ if(BUILD_SHARED_LIBS)
             VERSION   ${PROJECT_VERSION}
             SOVERSION ${PROJECT_VERSION_MAJOR})
 
-    # Honest warning instead of 40 undefined symbols at the consumer's link
-    # step: visibility is hidden by design, so a shared engine exports only
-    # what core/api.h's ENGINE_API marks - and right now nothing is marked.
-    # Annotating the public API is milestone 9 (C ABI) work; until then the
-    # static build is the supported configuration.
-    message(WARNING
-            "BUILD_SHARED_LIBS=ON: the engine's public symbols are not yet "
-            "annotated with ENGINE_API (see engine/core/include/engine/core/api.h), "
-            "and visibility is hidden - consumers will fail to link. "
-            "Use the static build until the public API is annotated.")
+    # The public surface IS annotated with ENGINE_API now (core/api.h), so a
+    # shared build links. What it is NOT yet is ABI-stable: std::span,
+    # std::array and std::unique_ptr cross the boundary in rhi.h/application.h,
+    # and Boost::log is a PUBLIC dependency. That makes libengine.so/.dll
+    # usable only by a consumer built with the SAME compiler, standard library
+    # and flags - fine for this repo's own sample, not for shipping a binary.
+    # A version-independent boundary is the milestone 9 C ABI, not this.
 endif()
 
 # ---------------------------------------------------------------------------

@@ -84,7 +84,13 @@ if (APPLE)
             ${ENGINE_ROOT_DIR}/third_party/metal-cpp)
     target_link_libraries(engine_rhi PRIVATE
             "-framework Foundation" "-framework Metal" "-framework QuartzCore")
-    target_compile_definitions(engine_rhi PRIVATE ENGINE_RHI_METAL=1)
+    # metal-cpp forces visibility("default") on its ~1900 selector/class symbols
+    # unless this is defined, which overrides CXX_VISIBILITY_PRESET and dumps all
+    # of them into libengine.dylib's export table. metal-cpp is private to this
+    # module and no MTL:: type reaches a public header, so hide them.
+    target_compile_definitions(engine_rhi PRIVATE
+            ENGINE_RHI_METAL=1
+            METALCPP_SYMBOL_VISIBILITY_HIDDEN)
 endif ()
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
