@@ -1,4 +1,5 @@
 {
+  "version": 9,
   "configurePresets": [
     {
       "name": "base",
@@ -25,11 +26,6 @@
       "inherits": "mac-dev",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
-      },
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Darwin"
       }
     },
     {
@@ -52,11 +48,6 @@
       "inherits": "win-dev",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
-      },
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Windows"
       }
     },
     {
@@ -77,13 +68,34 @@
       "inherits": "linux-dev",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
-      },
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Linux"
       }
     }
   ],
-  "version": 9
+  "buildPresets": [
+    { "name": "mac-dev",       "configurePreset": "mac-dev" },
+    { "name": "mac-release",   "configurePreset": "mac-release" },
+    { "name": "win-dev",       "configurePreset": "win-dev",     "configuration": "Debug" },
+    { "name": "win-release",   "configurePreset": "win-release", "configuration": "Release" },
+    { "name": "linux-dev",     "configurePreset": "linux-dev" },
+    { "name": "linux-release", "configurePreset": "linux-release" }
+  ],
+  "testPresets": [
+    {
+      "name": "test-base",
+      "hidden": true,
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": false
+      }
+    },
+    { "name": "mac-dev",     "inherits": "test-base", "configurePreset": "mac-dev" },
+    { "name": "mac-release", "inherits": "test-base", "configurePreset": "mac-release" },
+    { "name": "win-dev",     "inherits": "test-base", "configurePreset": "win-dev",   "configuration": "Debug" },
+    { "name": "win-release", "inherits": "test-base", "configurePreset": "win-release", "configuration": "Release" },
+    { "name": "linux-dev",     "inherits": "test-base", "configurePreset": "linux-dev" },
+    { "name": "linux-release", "inherits": "test-base", "configurePreset": "linux-release" }
+  ]
 }
