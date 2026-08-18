@@ -1,5 +1,5 @@
 {
-  "version": 9,
+  "version": 10,
   "configurePresets": [
     {
       "name": "base",
@@ -72,12 +72,50 @@
     }
   ],
   "buildPresets": [
-    { "name": "mac-dev",       "configurePreset": "mac-dev" },
-    { "name": "mac-release",   "configurePreset": "mac-release" },
-    { "name": "win-dev",       "configurePreset": "win-dev",     "configuration": "Debug" },
-    { "name": "win-release",   "configurePreset": "win-release", "configuration": "Release" },
-    { "name": "linux-dev",     "configurePreset": "linux-dev" },
-    { "name": "linux-release", "configurePreset": "linux-release" }
+    {
+      "name": "build-base",
+      "hidden": true,
+      "configurePreset": "base",
+      "jobs": 8,
+      "inheritConfigureEnvironment": true
+    },
+    {
+      "name": "build-mac-dev",
+      "configurePreset": "mac-dev",
+      "inherits": "build-base",
+      "configuration": "Debug",
+      "verbose": true
+    },
+    { "name": "build-mac-release",
+      "configurePreset": "mac-release",
+      "inherits": "build-base",
+      "verbose": false,
+      "configuration": "Release",
+      "cleanFirst": true
+    },
+    {
+      "name": "build-win-dev",
+      "configurePreset": "win-dev",
+      "configuration": "Debug",
+      "verbose": true,
+      "inherits": "build-base"
+    },
+    {
+      "name": "build-win-release",
+      "configurePreset": "win-release",
+      "configuration": "Release",
+      "verbose": false,
+      "inherits": "build-base",
+      "cleanFirst": true
+    },
+    {
+      "name": "build-linux-dev",
+      "configurePreset": "linux-dev"
+    },
+    {
+      "name": "build-linux-release",
+      "configurePreset": "linux-release"
+    }
   ],
   "testPresets": [
     {
@@ -91,11 +129,11 @@
         "stopOnFailure": false
       }
     },
-    { "name": "mac-dev",     "inherits": "test-base", "configurePreset": "mac-dev" },
-    { "name": "mac-release", "inherits": "test-base", "configurePreset": "mac-release" },
-    { "name": "win-dev",     "inherits": "test-base", "configurePreset": "win-dev",   "configuration": "Debug" },
-    { "name": "win-release", "inherits": "test-base", "configurePreset": "win-release", "configuration": "Release" },
-    { "name": "linux-dev",     "inherits": "test-base", "configurePreset": "linux-dev" },
-    { "name": "linux-release", "inherits": "test-base", "configurePreset": "linux-release" }
+    { "name": "test-mac-dev",     "inherits": "test-base", "configurePreset": "mac-dev" },
+    { "name": "test-mac-release", "inherits": "test-base", "configurePreset": "mac-release" },
+    { "name": "test-win-dev",     "inherits": "test-base", "configurePreset": "win-dev",   "configuration": "Debug" },
+    { "name": "test-win-release", "inherits": "test-base", "configurePreset": "win-release", "configuration": "Release" },
+    { "name": "test-linux-dev",     "inherits": "test-base", "configurePreset": "linux-dev" },
+    { "name": "test-linux-release", "inherits": "test-base", "configurePreset": "linux-release" }
   ]
 }

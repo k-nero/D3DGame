@@ -141,7 +141,7 @@ namespace engine::rhi {
                 // Anything else is autoreleased -> RetainPtr, or don't store it.
                 device_ = NS::TransferPtr(MTL::CreateSystemDefaultDevice());
                 engine_check(device_.get() && "Metal device not found");
-                
+
                 std::snprintf(caps_.adapter_name, sizeof(caps_.adapter_name), "%s",
                               device_->name()->utf8String());
                 caps_.vram_bytes = device_->recommendedMaxWorkingSetSize();
@@ -391,7 +391,7 @@ namespace engine::rhi {
             // load action is deferral, which is render-graph work (m5). Not here.
             //
             // Autoreleased. Lives on the per-frame pool that begin_frame opened.
-            MTL::RenderPassDescriptor *pass = MTL::RenderPassDescriptor::renderPassDescriptor();
+            const MTL::RenderPassDescriptor *pass = MTL::RenderPassDescriptor::renderPassDescriptor();
 
             MTL::RenderPassColorAttachmentDescriptor *c0 = pass->colorAttachments()->object(0);
             c0->setTexture(dev_->texture(h)->mtl.get());
