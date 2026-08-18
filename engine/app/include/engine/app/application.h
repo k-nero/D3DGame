@@ -18,7 +18,7 @@
 
 #include <memory>
 
-#include "window/window.h"
+#include "window.h"
 
 namespace engine::app {
     struct ApplicationDesc {
