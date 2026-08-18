@@ -14,10 +14,77 @@
 # nothing from core/rhi/scene.)
 # ===========================================================================
 
+# Its own cmake_minimum_required + project(), deliberately: that makes engine/
+# a self-contained project rather than a fragment of this repo's root.
+#   - cmake_minimum_required here means OUR policies are ours. Without it the
+#     engine inherits whatever policy level the embedding project declared.
+#   - project() here makes PROJECT_IS_TOP_LEVEL mean what it says. Without it,
+#     a subdirectory inherits the enclosing project's value (TRUE), so an
+#     embedder silently got ENGINE_BUILD_TESTS=ON and built our test suite.
+cmake_minimum_required(VERSION 3.25...4.3)
+project(engine VERSION 0.1.0 LANGUAGES C CXX)
+
 # Path anchor for this library. Never CMAKE_SOURCE_DIR: that is the consumer's
 # tree, not ours, the moment anybody embeds us.
 set(ENGINE_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 list(APPEND CMAKE_MODULE_PATH "${ENGINE_ROOT_DIR}/cmake")
+
+# ---------------------------------------------------------------------------
+# Engine-owned knobs. Declared HERE, not in the workspace root, so that
+# add_subdirectory(<repo>/engine) from a foreign project is enough to get a
+# working engine.
+#
+# ENGINE_BUILD_TESTS defaults OFF because the common case for this file is
+# being embedded, and an unrelated project should not inherit our test suite.
+# This repo's own workspace root opts in via a non-FORCE cache set, so
+# -DENGINE_BUILD_TESTS=OFF on the command line still wins. (PROJECT_IS_TOP_LEVEL
+# cannot express this: it is false both for a foreign embedder AND for our own
+# workspace, which does want the tests.)
+# ---------------------------------------------------------------------------
+option(ENGINE_BUILD_TESTS "Build engine unit tests"         OFF)
+option(ENGINE_WERROR      "Treat engine warnings as errors" OFF)
+
+# ---------------------------------------------------------------------------
+# Two INTERFACE targets, split on purpose:
+#
+#   engine_common    language level + config/platform defines. Safe to hand to
+#                    a consumer, so the `engine` facade mirrors the same set.
+#   engine_warnings  our warning and ISA flags. Linked PRIVATE by engine
+#                    targets only — a consumer must never inherit -Wshadow or
+#                    /arch:AVX2 from us.
+#
+# These live in this file rather than the workspace root because they ARE the
+# engine's build identity: with them at the root, add_subdirectory(engine) from
+# elsewhere silently compiled the engine at the default standard (std::span
+# missing) and passed -lengine_common to the linker.
+# ---------------------------------------------------------------------------
+set(ENGINE_PUBLIC_DEFINES
+        $<$<CONFIG:Debug>:ENGINE_DEBUG=1>
+        $<$<PLATFORM_ID:Windows>:ENGINE_PLATFORM_WINDOWS=1>
+        $<$<PLATFORM_ID:Darwin>:ENGINE_PLATFORM_MACOS=1>
+        $<$<PLATFORM_ID:Linux>:ENGINE_PLATFORM_LINUX=1>
+        $<$<BOOL:${BUILD_SHARED_LIBS}>:ENGINE_SHARED>)   # drives api.h dllimport
+
+add_library(engine_common INTERFACE)
+add_library(engine::common ALIAS engine_common)
+target_compile_features(engine_common INTERFACE cxx_std_23)
+target_compile_definitions(engine_common INTERFACE ${ENGINE_PUBLIC_DEFINES})
+
+add_library(engine_warnings INTERFACE)
+if(MSVC)
+    target_compile_options(engine_warnings INTERFACE
+            /W4 /permissive- /MP /utf-8 /arch:AVX2)
+    target_compile_definitions(engine_warnings INTERFACE
+            NOMINMAX WIN32_LEAN_AND_MEAN _CRT_SECURE_NO_WARNINGS)
+    if(ENGINE_WERROR)
+        target_compile_options(engine_warnings INTERFACE /WX)
+    endif()
+else()
+    target_compile_options(engine_warnings INTERFACE -Wall -Wextra -Wshadow)
+    if(ENGINE_WERROR)
+        target_compile_options(engine_warnings INTERFACE -Werror)
+    endif()
+endif()
 
 if(APPLE)
     enable_language(OBJCXX)   # app/src/macos/app_macos.mm — AppKit is not covered by metal-cpp

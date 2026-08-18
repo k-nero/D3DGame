@@ -92,10 +92,39 @@ returning to C++ after a long hiatus.
 - Globs: plain GLOB per directory, NEVER GLOB_RECURSE across src/ (it swallows
   platform backend dirs — this bit us). Platform sources+headers glob inside
   their if(WIN32)/if(APPLE) blocks only.
-- Targets: engine_core/rhi/rendergraph/renderer/scene/assets/app (STATIC),
-  public `include/` + private `src/` per module; game links engine_app only.
-  eng_common INTERFACE target carries warnings/defines.
-- dxil.dll + dxcompiler.dll next to exe; D3D12Core.dll in D3D12/ subfolder.
+- **Two-level project**: root `CMakeLists.txt` is a WORKSPACE (vcpkg wiring,
+  artifact layout, which subprojects build). `engine/CMakeLists.txt` calls its
+  own `cmake_minimum_required(3.25...4.3)` + `project(engine)` so the engine is
+  self-contained: `add_subdirectory(<repo>/engine)` from a foreign project is
+  sufficient, and our policies don't depend on the embedder's.
+- **One consumable target: `engine::engine`.** Modules are OBJECT libraries
+  (engine_core/rhi/rendergraph/renderer/scene/assets/app), public `include/` +
+  private `src/` per module, linked PRIVATE into the `engine` facade — the one
+  static/shared boundary. OBJECT-library objects are added ONLY to the target
+  that names them directly, never transitively: that is why `sample` linking
+  engine_app failed to link, and why the facade must name all seven.
+- The facade's PUBLIC surface is declared explicitly in engine/CMakeLists.txt:
+  cxx_std_23, ENGINE_PUBLIC_DEFINES, each module's `include/`, and the only two
+  external deps that leak through public headers (Microsoft::DirectXMath for
+  core/math.h, Boost::log for core/log.h). Everything else is PRIVATE.
+- `engine_common` INTERFACE = std level + platform/config defines (consumer-safe,
+  mirrored onto the facade). `engine_warnings` INTERFACE = -Wall/-Wextra/-Wshadow,
+  /W4 /arch:AVX2, NOMINMAX — linked **PRIVATE** by engine targets so a consumer
+  never inherits our warning or ISA flags. Both live in engine/, not the root.
+- POSITION_INDEPENDENT_CODE ON per module: OBJECT libs do NOT inherit PIC from
+  the shared lib they fold into. BUILD_SHARED_LIBS=ON builds but is NOT yet
+  consumable — visibility is hidden and no symbol is annotated ENGINE_API
+  (core/api.h) yet; configure emits a warning saying so. Static is supported.
+- `ENGINE_BUILD_TESTS` defaults OFF in engine/ (embedders get no test suite);
+  the workspace root opts in with a non-FORCE cache `set`, so a command-line
+  `-DENGINE_BUILD_TESTS=OFF` still wins. `enable_testing()` must be called in
+  the top-level dir. Tests link `engine::engine`, i.e. the consumer's target.
+- Windows runtime staging (Agility exports per-exe, D3D12Core.dll into a D3D12/
+  subfolder, dxil.dll, dxcompiler.dll) is engine-owned:
+  `engine_stage_runtime_dependencies(<exe>)` from engine/cmake/EngineRuntime.cmake.
+  A consumer calls it in one line and knows none of those details.
+- No `install()`/`export()` yet — deliberate; adding it means deciding how the
+  internal OBJECT libs relate to the export set.
 
 ## Milestones
 1. ✅ core: assert/log/arena/pool/refcount/object/math + tests (all green)
@@ -118,9 +147,11 @@ returning to C++ after a long hiatus.
 10. Render thread flip (game/render split, command queue goes real).
 
 ## Repo layout
-engine/{core,rhi,rendergraph,renderer,scene,assets,app}/{include,src},
-game/ (samples), tests/ (doctest, ctest), shaders/ (.vs/.ps/.cs.hlsl → DXC),
-third_party/metal-cpp, cmake/CompileShaders.cmake.
+CMakeLists.txt (workspace root),
+engine/ (the library, own project()): {core,rhi,rendergraph,renderer,scene,
+assets,app}/{include,src}, tests/ (doctest, ctest), shaders/ (.vs/.ps/.cs.hlsl
+→ DXC), third_party/metal-cpp, cmake/{CompileShaders,EngineRuntime}.cmake.
+sample/ (a consumer of engine::engine, sibling of engine/ — NOT inside it).
 
 ## Current task
 Metal m2 parity (see Backends). Then m3 on D3D12. Do not let Metal drift past

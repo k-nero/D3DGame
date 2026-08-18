@@ -1,5 +1,9 @@
 # ===========================================================================
-# D3DGame — an engine shipped as a library, proven by samples and tests.
+# Workspace root. This file is a WORKSPACE, not the engine:
+#   - it wires up vcpkg and the artifact layout
+#   - it decides which subprojects get built
+# Everything about how the engine itself compiles lives in engine/CMakeLists.txt,
+# so that add_subdirectory(<repo>/engine) from a foreign project is sufficient.
 #
 # Layout contract:
 #   engine/   the library. Everything inside is an implementation detail
@@ -24,13 +28,17 @@ set(VCPKG_MANIFEST_DIR   "${CMAKE_CURRENT_SOURCE_DIR}")
 set(VCPKG_INSTALLED_DIR  "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg_installed")
 set(VCPKG_MANIFEST_MODE  ON)
 
-project(engine VERSION 0.1.0 LANGUAGES C CXX)
+project(engine_workspace VERSION 0.1.0 LANGUAGES C CXX)
 
-# PROJECT_IS_TOP_LEVEL (CMake 3.21+) is false when we are embedded in another
-# build. Tests and samples are ours; an embedder wants neither by default.
-option(ENGINE_BUILD_TESTS   "Build engine unit tests"    ${PROJECT_IS_TOP_LEVEL})
-option(ENGINE_BUILD_SAMPLES "Build the sample programs"  ${PROJECT_IS_TOP_LEVEL})
-option(ENGINE_WERROR        "Treat engine warnings as errors" OFF)
+# Samples are a property of this workspace (sample/ is a sibling of engine/),
+# so the knob lives here. ENGINE_BUILD_TESTS and ENGINE_WERROR are engine knobs
+# and are declared in engine/CMakeLists.txt.
+option(ENGINE_BUILD_SAMPLES "Build the sample programs" ${PROJECT_IS_TOP_LEVEL})
+
+# We are the engine's own workspace, so we want its tests; engine/CMakeLists.txt
+# defaults them OFF for embedders. No FORCE: if the cache entry already exists
+# because the user passed -DENGINE_BUILD_TESTS=OFF, that wins.
+set(ENGINE_BUILD_TESTS ON CACHE BOOL "Build engine unit tests")
 
 # ---------------------------------------------------------------------------
 # Settings that belong to whoever owns the build tree. Guarded, because
@@ -51,53 +59,10 @@ if(PROJECT_IS_TOP_LEVEL)
         set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${cfg} "${CMAKE_BINARY_DIR}/lib")
         set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${cfg} "${CMAKE_BINARY_DIR}/bin")
     endforeach()
-endif()
 
-# ---------------------------------------------------------------------------
-# Two INTERFACE targets, split on purpose:
-#
-#   engine_common    language level + config/platform defines. Safe to hand to
-#                    a consumer, so the `engine` facade re-exports the same set
-#                    (see engine/CMakeLists.txt).
-#   engine_warnings  our warning and ISA flags. Linked PRIVATE by engine
-#                    targets only — a consumer of this engine must never
-#                    inherit -Wshadow or /arch:AVX2 from us.
-#
-# The old single `engine_common` carried both AND was defined *after* the
-# add_subdirectory() calls that consumed it. Order matters for INTERFACE
-# targets far more than it looks: keep this above the add_subdirectory() lines.
-# ---------------------------------------------------------------------------
-set(ENGINE_PUBLIC_DEFINES
-        $<$<CONFIG:Debug>:ENGINE_DEBUG=1>
-        $<$<PLATFORM_ID:Windows>:ENGINE_PLATFORM_WINDOWS=1>
-        $<$<PLATFORM_ID:Darwin>:ENGINE_PLATFORM_MACOS=1>
-        $<$<PLATFORM_ID:Linux>:ENGINE_PLATFORM_LINUX=1>
-        $<$<BOOL:${BUILD_SHARED_LIBS}>:ENGINE_SHARED>)   # drives api.h dllimport
-
-add_library(engine_common INTERFACE)
-add_library(engine::common ALIAS engine_common)
-target_compile_features(engine_common INTERFACE cxx_std_23)
-target_compile_definitions(engine_common INTERFACE ${ENGINE_PUBLIC_DEFINES})
-
-add_library(engine_warnings INTERFACE)
-if(MSVC)
-    target_compile_options(engine_warnings INTERFACE
-            /W4 /permissive- /MP /utf-8 /arch:AVX2)
-    target_compile_definitions(engine_warnings INTERFACE
-            NOMINMAX WIN32_LEAN_AND_MEAN _CRT_SECURE_NO_WARNINGS)
-    if(ENGINE_WERROR)
-        target_compile_options(engine_warnings INTERFACE /WX)
-    endif()
-else()
-    target_compile_options(engine_warnings INTERFACE -Wall -Wextra -Wshadow)
-    if(ENGINE_WERROR)
-        target_compile_options(engine_warnings INTERFACE -Werror)
-    endif()
-endif()
-
-# enable_testing() has to run in the TOP-LEVEL directory for `ctest` to work
-# from the build root, and before the add_subdirectory() that registers tests.
-if(ENGINE_BUILD_TESTS)
+    # Unconditional, and before the add_subdirectory() that registers tests:
+    # enable_testing() only takes effect in the top-level directory, and it has
+    # to run whether or not ENGINE_BUILD_TESTS (declared inside engine/) is on.
     enable_testing()
 endif()
 
