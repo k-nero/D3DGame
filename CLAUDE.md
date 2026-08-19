@@ -110,6 +110,34 @@ returning to C++ after a long hiatus.
     (forget it and vkEnumeratePhysicalDevices returns ZERO devices with VK_SUCCESS);
     `VK_KHR_portability_subset` on the device, which the spec makes mandatory when
     advertised.
+  - **Validation VERIFIED working on macOS** (vulkan-validationlayers, arm64-osx,
+    ~9.5 min first build). It caught a real bug on frame 1, which is precisely why
+    it was worth having — see KNOWN BUG below.
+  - **First-use swapchain layout — FIXED 2026-08-19, and it is worth knowing why.**
+    Validation caught it on frame 1: ClearSample declares `layout_before = Present`
+    every frame, but vkCreateSwapchainKHR hands images back in
+    VK_IMAGE_LAYOUT_UNDEFINED, so the promise is false on first use of each of the
+    3 images. Unvalidated it looked perfect — the clear overwrites every pixel, so
+    discard-vs-preserve is invisible. Neither other backend can expose it: D3D12
+    backbuffers legitimately start in PRESENT, Metal's barrier() is a no-op.
+    Fix is backend-local, in VulkanCommandList::barrier: SwapImage::presented
+    tracks first use, and oldLayout is forced to UNDEFINED until the image has been
+    presented once. NOT a workaround — UNDEFINED as oldLayout means "discard
+    contents", which is the accurate statement. The sample must NOT special-case
+    it: it never created those images, and a byte-identical ClearSample across
+    three backends is the existence proof. Resets across resize for free
+    (rebuild_swapchain clears images_; resize() value-initialises presented=false).
+    m5 dissolves this: a render graph knows first use and emits initial transitions.
+    NOTE the layer's message quotes VUID-vkCmdDraw-None-09600 about DESCRIPTORS —
+    a red herring; there are no descriptors or draws. Only its first sentence is
+    real. Verified: 8s of validated frames, zero errors. The resize path is
+    verified by inspection only — programmatically resizing the window needs
+    macOS Accessibility permission, so it was never exercised.
+  - Layer dylib resolution is a DEV-BUILD ACCIDENT worth knowing: vcpkg's manifest
+    has `library_path: libVkLayer_khronos_validation.dylib` (bare filename) while
+    the dylib lives one directory over in lib/. It resolves only because CMake gave
+    the exe an LC_RPATH into vcpkg's lib dir for the loader. This is why the layer
+    manifests are pointed at, never copied: staging the JSON alone would break it.
   - **Linux is still unwired** and the blocker is NOT Vulkan: there is no Window
     implementation at all, and native_window is one void* while xcb needs two
     values. SDL3 at m8, per Linux tiers below.

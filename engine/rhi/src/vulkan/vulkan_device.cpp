@@ -326,6 +326,14 @@ namespace engine::rhi {
                     .pSwapchains = &swapchain_,
                     .pImageIndices = &image_index_,
                 };
+                // From here on this image really is in PRESENT_SRC_KHR, so the
+                // caller's layout_before becomes the truth and the UNDEFINED
+                // substitution above stops applying to it. Set unconditionally:
+                // the transition was done by the barrier in the command buffer we
+                // just submitted, so it holds even if the present below reports
+                // OUT_OF_DATE (and a rebuild clears images_ anyway).
+                images_[image_index_].presented = true;
+
                 // OUT_OF_DATE/SUBOPTIMAL here are NOT errors: the window changed
                 // under us. Flag it and rebuild at the top of the next frame.
                 if (const VkResult pr = vkQueuePresentKHR(queue_, &pi);
@@ -408,6 +416,17 @@ namespace engine::rhi {
 
             [[nodiscard]] VkExtent2D extent() const { return extent_; }
 
+            // Is this handle a swapchain image that has never been presented, and so
+            // is still in VK_IMAGE_LAYOUT_UNDEFINED whatever the caller believes?
+            // Only the backend can answer: it created these images, the application
+            // did not. Returns false for ordinary textures, whose layout_before the
+            // caller genuinely does own.
+            [[nodiscard]] bool swapchain_image_is_undefined(const TextureHandle h) const {
+                for (const SwapImage &img: images_)
+                    if (img.handle == h) return !img.presented;
+                return false;
+            }
+
         private:
             struct FrameSlot {
                 VkCommandPool pool = VK_NULL_HANDLE;
@@ -424,6 +443,14 @@ namespace engine::rhi {
                 // our frame counter. A per-frame-in-flight present semaphore
                 // eventually gets reused while a present is still pending on it.
                 VkSemaphore render_finished = VK_NULL_HANDLE;
+
+                // vkCreateSwapchainKHR hands images back in VK_IMAGE_LAYOUT_UNDEFINED.
+                // Until this image has actually been presented once, a caller's
+                // layout_before = Present is a well-meant lie - see
+                // swapchain_image_is_undefined(). No explicit reset needed on resize:
+                // rebuild_swapchain() clears images_ and the fresh elements default
+                // back to false.
+                bool presented = false;
             };
 
             // ---------------------------------------------------------- §1: instance
@@ -865,7 +892,7 @@ namespace engine::rhi {
                 log::info("vulkan: swapchain {}x{}, {} images", extent_.width, extent_.height, n);
             }
 
-            VkSurfaceFormatKHR pick_surface_format() const {
+            [[nodiscard]] VkSurfaceFormatKHR pick_surface_format() const {
                 uint32_t n = 0;
                 vkGetPhysicalDeviceSurfaceFormatsKHR(physical_, surface_, &n, nullptr);
                 std::vector<VkSurfaceFormatKHR> formats(n);
@@ -1014,16 +1041,37 @@ namespace engine::rhi {
             // information; Metal needs none of it.
             std::vector<VkImageMemoryBarrier2> images;
             images.reserve(textures.size());
-            for (const TextureBarrier &b: textures) {
-                const VulkanTexture *t = dev_->texture(b.texture);
+            for (const auto &[texture, sync_before,
+                sync_after, access_before,
+                access_after, layout_before,
+                layout_after]: textures) {
+                const VulkanTexture *t = dev_->texture(texture);
+
+                // oldLayout is a PROMISE about current contents, not a request. On a
+                // swapchain image's first use the caller's promise cannot be true:
+                // the image is still UNDEFINED. Substituting UNDEFINED is not a
+                // workaround - it is the accurate answer, and it means "discard
+                // whatever is there", which is exactly right for a backbuffer about
+                // to be fully overwritten.
+                //
+                // The sample cannot do this itself: it never created the swapchain
+                // and keeping ClearSample byte-identical across all three backends
+                // is the point. D3D12 never hits it (backbuffers legitimately start
+                // in PRESENT) and Metal never hits it (barrier() is a no-op), so
+                // Vulkan validation is the only place this surfaces.
+                const VkImageLayout old_layout =
+                        dev_->swapchain_image_is_undefined(texture)
+                            ? VK_IMAGE_LAYOUT_UNDEFINED
+                            : to_vk(layout_before);
+
                 images.push_back(VkImageMemoryBarrier2{
                     .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
-                    .srcStageMask = to_vk(b.sync_before),
-                    .srcAccessMask = to_vk(b.access_before),
-                    .dstStageMask = to_vk(b.sync_after),
-                    .dstAccessMask = to_vk(b.access_after),
-                    .oldLayout = to_vk(b.layout_before),
-                    .newLayout = to_vk(b.layout_after),
+                    .srcStageMask = to_vk(sync_before),
+                    .srcAccessMask = to_vk(access_before),
+                    .dstStageMask = to_vk(sync_after),
+                    .dstAccessMask = to_vk(access_after),
+                    .oldLayout = old_layout,
+                    .newLayout = to_vk(layout_after),
                     // No queue-family ownership transfers at m2 (single queue).
                     .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
                     .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
