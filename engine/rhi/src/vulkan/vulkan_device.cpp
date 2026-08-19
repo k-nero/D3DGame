@@ -32,6 +32,11 @@
 #  define WIN32_LEAN_AND_MEAN
 #  define NOMINMAX
 #  include <windows.h>
+#elif defined(__APPLE__)
+// VK_EXT_metal_surface, not the deprecated VK_MVK_macos_surface: it takes a
+// CAMetalLayer* directly, which is exactly what Window::native_handle() already
+// hands the Metal backend. Same pointer, no new seam in the app layer.
+#  define VK_USE_PLATFORM_METAL_EXT
 #endif
 
 #include <vulkan/vulkan.h>
@@ -42,7 +47,7 @@
 #include <engine/rhi/rhi.h>
 
 #include <algorithm>
-#include <cstring>
+#include <string>
 #include <vector>
 
 namespace engine::rhi {
@@ -423,29 +428,45 @@ namespace engine::rhi {
 
             // ---------------------------------------------------------- §1: instance
             void create_instance() {
+                // FIRST: before any Vulkan entry point, including the extension
+                // and layer queries below - see configure_loader_search_paths().
+                configure_loader_search_paths();
+
                 std::vector<const char *> layers;
                 std::vector<const char *> exts{VK_KHR_SURFACE_EXTENSION_NAME};
+                VkInstanceCreateFlags flags = 0;
 #if defined(_WIN32)
                 exts.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
+#elif defined(__APPLE__)
+                exts.push_back(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
+
+                // THE MoltenVK trap. MoltenVK is not a conformant Vulkan driver, it
+                // is a "portability" one, and the loader HIDES portability drivers
+                // unless you opt in with both this extension and the matching flag.
+                // Forget it and vkEnumeratePhysicalDevices returns zero devices with
+                // VK_SUCCESS — no error, nothing to grep for, and you go hunting for
+                // a driver problem that does not exist.
+                if (has_instance_extension(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME)) {
+                    exts.push_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+                    flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
+                } else {
+                    log::warn("vulkan: {} unavailable — MoltenVK will not be enumerated",
+                              VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+                }
 #endif
                 if (desc_.enable_debug) {
                     // The debug arsenal, Vulkan-flavoured: validation layer +
                     // debug-utils messenger, the analog of D3D12's debug layer +
                     // InfoQueue1 callback.
                     //
-                    // NOTE: only the LunarG installer registers layers with the
-                    // loader (registry on Windows, /usr/share on Linux). vcpkg does
-                    // not, so VK_LAYER_PATH must be set or this silently finds
-                    // nothing and you get an unvalidated instance:
-                    //   Windows: <vcpkg_installed>/<triplet>/bin
-                    //   Linux:   <vcpkg_installed>/<triplet>/share/vulkan/explicit_layer.d
-                    // (paths per ports/vulkan-validationlayers/portfile.cmake)
                     if (has_layer("VK_LAYER_KHRONOS_validation")) {
                         layers.push_back("VK_LAYER_KHRONOS_validation");
                         exts.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
                     } else {
-                        log::warn("vulkan: VK_LAYER_KHRONOS_validation not found — set "
-                            "VK_LAYER_PATH to the vcpkg layer manifest directory");
+                        log::warn("vulkan: VK_LAYER_KHRONOS_validation not found - running "
+                            "UNVALIDATED. Is vulkan-validationlayers installed for this "
+                            "triplet? (engine_rhi bakes the manifest dir in as "
+                            "ENGINE_VK_LAYER_PATH; see engine/rhi/CMakeLists.txt)");
                     }
                 }
 
@@ -460,6 +481,7 @@ namespace engine::rhi {
                 };
                 const VkInstanceCreateInfo ci{
                     .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+                    .flags = flags,
                     .pApplicationInfo = &ai,
                     .enabledLayerCount = static_cast<uint32_t>(layers.size()),
                     .ppEnabledLayerNames = layers.data(),
@@ -469,6 +491,66 @@ namespace engine::rhi {
                 ENGINE_VK(vkCreateInstance(&ci, nullptr, &instance_));
 
                 if (!layers.empty()) create_debug_messenger();
+            }
+
+            // Append to a loader search variable without clobbering a value the
+            // developer set: theirs keeps priority, ours becomes the fallback.
+            //
+            // Windows needs BOTH setters, and this is the trap: _putenv_s updates
+            // only OUR CRT's copy of the environment, while the loader lives in
+            // vulkan-1.dll with its own CRT and reads the Win32 process block.
+            // Setting just one is a silent no-op depending on which the loader used.
+            static void append_env_path(const char *var, const char *value) {
+#if defined(_WIN32)
+                constexpr char sep = ';';
+#else
+                constexpr char sep = ':';
+#endif
+                std::string v = value;
+                if (const char *existing = std::getenv(var); existing && *existing) {
+                    v = std::string(existing) + sep + v;
+                }
+#if defined(_WIN32)
+                _putenv_s(var, v.c_str());
+                SetEnvironmentVariableA(var, v.c_str());
+#else
+                setenv(var, v.c_str(), /*overwrite=*/1);
+#endif
+                log::debug("vulkan: {}={}", var, v);
+            }
+
+            // Tell the loader where our drivers and layers live, so that neither
+            // depends on a developer's shell setup. Both are ADD_ variants, never
+            // the plain VK_DRIVER_FILES / VK_LAYER_PATH: those REPLACE the loader's
+            // own search and would hide a system driver or an installed SDK's layers.
+            //
+            // Must run before ANY other Vulkan call. The loader builds its driver
+            // and layer lists lazily on first use, and vkEnumerateInstanceExtension-
+            // Properties already needs the driver list to collect ICD-provided
+            // instance extensions — so "before vkCreateInstance" is not early enough.
+            static void configure_loader_search_paths() {
+#ifdef ENGINE_VK_ICD_FILE
+                // A FILE, not a directory - the manifest itself. Its "library_path"
+                // is relative, so libMoltenVK.dylib must sit beside it.
+                append_env_path("VK_ADD_DRIVER_FILES", ENGINE_VK_ICD_FILE);
+#endif
+#ifdef ENGINE_VK_LAYER_PATH
+                // A DIRECTORY of manifests. vcpkg does not register layers with the
+                // loader the way the LunarG installer does - its own `usage` text
+                // tells you to set this by hand - so without it validation is
+                // silently absent and you run UNVALIDATED.
+                append_env_path("VK_ADD_LAYER_PATH", ENGINE_VK_LAYER_PATH);
+#endif
+            }
+
+            static bool has_instance_extension(const char *name) {
+                uint32_t n = 0;
+                vkEnumerateInstanceExtensionProperties(nullptr, &n, nullptr);
+                std::vector<VkExtensionProperties> props(n);
+                vkEnumerateInstanceExtensionProperties(nullptr, &n, props.data());
+                return std::ranges::any_of(props, [&](const VkExtensionProperties &p) {
+                    return std::strcmp(p.extensionName, name) == 0;
+                });
             }
 
             static bool has_layer(const char *name) {
@@ -524,6 +606,17 @@ namespace engine::rhi {
                     .hwnd = static_cast<HWND>(desc_.native_window),
                 };
                 ENGINE_VK(vkCreateWin32SurfaceKHR(instance_, &ci, nullptr, &surface_));
+#elif defined(__APPLE__)
+                // native_window is ALREADY a CAMetalLayer* here — app_macos.mm builds
+                // one for the layer-hosting content view and the Metal backend casts
+                // the same pointer to CA::MetalLayer*. Nothing new to plumb.
+                engine_check(desc_.native_window &&
+                    "Vulkan/MoltenVK needs the CAMetalLayer* from Window::native_handle()");
+                const VkMetalSurfaceCreateInfoEXT ci{
+                    .sType = VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT,
+                    .pLayer = static_cast<const CAMetalLayer *>(desc_.native_window),
+                };
+                ENGINE_VK(vkCreateMetalSurfaceEXT(instance_, &ci, nullptr, &surface_));
 #else
                 // Linux is NOT wired up, and deliberately not guessed at. There is no
                 // Window implementation for it at all — engine/app/CMakeLists.txt has
@@ -553,7 +646,18 @@ namespace engine::rhi {
                 for (const VkPhysicalDevice pd: devices) {
                     VkPhysicalDeviceProperties props{};
                     vkGetPhysicalDeviceProperties(pd, &props);
-                    if (props.apiVersion < VK_API_VERSION_1_3) continue;
+                    // Say WHY a device was skipped. This is the single most likely
+                    // MoltenVK failure: if it reports less than 1.3 every device
+                    // silently disappears and the check below blames the driver.
+                    if (props.apiVersion < VK_API_VERSION_1_3) {
+                        log::warn("vulkan: skipping '{}' — reports {}.{}.{}, need 1.3 for "
+                                  "sync2 + dynamic rendering + timeline semaphores in core",
+                                  props.deviceName,
+                                  VK_API_VERSION_MAJOR(props.apiVersion),
+                                  VK_API_VERSION_MINOR(props.apiVersion),
+                                  VK_API_VERSION_PATCH(props.apiVersion));
+                        continue;
+                    }
                     if (!has_device_extension(pd, VK_KHR_SWAPCHAIN_EXTENSION_NAME)) continue;
 
                     uint32_t family = 0;
@@ -650,14 +754,21 @@ namespace engine::rhi {
                 };
                 f12.timelineSemaphore = VK_TRUE;
 
-                const char *dev_exts[]{VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+                std::vector<const char *> dev_exts{VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+
+                // Not optional: the spec REQUIRES a portability driver's device to
+                // enable this if it advertises it, and vkCreateDevice fails if you
+                // do not. Queried rather than #if'd on Apple — the rule is about the
+                // driver being a portability implementation, not about the OS.
+                if (has_device_extension(physical_, "VK_KHR_portability_subset"))
+                    dev_exts.push_back("VK_KHR_portability_subset");
                 const VkDeviceCreateInfo ci{
                     .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
                     .pNext = &f12, // feature structs chain through pNext
                     .queueCreateInfoCount = 1,
                     .pQueueCreateInfos = &qci,
-                    .enabledExtensionCount = 1,
-                    .ppEnabledExtensionNames = dev_exts,
+                    .enabledExtensionCount = static_cast<uint32_t>(dev_exts.size()),
+                    .ppEnabledExtensionNames = dev_exts.data(),
                 };
                 ENGINE_VK(vkCreateDevice(physical_, &ci, nullptr, &device_));
                 vkGetDeviceQueue(device_, queue_family_, 0, &queue_);

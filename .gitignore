@@ -89,3 +89,12 @@ cmake-build/
 vcpkg_installed/
 .vs/
 .idea/
+
+# ---------------------------------------------------------------------------
+# Vendored MoltenVK ICD — a build INPUT, not a build output. vcpkg has no
+# molten-vk port, so this dylib is the only way macOS gets a Vulkan driver.
+# This negation must stay at the END of the file: there are two blanket
+# *.dylib rules above, and a negation only wins if it comes after every
+# pattern that matches.
+# ---------------------------------------------------------------------------
+!engine/third_party/MoltenVK/libMoltenVK.dylib

@@ -1,0 +1,17 @@
+MoltenVK 1.4.2
+source:    https://github.com/KhronosGroup/MoltenVK/releases/download/v1.4.2/MoltenVK-macos.tar
+released:  2026-07-24
+retrieved: 2026-08-19
+sha256:    f95765a6229cb7b915990a2890ce12ebe36a730b021545d3d52ae69ce4c4024e  (MoltenVK-macos.tar)
+license:   Apache-2.0 (LICENSE.txt)
+
+Vendored because vcpkg has no molten-vk port. Only the macOS dynamic ICD is kept
+from the 57 MB tarball; the xcframework, static libs, headers and docs are not.
+
+libMoltenVK.dylib and MoltenVK_icd.json MUST stay in the same directory: the
+manifest's "library_path" is the relative "./libMoltenVK.dylib".
+
+Verified on retrieval (Apple M1 Pro, loader 1.4.350):
+  device apiVersion 1.3.357  -> clears the backend's >=1.3 requirement
+  VK_KHR_portability_subset  advertised (the backend enables it)
+  dynamicRendering / synchronization2 / timelineSemaphore  all supported

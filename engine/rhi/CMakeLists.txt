@@ -53,20 +53,84 @@ if (WIN32)
 endif ()
 
 # ------------------------------------------------------------------
-# Vulkan backend — Windows + Linux, NOT macOS. The Khronos loader is
-# only a dispatcher; it needs an ICD, and Apple ships no Vulkan driver.
-# The only macOS ICD is MoltenVK, which vcpkg does not package — so
-# vulkan-sdk-components is gated "!osx" in vcpkg.json and this block
-# matches it. On Windows/Linux the GPU vendor driver registers the ICD
-# and the loader finds it with no help from us.
+# Vulkan backend — all three platforms.
+#
+# The Khronos loader is only a dispatcher: it needs an ICD. On Windows
+# and Linux the GPU vendor driver registers one and the loader finds it
+# with no help from us. Apple ships no Vulkan driver at all, so macOS
+# uses MoltenVK (Vulkan-over-Metal) as its ICD — vendored in
+# engine/third_party because vcpkg has no port for it, and pointed at
+# via VK_DRIVER_FILES the same way layers use VK_ADD_LAYER_PATH.
+#
+# NOTE this block COMPILES the backend everywhere; whether it can
+# actually create a device on macOS depends on MoltenVK being present.
+# Metal remains the default backend there.
 # ------------------------------------------------------------------
-if (WIN32 OR (UNIX AND NOT APPLE))
+if (WIN32 OR UNIX)
     file(GLOB ENGINE_RHI_VULKAN_SRC CONFIGURE_DEPENDS src/vulkan/*.cpp src/vulkan/*.h)
     target_sources(engine_rhi PRIVATE ${ENGINE_RHI_VULKAN_SRC})
 
     find_package(Vulkan REQUIRED)
     target_link_libraries(engine_rhi PRIVATE Vulkan::Vulkan)
     target_compile_definitions(engine_rhi PRIVATE ENGINE_RHI_VULKAN=1)
+
+    # ------------------------------------------------------------------
+    # Where vcpkg puts the validation layer MANIFESTS. Unlike the LunarG
+    # installer, vcpkg does not register them with the loader — its own
+    # ports/vulkan-validationlayers/usage tells you to set the environment
+    # variable by hand. Baking the path in lets the backend do that for
+    # itself at startup (see add_layer_search_path() in vulkan_device.cpp),
+    # so validation is on by default rather than by shell ritual.
+    #
+    # NOT copied next to the exe: validation layers are a dev-time tool and
+    # must never ship, so there is nothing to relocate. The staging-next-to-
+    # the-exe path in EngineRuntime.cmake is for things that DO ship — the
+    # Agility redistributables today, MoltenVK's ICD if Vulkan-on-macOS
+    # ever happens.
+    #
+    # Layout per ports/vulkan-validationlayers/portfile.cmake. The release
+    # tree on purpose: a release layer module loading into a Debug app is
+    # fine (separate module, C ABI), and it is what the LunarG SDK gives you.
+    # ------------------------------------------------------------------
+    if(WIN32)
+        set(ENGINE_VK_LAYER_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin")
+    else()
+        set(ENGINE_VK_LAYER_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/share/vulkan/explicit_layer.d")
+    endif()
+
+    if(EXISTS "${ENGINE_VK_LAYER_DIR}")
+        target_compile_definitions(engine_rhi PRIVATE
+                ENGINE_VK_LAYER_PATH="${ENGINE_VK_LAYER_DIR}")
+    else()
+        message(STATUS
+                "vulkan: no layer manifests at ${ENGINE_VK_LAYER_DIR} - validation will "
+                "need VK_ADD_LAYER_PATH set by hand")
+    endif()
+
+    # ------------------------------------------------------------------
+    # macOS has no Vulkan driver of its own, so the ICD is the vendored
+    # MoltenVK (Vulkan-over-Metal). Same trick as the layer manifests, one
+    # level down: the loader is told about the driver through a JSON
+    # manifest named by VK_ADD_DRIVER_FILES — a FILE here, note, where the
+    # layer variable takes a DIRECTORY.
+    #
+    # This bakes the source-tree path, which is right for development and
+    # wrong for shipping: a distributed app needs the dylib + manifest
+    # staged next to the executable and located relative to it. That is the
+    # remaining piece of "self-contained", and it needs an executable-path
+    # primitive the engine does not have yet.
+    # ------------------------------------------------------------------
+    if(APPLE)
+        set(ENGINE_MOLTENVK_ICD "${ENGINE_ROOT_DIR}/third_party/MoltenVK/MoltenVK_icd.json")
+        if(EXISTS "${ENGINE_MOLTENVK_ICD}")
+            target_compile_definitions(engine_rhi PRIVATE
+                    ENGINE_VK_ICD_FILE="${ENGINE_MOLTENVK_ICD}")
+        else()
+            message(STATUS
+                    "vulkan: no vendored MoltenVK at ${ENGINE_MOLTENVK_ICD} - the Vulkan "
+                    "backend will find no driver on macOS (see third_party/MoltenVK/VERSION.txt)")
+        endif()
+    endif()
 endif ()
 
 # ------------------------------------------------------------------

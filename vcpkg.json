@@ -38,8 +38,10 @@
       "name": "boost-log"
     },
     {
-      "name": "vulkan-sdk-components",
-      "platform": "windows | linux"
+      "name": "vulkan"
+    },
+    {
+      "name": "vulkan-validationlayers"
     }
   ]
 }

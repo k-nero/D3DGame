@@ -77,8 +77,10 @@ returning to C++ after a long hiatus.
   UNMODIFIED on both machines — the RHI's first existence proof). FROZEN at
   parity: m3+ device methods `check(false)` on Metal until a deliberate
   catch-up (per-milestone or at m8). Since barrier() is a no-op on Metal,
-  Metal rendering correctly NEVER validates barriers — the D3D12 debug layer
-  is the only barrier check until the render graph generates them (m5); keep
+  Metal rendering correctly NEVER validates barriers. The D3D12 debug layer is no
+  longer the ONLY barrier check, though: running a sample on Backend::Vulkan on the
+  Mac puts the Khronos validation layers over the same RHI calls, which is the main
+  reason Vulkan-on-macOS earns its keep. Still keep
   zero-validation-warnings discipline on Windows especially.
   metal-cpp vendored in third_party/metal-cpp (from Apple zip, VERSION.txt,
   updated with Xcode upgrades). *_PRIVATE_IMPLEMENTATION defines in exactly one TU.
@@ -87,8 +89,42 @@ returning to C++ after a long hiatus.
   pacing, drawable autorelease-pool-per-frame (else 3-frame freeze),
   drawableSize × backingScaleFactor (else Retina blur), app_macos.mm is ObjC++
   (AppKit not covered by metal-cpp), pump() = manual event loop, never [NSApp run].
-- **Vulkan**: designated after render graph (m5+): Linux native + Mac via
-  MoltenVK, reuses DXC via -spirv. Placeholder folder only today.
+- **Vulkan**: ✅ at m2 parity on macOS (2026-08-19), and the backend now COMPILES
+  on all three platforms (`if (WIN32 OR UNIX)` in rhi/CMakeLists.txt). Baseline is
+  Vulkan 1.3 CORE: sync2 (the one backend where barrier() is real and maps 1:1 to
+  the rhi triple), dynamic rendering, timeline semaphores. Reuses DXC via -spirv
+  when shaders arrive.
+  - **macOS via MoltenVK**, vendored in engine/third_party/MoltenVK (10 MB: the
+    dynamic ICD only — dylib + MoltenVK_icd.json + VERSION.txt). vcpkg has NO
+    molten-vk port; that is why it is vendored, same pattern as metal-cpp. The two
+    files must stay in the same directory: the manifest's `library_path` is
+    relative. `.gitignore` has a trailing `!` negation for the dylib — there are
+    two blanket `*.dylib` rules, so it must stay at the END of the file.
+  - Verified on Apple M1 Pro: device apiVersion **1.3.357** (clears the backend's
+    >=1.3 gate), portability_subset advertised, dynamicRendering + synchronization2
+    + timelineSemaphore all supported, Metal3 argument buffers used for descriptor
+    sets (so m3 bindless has a path).
+  - Three macOS-only requirements, all encoded: `VK_EXT_metal_surface` (takes the
+    CAMetalLayer* that Window::native_handle() ALREADY returns — no new seam);
+    `VK_KHR_portability_enumeration` + ENUMERATE_PORTABILITY_BIT on the instance
+    (forget it and vkEnumeratePhysicalDevices returns ZERO devices with VK_SUCCESS);
+    `VK_KHR_portability_subset` on the device, which the spec makes mandatory when
+    advertised.
+  - **Linux is still unwired** and the blocker is NOT Vulkan: there is no Window
+    implementation at all, and native_window is one void* while xcb needs two
+    values. SDL3 at m8, per Linux tiers below.
+- **Loader discovery is engine-owned, not shell setup.** vcpkg does not register
+  drivers or layers with the loader the way the LunarG installer does. CMake bakes
+  the paths in (ENGINE_VK_ICD_FILE, ENGINE_VK_LAYER_PATH) and
+  configure_loader_search_paths() applies them as **VK_ADD_DRIVER_FILES** (a FILE)
+  and **VK_ADD_LAYER_PATH** (a DIRECTORY). Always the ADD_ variants: the plain ones
+  REPLACE the loader's search and hide a developer's own SDK. Must run before ANY
+  Vulkan call — the loader builds its driver list lazily and
+  vkEnumerateInstanceExtensionProperties already needs it. On Windows set BOTH
+  _putenv_s and SetEnvironmentVariableA: the loader is in vulkan-1.dll with its own
+  CRT, so one alone is a silent no-op. STILL DEV-ONLY: the ICD path is an absolute
+  source-tree path, so a shippable build needs the dylib staged next to the exe and
+  found relative to it (wants an executable-dir primitive the engine lacks).
 - **Linux tiers**: (1) SteamOS/Deck via Proton — the D3D12 backend runs under
   vkd3d-proton (SM6.6 bindless + enhanced barriers supported), zero work;
   (2) native = m8 Vulkan + an SDL3 window layer behind the existing Window
@@ -141,6 +177,10 @@ returning to C++ after a long hiatus.
   subfolder, dxil.dll, dxcompiler.dll) is engine-owned:
   `engine_stage_runtime_dependencies(<exe>)` from engine/cmake/EngineRuntime.cmake.
   A consumer calls it in one line and knows none of those details.
+- vcpkg vulkan deps are `vulkan` (headers + loader) and `vulkan-validationlayers`,
+  both UNGATED. They replaced `vulkan-sdk-components`, which also dragged in sdl2,
+  glm, glslang, shaderc, spirv-cross, volk, jsoncpp, valijson, mimalloc and VMA —
+  none used here — and duplicated the separate directx-dxc entry.
 - No `install()`/`export()` yet — deliberate; adding it means deciding how the
   internal OBJECT libs relate to the export set.
 
@@ -159,7 +199,9 @@ returning to C++ after a long hiatus.
 6. Renderer: proxies, RenderScene, views, base pass, sorting (command queue inline).
 7. Scene: World/Actor/Component, tick groups, transforms. Sample suite / stress
    scenes as the forcing function (no game).
-8. Vulkan backend (validates RHI) + SDL3 window layer → Linux native,
+8. Vulkan backend ✅ m2 parity on Win/macOS (validates the RHI barrier seam —
+   sync2 is the only backend where barrier() is real). REMAINING: SDL3 window
+   layer → Linux native,
    macOS via MoltenVK.
 9. Audio: miniaudio for the DEVICE layer only; own mixer, voice management
    (stealing policy), Ref<SoundAsset>, distance/pan spatialization. The audio
@@ -179,7 +221,7 @@ returning to C++ after a long hiatus.
 CMakeLists.txt (workspace root),
 engine/ (the library, own project()): {core,rhi,rendergraph,renderer,scene,
 assets,app}/{include,src}, tests/ (doctest, ctest), shaders/ (.vs/.ps/.cs.hlsl
-→ DXC), third_party/metal-cpp, cmake/{CompileShaders,EngineRuntime}.cmake.
+→ DXC), third_party/{metal-cpp,MoltenVK}, cmake/{CompileShaders,EngineRuntime}.cmake.
 sample/ (a consumer of engine::engine, sibling of engine/ — NOT inside it).
 
 ## Current task
