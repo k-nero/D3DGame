@@ -21,3 +21,24 @@ engine_stage_runtime_dependencies(sample)
 
 # Console subsystem stays in dev builds so logs are visible. Switch to
 # WIN32_EXECUTABLE for release polish later.
+
+# ---------------------------------------------------------------------------
+# Packaging: the `runtime` component. See the CPack block at the bottom of the
+# workspace root.
+#
+# DESTINATION "." — a flat layout, deliberately. This component is a "download
+# it and double-click" archive, not an FHS prefix; bin/ would only add a level
+# to unpack past, and D3D12Core.dll has to sit in a D3D12/ folder NEXT TO the
+# executable, which is a relationship bin/ does not help express.
+#
+# Not MACOSX_BUNDLE yet: app_macos.mm runs a manual event loop and the target
+# is a plain executable, so RUNTIME is the right keyword on all three
+# platforms today. A .app bundle is a real change (Info.plist, the BUNDLE
+# keyword, bundle-relative resource lookup), not a packaging flag.
+# ---------------------------------------------------------------------------
+install(TARGETS sample
+        RUNTIME DESTINATION . COMPONENT runtime)
+
+# The DLLs, the Agility redistributable in its D3D12/ subfolder, dxil.dll.
+# No-op off Windows, exactly like its staging twin above.
+engine_install_runtime_dependencies(sample . runtime)

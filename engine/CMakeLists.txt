@@ -44,6 +44,13 @@ list(APPEND CMAKE_MODULE_PATH "${ENGINE_ROOT_DIR}/cmake")
 option(ENGINE_BUILD_TESTS "Build engine unit tests"         OFF)
 option(ENGINE_WERROR      "Treat engine warnings as errors" OFF)
 
+# Same shape and same reasoning as ENGINE_BUILD_TESTS: OFF by default because
+# the common case for this file is being embedded, and an embedder's `install`
+# must not start scattering OUR headers into THEIR prefix. This repo's
+# workspace root opts in with a non-FORCE cache set, so -DENGINE_INSTALL=OFF on
+# the command line still wins.
+option(ENGINE_INSTALL     "Generate install and export rules for the engine" OFF)
+
 # ---------------------------------------------------------------------------
 # Two INTERFACE targets, split on purpose:
 #
@@ -145,8 +152,17 @@ add_library(engine::engine ALIAS engine)   # in-tree consumers use the same name
 # (imgui, Metal frameworks, d3d12, ...) without putting the module targets in
 # engine's *usage* requirements. The facade's public surface is declared
 # explicitly below, so it can be reviewed in one place.
+#
+# $<BUILD_INTERFACE:> is what makes this facade exportable. `engine` is static,
+# and CMake propagates a static library's PRIVATE deps into its
+# INTERFACE_LINK_LIBRARIES as $<LINK_ONLY:...> so the consumer links them too.
+# For an OBJECT library that is wrong: those objects are already INSIDE
+# libengine.a. Left unwrapped, install(EXPORT) refuses the whole export set
+# with "requires target engine_core that is not in any export set"; wrapped,
+# the entry evaluates to the target in the build tree (objects still collected,
+# verified with nm) and to nothing in the installed one, which is the truth.
 foreach(mod IN LISTS ENGINE_MODULES)
-    target_link_libraries(engine PRIVATE engine_${mod})
+    target_link_libraries(engine PRIVATE $<BUILD_INTERFACE:engine_${mod}>)
 endforeach()
 
 # Public compile surface. Mirrors engine_common rather than linking it, so the
@@ -167,6 +183,13 @@ foreach(mod IN LISTS ENGINE_MODULES)
     endif()
 endforeach()
 
+# One install-side entry for all of them: every module's headers are already
+# namespaced (include/engine/<mod>/*.h), so they merge into a single include
+# root without collision and the consumer's #include lines do not change.
+include(GNUInstallDirs)
+target_include_directories(engine PUBLIC
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+
 set_target_properties(engine PROPERTIES
         CXX_VISIBILITY_PRESET hidden
         VISIBILITY_INLINES_HIDDEN ON)
@@ -181,7 +204,13 @@ if(BUILD_SHARED_LIBS)
     # and Boost::log is a PUBLIC dependency. That makes libengine.so/.dll
     # usable only by a consumer built with the SAME compiler, standard library
     # and flags - fine for this repo's own sample, not for shipping a binary.
-    # A version-independent boundary is the milestone 9 C ABI, not this.
+    #
+    # So this configuration is a TEST, not a deliverable: it is what catches
+    # visibility and PIC regressions early. The shipped artifact is the static
+    # library; the version-independent boundary is the milestone 11 `engine_c`
+    # facade exporting a flat C ABI, not this one built with a flag flipped.
+    # See the Delivery section of CLAUDE.md - decided on measurement (this
+    # dylib exports 505 symbols, 21 of them engine:: and 480 of them Boost).
 endif()
 
 # ---------------------------------------------------------------------------
@@ -197,6 +226,104 @@ endif()
 # Windows runtime-DLL staging (Agility, dxil, dxcompiler) lives with the
 # backend that needs it, not in the sample. See the header of the file.
 include(EngineRuntime)
+
+# ---------------------------------------------------------------------------
+# Install + export: the `sdk` package component.
+#
+# THE INSTALLED LINK CLOSURE IS DECLARED BY HAND, DELIBERATELY.
+#
+# `engine` is a static archive, so it does not absorb its dependencies: every
+# third-party library a module links privately still has to appear on the
+# CONSUMER's link line. In the build tree CMake works that list out by walking
+# into the module targets, but the $<BUILD_INTERFACE:> wrap above deletes that
+# path from the INSTALLED interface — it has to, or the export set will not
+# generate at all. So the closure is restated here, in the same file and the
+# same spirit as the facade's public surface a few lines up: one reviewable
+# place, rather than an emergent property of seven CMakeLists.
+#
+# Getting this list wrong is not silent. It surfaces immediately as undefined
+# symbols when an out-of-tree consumer links, which is exactly how it was
+# checked. Keep it in sync when a module gains a dependency.
+# ---------------------------------------------------------------------------
+if(ENGINE_INSTALL)
+    include(CMakePackageConfigHelpers)
+
+    set(ENGINE_INSTALL_LINK_CLOSURE
+            Boost::log_setup                  # core/log.cpp
+            nlohmann_json::nlohmann_json      # assets
+            imgui::imgui)                     # app
+    if(TARGET Vulkan::Vulkan)
+        list(APPEND ENGINE_INSTALL_LINK_CLOSURE Vulkan::Vulkan)
+    endif()
+    if(WIN32)
+        list(APPEND ENGINE_INSTALL_LINK_CLOSURE
+                d3d12 dxgi dxguid
+                GPUOpen::D3D12MemoryAllocator
+                Microsoft::DirectX12-Agility
+                Microsoft::DirectX-Headers
+                Microsoft::DirectX-Guids
+                Microsoft::DirectXShaderCompiler)
+    endif()
+    if(APPLE)
+        # Frameworks are plain link flags, not targets, so they need no
+        # find_dependency() on the far side.
+        list(APPEND ENGINE_INSTALL_LINK_CLOSURE
+                "-framework Foundation" "-framework Metal"
+                "-framework QuartzCore" "-framework Cocoa")
+    endif()
+
+    # INSTALL_INTERFACE only: the build tree already resolves all of this
+    # through the module targets, and naming it twice there would put every
+    # library on the link line a second time.
+    foreach(dep IN LISTS ENGINE_INSTALL_LINK_CLOSURE)
+        target_link_libraries(engine INTERFACE $<INSTALL_INTERFACE:${dep}>)
+    endforeach()
+
+    install(TARGETS engine
+            EXPORT  engineTargets
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT sdk
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT sdk
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT sdk)
+
+    # Modules with no public headers yet contribute nothing rather than naming
+    # a directory that does not exist — same rule as the include dirs above.
+    foreach(mod IN LISTS ENGINE_MODULES)
+        if(IS_DIRECTORY "${ENGINE_ROOT_DIR}/${mod}/include")
+            install(DIRECTORY "${ENGINE_ROOT_DIR}/${mod}/include/"
+                    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+                    COMPONENT sdk
+                    FILES_MATCHING PATTERN "*.h")
+        endif()
+    endforeach()
+
+    set(ENGINE_INSTALL_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake/engine")
+
+    install(EXPORT engineTargets
+            FILE      engineTargets.cmake
+            NAMESPACE engine::                 # so the imported target is
+            DESTINATION ${ENGINE_INSTALL_CMAKEDIR}   # engine::engine, the same
+            COMPONENT sdk)                     # name in-tree consumers already use
+
+    configure_package_config_file(
+            "${ENGINE_ROOT_DIR}/cmake/engine-config.cmake.in"
+            "${CMAKE_CURRENT_BINARY_DIR}/engine-config.cmake"
+            INSTALL_DESTINATION ${ENGINE_INSTALL_CMAKEDIR})
+
+    # SameMinorVersion, not SameMajorVersion: at 0.x semver treats the MINOR
+    # component as the breaking one, and every version this library will have
+    # for a while is 0.x. Switch to SameMajorVersion at 1.0.
+    write_basic_package_version_file(
+            "${CMAKE_CURRENT_BINARY_DIR}/engine-config-version.cmake"
+            VERSION       ${PROJECT_VERSION}
+            COMPATIBILITY SameMinorVersion)
+
+    install(FILES
+            "${CMAKE_CURRENT_BINARY_DIR}/engine-config.cmake"
+            "${CMAKE_CURRENT_BINARY_DIR}/engine-config-version.cmake"
+            "${ENGINE_ROOT_DIR}/cmake/EngineRuntime.cmake"   # config file includes it
+            DESTINATION ${ENGINE_INSTALL_CMAKEDIR}
+            COMPONENT sdk)
+endif()
 
 if(ENGINE_BUILD_TESTS)
     add_subdirectory(tests)

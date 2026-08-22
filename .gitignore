@@ -89,6 +89,7 @@ cmake-build/
 vcpkg_installed/
 .vs/
 .idea/
+dist/
 
 # ---------------------------------------------------------------------------
 # Vendored MoltenVK ICD — a build INPUT, not a build output. vcpkg has no
@@ -98,3 +99,4 @@ vcpkg_installed/
 # pattern that matches.
 # ---------------------------------------------------------------------------
 !engine/third_party/MoltenVK/libMoltenVK.dylib
+.DS_Store

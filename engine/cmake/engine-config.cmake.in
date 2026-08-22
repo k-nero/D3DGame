@@ -1,0 +1,56 @@
+# ===========================================================================
+# engine-config.cmake — what find_package(engine) executes.
+#
+# Its whole job is to make the imported engine::engine target usable, which
+# means re-finding everything the installed archive still needs at link time
+# BEFORE engineTargets.cmake names them. engineTargets.cmake verifies that
+# each target in the link interface exists and fails find_package() loudly if
+# one does not, so a missing find_dependency here is a clear error rather than
+# a mystery undefined symbol.
+#
+# READ THIS BEFORE ASSUMING THE PACKAGE IS PORTABLE: `engine` is a STATIC
+# archive, so its private third-party dependencies are NOT absorbed into it and
+# every one of them has to be found again on the consumer's machine. In
+# practice that means a consumer configured against the SAME vcpkg tree. That
+# is a deliberate limitation, not an oversight — see the ABI note in
+# engine/CMakeLists.txt. A version-independent boundary is the milestone 11
+# C ABI, not this file.
+# ===========================================================================
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+# Leak through PUBLIC headers: core/math.h and core/log.h.
+find_dependency(directxmath CONFIG)
+# CONFIG, explicitly: without it CMake >= 3.30 routes this through the removed
+# FindBoost module and every consumer's configure prints a CMP0167 policy
+# warning coming from OUR config file. vcpkg ships BoostConfig.cmake anyway.
+find_dependency(Boost CONFIG COMPONENTS log log_setup)
+
+# Private to a module, but a static archive propagates them to the consumer's
+# link line anyway.
+find_dependency(nlohmann_json CONFIG)
+find_dependency(imgui CONFIG)
+find_dependency(Vulkan)
+
+if(WIN32)
+    find_dependency(D3D12MemoryAllocator CONFIG)
+    find_dependency(directx12-agility CONFIG)
+    find_dependency(directx-headers CONFIG)
+    find_dependency(directx-dxc CONFIG)
+endif()
+
+include("${CMAKE_CURRENT_LIST_DIR}/engineTargets.cmake")
+
+# Ships alongside so a consumer gets engine_stage_runtime_dependencies() —
+# the same one-liner sample/ uses — without knowing what a D3D12/ subfolder is.
+#
+# GAP, Windows only: engine_agility_exports is an INTERFACE target carrying a
+# source file, and it is not in the export set, so the guard inside the
+# function skips it. An SDK consumer's executable therefore does not export
+# D3D12SDKVersion/D3D12SDKPath and falls back to the OS D3D12 instead of the
+# Agility redistributable. Fixing that means installing that source and
+# rebuilding the INTERFACE target here.
+include("${CMAKE_CURRENT_LIST_DIR}/EngineRuntime.cmake")
+
+check_required_components(engine)
