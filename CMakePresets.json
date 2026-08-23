@@ -129,11 +129,42 @@
         "stopOnFailure": false
       }
     },
-    { "name": "test-mac-dev",     "inherits": "test-base", "configurePreset": "mac-dev" },
+    {
+      "name": "test-mac-dev",
+      "inherits": "test-base",
+      "configurePreset": "mac-dev"
+    },
     { "name": "test-mac-release", "inherits": "test-base", "configurePreset": "mac-release" },
     { "name": "test-win-dev",     "inherits": "test-base", "configurePreset": "win-dev",   "configuration": "Debug" },
     { "name": "test-win-release", "inherits": "test-base", "configurePreset": "win-release", "configuration": "Release" },
     { "name": "test-linux-dev",     "inherits": "test-base", "configurePreset": "linux-dev" },
     { "name": "test-linux-release", "inherits": "test-base", "configurePreset": "linux-release" }
+  ],
+  "packagePresets": [
+    {
+      "name": "pack-base",
+      "hidden": true,
+      "configurePreset": "base",
+      "packageDirectory": "${sourceDir}/dist"
+    },
+    {
+      "name": "pack-mac-release",
+      "inherits": "pack-base",
+      "configurePreset": "mac-release",
+      "generators": ["TGZ"]
+    },
+    {
+      "name": "pack-win-release",
+      "inherits": "pack-base",
+      "configurePreset": "win-release",
+      "configurations": ["Release"],
+      "generators": ["ZIP"]
+    },
+    {
+      "name": "pack-linux-release",
+      "inherits": "pack-base",
+      "configurePreset": "linux-release",
+      "generators": ["TGZ"]
+    }
   ]
 }

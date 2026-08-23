@@ -70,7 +70,12 @@ if (WIN32 OR UNIX)
     file(GLOB ENGINE_RHI_VULKAN_SRC CONFIGURE_DEPENDS src/vulkan/*.cpp src/vulkan/*.h)
     target_sources(engine_rhi PRIVATE ${ENGINE_RHI_VULKAN_SRC})
 
-    find_package(Vulkan REQUIRED)
+    # GLOBAL, like the directx-* finds above: an IMPORTED target is otherwise
+    # visible only in THIS directory and below, and sample/ is a sibling of
+    # engine/, not a child. Without it engine_install_runtime_dependencies()
+    # sees no Vulkan::Vulkan, skips staging the loader, and the packaged
+    # executable dies in dyld before main().
+    find_package(Vulkan REQUIRED GLOBAL)
     target_link_libraries(engine_rhi PRIVATE Vulkan::Vulkan)
     target_compile_definitions(engine_rhi PRIVATE ENGINE_RHI_VULKAN=1)
 
