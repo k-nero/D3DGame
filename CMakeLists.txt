@@ -39,6 +39,7 @@ option(ENGINE_BUILD_SAMPLES "Build the sample programs" ${PROJECT_IS_TOP_LEVEL})
 # defaults them OFF for embedders. No FORCE: if the cache entry already exists
 # because the user passed -DENGINE_BUILD_TESTS=OFF, that wins.
 set(ENGINE_BUILD_TESTS ON CACHE BOOL "Build engine unit tests")
+set(BUILD_SHARED_LIBS OFF)
 
 # ---------------------------------------------------------------------------
 # Settings that belong to whoever owns the build tree. Guarded, because
