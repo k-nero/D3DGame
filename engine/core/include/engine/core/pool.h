@@ -140,8 +140,7 @@ namespace engine::pool {
         template<class Self>
         static auto resolve(Self &self, Handle<T> h) {
             using SlotPtr = std::conditional_t<std::is_const_v<Self>, const Slot *, Slot *>;
-            if (h.is_null() || h.index >= self.slots_.size())
-                return SlotPtr{nullptr};
+            if (h.is_null() || h.index >= self.slots_.size()) return SlotPtr{nullptr};
             auto &s = self.slots_[h.index];
             return (s.alive && s.gen == h.gen) ? SlotPtr{&s} : SlotPtr{nullptr};
         }

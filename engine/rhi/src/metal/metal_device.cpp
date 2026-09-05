@@ -366,7 +366,7 @@ namespace engine::rhi {
             NS::SharedPtr<CA::MetalLayer> layer_;
 
             uint64_t fence_value_ = 0;
-            FrameSlot frame_[kMaxFramesInFlight];
+            std::array<FrameSlot, kMaxFramesInFlight> frame_;
             uint64_t frame_counter_ = 0;
             bool in_frame_ = false;
 

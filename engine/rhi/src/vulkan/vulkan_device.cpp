@@ -1026,7 +1026,7 @@ namespace engine::rhi {
 
             VkSemaphore timeline_ = VK_NULL_HANDLE; // the fence
             uint64_t timeline_value_ = 0;
-            FrameSlot frame_[kMaxFramesInFlight];
+            std::array<FrameSlot, kMaxFramesInFlight> frame_;
             uint64_t frame_counter_ = 0;
             bool in_frame_ = false;
 
