@@ -22,7 +22,7 @@ namespace engine::rhi::d3d12
     using ComPtr = Microsoft::WRL::ComPtr<T>;
 
     // Every fallible COM call goes through this. SUCCEEDED/FAILED, never ==S_OK.
-    #define ENGINE_HR(call)                                                       \
+#define ENGINE_HR(call)                                                       \
     do {                                                                      \
         const HRESULT hr_ = (call);                                           \
         if (FAILED(hr_)) {                                                    \

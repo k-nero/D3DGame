@@ -96,7 +96,7 @@ namespace engine::rhi
 
         // The ENGINE_HR of this backend. Logs the actual VkResult before dying —
         // "vkCreateDevice failed" without the code is a wasted debugging hour.
-        #define ENGINE_VK(expr)                                                        \
+#define ENGINE_VK(expr)                                                        \
     do {                                                                       \
         const VkResult vkr_ = (expr);                                          \
         if (vkr_ != VK_SUCCESS) {                                              \
@@ -187,16 +187,10 @@ namespace engine::rhi
         };
 
         template <class RhiH, class T>
-        RhiH to_rhi(Handle<T> h)
-        {
-            return RhiH{.index = h.index, .gen = h.gen};
-        }
+        RhiH to_rhi(Handle<T> h) { return RhiH{.index = h.index, .gen = h.gen}; }
 
         template <class T, class RhiH>
-        Handle<T> to_pool(RhiH h)
-        {
-            return Handle<T>{.index = h.index, .gen = h.gen};
-        }
+        Handle<T> to_pool(RhiH h) { return Handle<T>{.index = h.index, .gen = h.gen}; }
 
         class VulkanDevice;
 
@@ -237,35 +231,17 @@ namespace engine::rhi
             }
 
             // ---- milestone 3 ----
-            void set_pso(PSOHandle) override
-            {
-                engine_check(false && "m3");
-            }
+            void set_pso(PSOHandle) override { engine_check(false && "m3"); }
 
-            void set_index_buffer(BufferHandle, Format) override
-            {
-                engine_check(false && "m3");
-            }
+            void set_index_buffer(BufferHandle, Format) override { engine_check(false && "m3"); }
 
-            void push_constants(const void *, uint32_t) override
-            {
-                engine_check(false && "m3");
-            }
+            void push_constants(const void *, uint32_t) override { engine_check(false && "m3"); }
 
-            void draw(uint32_t, uint32_t) override
-            {
-                engine_check(false && "m3");
-            }
+            void draw(uint32_t, uint32_t) override { engine_check(false && "m3"); }
 
-            void draw_indexed(uint32_t, uint32_t) override
-            {
-                engine_check(false && "m3");
-            }
+            void draw_indexed(uint32_t, uint32_t) override { engine_check(false && "m3"); }
 
-            void dispatch(uint32_t, uint32_t, uint32_t) override
-            {
-                engine_check(false && "m3");
-            }
+            void dispatch(uint32_t, uint32_t, uint32_t) override { engine_check(false && "m3"); }
 
         private:
             VulkanDevice *dev_ = nullptr;
@@ -410,19 +386,13 @@ namespace engine::rhi
                 // OUT_OF_DATE/SUBOPTIMAL here are NOT errors: the window changed
                 // under us. Flag it and rebuild at the top of the next frame.
                 if (const VkResult pr = vkQueuePresentKHR(queue_, &pi);
-                    pr == VK_ERROR_OUT_OF_DATE_KHR || pr == VK_SUBOPTIMAL_KHR)
-                {
-                    needs_rebuild_ = true;
-                }
+                    pr == VK_ERROR_OUT_OF_DATE_KHR || pr == VK_SUBOPTIMAL_KHR) { needs_rebuild_ = true; }
                 else if (pr == VK_ERROR_DEVICE_LOST)
                 {
                     log::error("vulkan: DEVICE LOST on present");
                     engine_check(false);
                 }
-                else
-                {
-                    ENGINE_VK(pr);
-                }
+                else { ENGINE_VK(pr); }
 
                 slot.timeline_value = v;
                 ++frame_counter_;
@@ -442,10 +412,7 @@ namespace engine::rhi
                 log::info("vulkan: resized to {}x{}", w, h);
             }
 
-            void wait_idle() override
-            {
-                ENGINE_VK(vkDeviceWaitIdle(device_));
-            }
+            void wait_idle() override { ENGINE_VK(vkDeviceWaitIdle(device_)); }
 
             // ================================================== resources (m3)
             BufferHandle create_buffer(const BufferDesc &) override
@@ -466,10 +433,7 @@ namespace engine::rhi
                 return {};
             }
 
-            void destroy(BufferHandle) override
-            {
-                engine_check(false && "m3");
-            }
+            void destroy(BufferHandle) override { engine_check(false && "m3"); }
 
             void destroy(TextureHandle) override
             {
@@ -477,10 +441,7 @@ namespace engine::rhi
                 engine_check(false && "m3");
             }
 
-            void destroy(PSOHandle) override
-            {
-                engine_check(false && "m3");
-            }
+            void destroy(PSOHandle) override { engine_check(false && "m3"); }
 
             uint32_t bindless_index(BufferHandle) override
             {
@@ -500,15 +461,9 @@ namespace engine::rhi
                 return nullptr;
             }
 
-            void unmap(BufferHandle) override
-            {
-                engine_check(false && "m3");
-            }
+            void unmap(BufferHandle) override { engine_check(false && "m3"); }
 
-            [[nodiscard]] const DeviceCaps &caps() const override
-            {
-                return caps_;
-            }
+            [[nodiscard]] const DeviceCaps &caps() const override { return caps_; }
 
             // ================================================== internals
             VulkanTexture *texture(const TextureHandle h)
@@ -518,10 +473,7 @@ namespace engine::rhi
                 return t;
             }
 
-            [[nodiscard]] VkExtent2D extent() const
-            {
-                return extent_;
-            }
+            [[nodiscard]] VkExtent2D extent() const { return extent_; }
 
             // Is this handle a swapchain image that has never been presented, and so
             // is still in VK_IMAGE_LAYOUT_UNDEFINED whatever the caller believes?
@@ -574,9 +526,9 @@ namespace engine::rhi
                 std::vector<const char *> layers;
                 std::vector<const char *> exts{VK_KHR_SURFACE_EXTENSION_NAME};
                 VkInstanceCreateFlags flags = 0;
-                #if defined(_WIN32)
+#if defined(_WIN32)
                 exts.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
-                #elif defined(__APPLE__)
+#elif defined(__APPLE__)
                 exts.push_back(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
 
                 // THE MoltenVK trap. MoltenVK is not a conformant Vulkan driver, it
@@ -595,7 +547,7 @@ namespace engine::rhi
                     log::warn("vulkan: {} unavailable — MoltenVK will not be enumerated",
                               VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
                 }
-                #endif
+#endif
                 if (desc_.enable_debug)
                 {
                     // The debug arsenal, Vulkan-flavoured: validation layer +
@@ -649,22 +601,22 @@ namespace engine::rhi
             // Setting just one is a silent no-op depending on which the loader used.
             static void append_env_path(const char *var, const char *value)
             {
-                #if defined(_WIN32)
+#if defined(_WIN32)
                 constexpr char sep = ';';
-                #else
+#else
                 constexpr char sep = ':';
-                #endif
+#endif
                 std::string v = value;
                 if (const char *existing = std::getenv(var); existing && *existing)
                 {
                     v = std::string(existing) + sep + v;
                 }
-                #if defined(_WIN32)
+#if defined(_WIN32)
                 _putenv_s(var, v.c_str());
                 SetEnvironmentVariableA(var, v.c_str());
-                #else
+#else
                 setenv(var, v.c_str(), /*overwrite=*/1);
-                #endif
+#endif
                 log::debug("vulkan: {}={}", var, v);
             }
 
@@ -679,18 +631,18 @@ namespace engine::rhi
             // instance extensions — so "before vkCreateInstance" is not early enough.
             static void configure_loader_search_paths()
             {
-                #ifdef ENGINE_VK_ICD_FILE
+#ifdef ENGINE_VK_ICD_FILE
                 // A FILE, not a directory - the manifest itself. Its "library_path"
                 // is relative, so libMoltenVK.dylib must sit beside it.
                 append_env_path("VK_ADD_DRIVER_FILES", ENGINE_VK_ICD_FILE);
-                #endif
-                #ifdef ENGINE_VK_LAYER_PATH
+#endif
+#ifdef ENGINE_VK_LAYER_PATH
                 // A DIRECTORY of manifests. vcpkg does not register layers with the
                 // loader the way the LunarG installer does - its own `usage` text
                 // tells you to set this by hand - so without it validation is
                 // silently absent and you run UNVALIDATED.
                 append_env_path("VK_ADD_LAYER_PATH", ENGINE_VK_LAYER_PATH);
-                #endif
+#endif
             }
 
             static bool has_instance_extension(const char *name)
@@ -755,14 +707,14 @@ namespace engine::rhi
             // ----------------------------------------------------------- §2: surface
             void create_surface()
             {
-                #if defined(_WIN32)
+#if defined(_WIN32)
                 const VkWin32SurfaceCreateInfoKHR ci{
                     .sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
                     .hinstance = GetModuleHandleW(nullptr),
                     .hwnd = static_cast<HWND>(desc_.native_window),
                 };
                 ENGINE_VK(vkCreateWin32SurfaceKHR(instance_, &ci, nullptr, &surface_));
-                #elif defined(__APPLE__)
+#elif defined(__APPLE__)
                 // native_window is ALREADY a CAMetalLayer* here — app_macos.mm builds
                 // one for the layer-hosting content view and the Metal backend casts
                 // the same pointer to CA::MetalLayer*. Nothing new to plumb.
@@ -773,7 +725,7 @@ namespace engine::rhi
                     .pLayer = static_cast<const CAMetalLayer *>(desc_.native_window),
                 };
                 ENGINE_VK(vkCreateMetalSurfaceEXT(instance_, &ci, nullptr, &surface_));
-                #else
+#else
                 // Linux is NOT wired up, and deliberately not guessed at. There is no
                 // Window implementation for it at all — engine/app/CMakeLists.txt has
                 // only if(WIN32)/elseif(APPLE), so engine_app does not even link on
@@ -788,7 +740,7 @@ namespace engine::rhi
                 // implement VK_KHR_xcb_surface / VK_KHR_wayland_surface here.
                 engine_check(false && "Linux surface: no Window implementation exists yet "
                     "(see engine/app/src/ — only win32/ and macos/)");
-                #endif
+#endif
             }
 
             // --------------------------------------------- §3: physical device
@@ -1293,8 +1245,5 @@ namespace engine::rhi
         }
     } // namespace
 
-    IDevice *create_vulkan_device(const DeviceDesc &desc)
-    {
-        return new VulkanDevice(desc);
-    }
+    IDevice *create_vulkan_device(const DeviceDesc &desc) { return new VulkanDevice(desc); }
 } // namespace engine::rhi

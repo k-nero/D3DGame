@@ -27,9 +27,7 @@ namespace engine::arena
         // i.e. no memset over the whole capacity. Plain make_unique<std::byte[]>
         // would zero every byte of a multi-MB arena for nothing.
         explicit Arena(const size_t capacity) : base_(std::make_unique_for_overwrite<std::byte[]>(capacity)),
-                                                capacity_(capacity)
-        {
-        }
+                                                capacity_(capacity) {}
 
         // An allocator with copy semantics is a bug factory — forbid it.
         Arena(const Arena &) = delete;
@@ -44,7 +42,7 @@ namespace engine::arena
             static_assert(std::is_trivially_destructible_v<T>,
                           "arena memory never runs destructors — this type needs one. "
                           "If it owns resources (string, vector, Ref), it does not belong in the frame arena.");
-            return ::new(push(sizeof(T), alignof(T))) T(std::forward<Args>(args)...);
+            return new(push(sizeof(T), alignof(T))) T(std::forward<Args>(args)...);
         }
 
         // Value-initialized array ({} per element: zeros for arithmetic/pointer types).
@@ -54,7 +52,7 @@ namespace engine::arena
         {
             std::span<T> s = push_array_uninit<T>(count);
             for (T &e : s)
-                ::new(&e) T{};
+                new(&e) T{};
             return s;
         }
 
@@ -73,19 +71,10 @@ namespace engine::arena
 
         ENGINE_API void pop_to(Marker m);
 
-        [[nodiscard]] size_t used() const
-        {
-            return offset_;
-        }
+        [[nodiscard]] size_t used() const { return offset_; }
 
-        [[nodiscard]] size_t high_water() const
-        {
-            return high_water_;
-        } // size the arena from this
-        [[nodiscard]] size_t capacity() const
-        {
-            return capacity_;
-        }
+        [[nodiscard]] size_t high_water() const { return high_water_; } // size the arena from this
+        [[nodiscard]] size_t capacity() const { return capacity_; }
 
     private:
         std::unique_ptr<std::byte[]> base_;

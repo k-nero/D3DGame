@@ -40,7 +40,7 @@ namespace
 
 TEST_CASE(
     "is_a walks the whole parent chain"
-    )
+)
 {
     auto e = make_ref<Enemy>();
     Object *base = e.get(); // erased — dynamic type is the question
@@ -53,7 +53,7 @@ TEST_CASE(
 
 TEST_CASE(
     "sibling branches don't match"
-    )
+)
 {
     auto e = make_ref<Enemy>();
     CHECK_FALSE(is_a<Decor>(e.get()));
@@ -66,7 +66,7 @@ TEST_CASE(
 
 TEST_CASE(
     "cast: typed pointer on match, nullptr across branches, nullptr-safe"
-    )
+)
 {
     auto e = make_ref<Enemy>();
     Object *base = e.get();
@@ -82,7 +82,7 @@ TEST_CASE(
 
 TEST_CASE(
     "one ClassID per class — address identity"
-    )
+)
 {
     auto a = make_ref<Enemy>();
     auto b = make_ref<Enemy>();
@@ -93,7 +93,7 @@ TEST_CASE(
 
 TEST_CASE(
     "class_name and const cast overload"
-    )
+)
 {
     const auto e = make_ref<Enemy>();
     const Object *cbase = e.get();
@@ -106,7 +106,7 @@ TEST_CASE(
 
 TEST_CASE(
     "SuperClass alias is wired"
-    )
+)
 {
     CHECK(std::is_same_v<Enemy::SuperClass, Pawn>);
     CHECK(std::is_same_v<Actor::SuperClass, Object>);

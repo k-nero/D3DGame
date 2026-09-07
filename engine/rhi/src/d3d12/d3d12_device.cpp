@@ -101,16 +101,10 @@ namespace engine::rhi
         };
 
         template <class RhiH, class T>
-        RhiH to_rhi(Handle<T> h)
-        {
-            return RhiH{.index = h.index, .gen = h.gen};
-        }
+        RhiH to_rhi(Handle<T> h) { return RhiH{.index = h.index, .gen = h.gen}; }
 
         template <class T, class RhiH>
-        Handle<T> to_pool(RhiH h)
-        {
-            return Handle<T>{.index = h.index, .gen = h.gen};
-        }
+        Handle<T> to_pool(RhiH h) { return Handle<T>{.index = h.index, .gen = h.gen}; }
 
         class D3D12Device;
 
@@ -141,35 +135,17 @@ namespace engine::rhi
             }
 
             // ---- milestone 3 ----
-            void set_pso(PSOHandle) override
-            {
-                engine_check(false && "m3");
-            }
+            void set_pso(PSOHandle) override { engine_check(false && "m3"); }
 
-            void set_index_buffer(BufferHandle, Format) override
-            {
-                engine_check(false && "m3");
-            }
+            void set_index_buffer(BufferHandle, Format) override { engine_check(false && "m3"); }
 
-            void push_constants(const void *, uint32_t) override
-            {
-                engine_check(false && "m3");
-            }
+            void push_constants(const void *, uint32_t) override { engine_check(false && "m3"); }
 
-            void draw(uint32_t, uint32_t) override
-            {
-                engine_check(false && "m3");
-            }
+            void draw(uint32_t, uint32_t) override { engine_check(false && "m3"); }
 
-            void draw_indexed(uint32_t, uint32_t) override
-            {
-                engine_check(false && "m3");
-            }
+            void draw_indexed(uint32_t, uint32_t) override { engine_check(false && "m3"); }
 
-            void dispatch(uint32_t, uint32_t, uint32_t) override
-            {
-                engine_check(false && "m3");
-            }
+            void dispatch(uint32_t, uint32_t, uint32_t) override { engine_check(false && "m3"); }
 
         private:
             D3D12Device *dev_ = nullptr;
@@ -192,10 +168,7 @@ namespace engine::rhi
                     {
                         debug->EnableDebugLayer();
                         ComPtr<ID3D12Debug1> debug1;
-                        if (SUCCEEDED(debug.As(&debug1)))
-                        {
-                            debug1->SetEnableGPUBasedValidation(TRUE);
-                        }
+                        if (SUCCEEDED(debug.As(&debug1))) { debug1->SetEnableGPUBasedValidation(TRUE); }
                     }
                     else
                     {
@@ -392,10 +365,7 @@ namespace engine::rhi
                 return {};
             }
 
-            void destroy(BufferHandle) override
-            {
-                engine_check(false && "m3");
-            }
+            void destroy(BufferHandle) override { engine_check(false && "m3"); }
 
             void destroy(TextureHandle h) override
             {
@@ -405,10 +375,7 @@ namespace engine::rhi
                 engine_check(false && "m3");
             }
 
-            void destroy(PSOHandle) override
-            {
-                engine_check(false && "m3");
-            }
+            void destroy(PSOHandle) override { engine_check(false && "m3"); }
 
             uint32_t bindless_index(BufferHandle) override
             {
@@ -428,15 +395,9 @@ namespace engine::rhi
                 return nullptr;
             }
 
-            void unmap(BufferHandle) override
-            {
-                engine_check(false && "m3");
-            }
+            void unmap(BufferHandle) override { engine_check(false && "m3"); }
 
-            const DeviceCaps &caps() const override
-            {
-                return caps_;
-            }
+            const DeviceCaps &caps() const override { return caps_; }
 
             // ================================================== internals
             D3D12Texture *texture(TextureHandle h)
@@ -446,10 +407,7 @@ namespace engine::rhi
                 return t;
             }
 
-            void destroy_later(ComPtr<ID3D12Resource> r)
-            {
-                deferred_.push_back({std::move(r), fence_value_ + 1});
-            }
+            void destroy_later(ComPtr<ID3D12Resource> r) { deferred_.push_back({std::move(r), fence_value_ + 1}); }
 
         private:
             static constexpr uint32_t kRtvCapacity = 64;
@@ -546,10 +504,7 @@ namespace engine::rhi
                 return rtv_next_++;
             }
 
-            void free_rtv_slot(uint32_t s)
-            {
-                rtv_free_.push_back(s);
-            }
+            void free_rtv_slot(uint32_t s) { rtv_free_.push_back(s); }
 
             D3D12_CPU_DESCRIPTOR_HANDLE rtv_cpu(uint32_t slot) const
             {
@@ -667,27 +622,21 @@ namespace engine::rhi
             engine_check(depth.is_null() && "depth arrives in m3");
             engine_check(colors.size() <= kMaxColorTargets);
             D3D12_CPU_DESCRIPTOR_HANDLE rtvs[kMaxColorTargets]{};
-            for (size_t i = 0; i < colors.size(); ++i)
-            {
-                rtvs[i] = dev_->texture(colors[i])->rtv;
-            }
+            for (size_t i = 0; i < colors.size(); ++i) { rtvs[i] = dev_->texture(colors[i])->rtv; }
             cl_->OMSetRenderTargets(static_cast<UINT>(colors.size()), rtvs, FALSE, nullptr);
         }
     } // namespace
 
-    IDevice *create_d3d12_device(const DeviceDesc &desc)
-    {
-        return new D3D12Device(desc);
-    }
+    IDevice *create_d3d12_device(const DeviceDesc &desc) { return new D3D12Device(desc); }
 
     void d3d12_report_live_objects()
     {
-        #ifdef ENGINE_DEBUG
+#ifdef ENGINE_DEBUG
         ComPtr<IDXGIDebug1> dxgi_debug;
         if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&dxgi_debug))))
             dxgi_debug->ReportLiveObjects(
                 DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_FLAGS(DXGI_DEBUG_RLO_DETAIL |
                                                      DXGI_DEBUG_RLO_IGNORE_INTERNAL));
-        #endif
+#endif
     }
 } // namespace eng::rhi

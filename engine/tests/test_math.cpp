@@ -11,19 +11,13 @@
 using namespace DirectX;
 using namespace engine::math;
 
-static float get_x(FXMVECTOR v)
-{
-    return XMVectorGetX(v);
-}
+static float get_x(FXMVECTOR v) { return XMVectorGetX(v); }
 
-static float get_z(FXMVECTOR v)
-{
-    return XMVectorGetZ(v);
-}
+static float get_z(FXMVECTOR v) { return XMVectorGetZ(v); }
 
 TEST_CASE(
     "convention 1+3: RH projection, depth [0,1], camera looks down -Z"
-    )
+)
 {
     const XMMATRIX p = perspective(XM_PIDIV2, 16.f / 9.f, 0.1f, 100.f);
 
@@ -39,7 +33,7 @@ TEST_CASE(
 
 TEST_CASE(
     "convention 2: row-vector, left-to-right composition"
-    )
+)
 {
     // scale THEN translate: (1 * 2) + 10 = 12.
     // If this reads 22, someone composed right-to-left (column-vector habits).
@@ -50,7 +44,7 @@ TEST_CASE(
 
 TEST_CASE(
     "look_at: RH view space has the target on -Z"
-    )
+)
 {
     const XMMATRIX v = look_at({0, 0, 5}, {0, 0, 0}, {0, 1, 0});
     // World origin, seen from (0,0,5) looking at it, lands at view-space z = -5.
@@ -60,7 +54,7 @@ TEST_CASE(
 
 TEST_CASE(
     "Transform: identity by default"
-    )
+)
 {
     constexpr Transform t{};
     XMVECTOR p = XMVector3TransformCoord(XMVectorSet(1, 2, 3, 1), to_matrix(t));
@@ -71,7 +65,7 @@ TEST_CASE(
 
 TEST_CASE(
     "Transform: scale -> rotate -> translate order"
-    )
+)
 {
     Transform t;
     t.scale = {2.f, 2.f, 2.f};
@@ -88,7 +82,7 @@ TEST_CASE(
 
 TEST_CASE(
     "to_float4x4: storage roundtrip preserves the matrix"
-    )
+)
 {
     Transform t;
     t.position = {1.f, 2.f, 3.f};

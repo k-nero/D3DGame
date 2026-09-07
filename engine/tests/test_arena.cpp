@@ -6,7 +6,7 @@ using engine::arena::Arena;
 
 TEST_CASE(
     "push respects alignment across mixed sizes"
-    )
+)
 {
     Arena a(4096);
     // deliberately misalign the cursor first
@@ -21,7 +21,7 @@ TEST_CASE(
 
 TEST_CASE(
     "reset reuses the same memory"
-    )
+)
 {
     Arena a(1024);
     void *first = a.push(100, 8);
@@ -33,7 +33,7 @@ TEST_CASE(
 
 TEST_CASE(
     "marker / pop_to gives scoped scratch space"
-    )
+)
 {
     Arena a(1024);
     (void)a.push(64, 8);
@@ -49,7 +49,7 @@ TEST_CASE(
 
 TEST_CASE(
     "high_water survives reset — it's how you size the arena"
-    )
+)
 {
     Arena a(1024);
     (void)a.push(500, 8);
@@ -61,7 +61,7 @@ TEST_CASE(
 
 TEST_CASE(
     "create constructs in place"
-    )
+)
 {
     struct Vec
     {
@@ -75,7 +75,7 @@ TEST_CASE(
 
 TEST_CASE(
     "push_array: correct extent, value-initialized"
-    )
+)
 {
     Arena a(4096);
     auto s = a.push_array<uint32_t>(128);
@@ -90,7 +90,7 @@ TEST_CASE(
 
 TEST_CASE(
     "push_array_uninit: correct extent and alignment"
-    )
+)
 {
     Arena a(4096);
     auto s = a.push_array_uninit<double>(16);

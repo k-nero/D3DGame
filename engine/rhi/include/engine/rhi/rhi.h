@@ -47,10 +47,7 @@ namespace engine::rhi
         uint32_t index: 24 = 0;
         uint32_t gen: 8 = 0; // gen 0 = null, same convention as pool.h
 
-        [[nodiscard]] bool is_null() const
-        {
-            return gen == 0;
-        }
+        [[nodiscard]] bool is_null() const { return gen == 0; }
 
         bool operator==(const GpuHandle &) const = default;
     };
@@ -74,7 +71,7 @@ namespace engine::rhi
 
     // -------------------------------------------------------------------- flags
     // enum-class flags need their operators spelled out once:
-    #define ENGINE_RHI_FLAG_OPS(E)                                                   \
+#define ENGINE_RHI_FLAG_OPS(E)                                                   \
     constexpr E operator|(E a, E b) {                                         \
         return E(uint32_t(a) | uint32_t(b));                                  \
     }                                                                         \
@@ -223,25 +220,13 @@ namespace engine::rhi
         // RULE: no default arguments on virtuals — they bind statically and
         // silently diverge across overrides. Defaults live on these non-virtual
         // convenience overloads instead:
-        void barrier(const std::span<const TextureBarrier> textures)
-        {
-            barrier(textures, {});
-        }
+        void barrier(const std::span<const TextureBarrier> textures) { barrier(textures, {}); }
 
-        void draw(const uint32_t vertex_count)
-        {
-            draw(vertex_count, 1);
-        }
+        void draw(const uint32_t vertex_count) { draw(vertex_count, 1); }
 
-        void draw_indexed(const uint32_t index_count)
-        {
-            draw_indexed(index_count, 1);
-        }
+        void draw_indexed(const uint32_t index_count) { draw_indexed(index_count, 1); }
 
-        void set_render_targets(const std::span<const TextureHandle> colors)
-        {
-            set_render_targets(colors, {});
-        }
+        void set_render_targets(const std::span<const TextureHandle> colors) { set_render_targets(colors, {}); }
 
         virtual void barrier(std::span<const TextureBarrier> textures,
                              std::span<const BufferBarrier> buffers) = 0;

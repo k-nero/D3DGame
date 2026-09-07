@@ -54,10 +54,7 @@ namespace engine::rhi
     {
         // NS::String::string() is autoreleased, so every call site below has to
         // already be inside a pool. All of them are.
-        NS::String *ns(const char *s)
-        {
-            return NS::String::string(s, NS::UTF8StringEncoding);
-        }
+        NS::String *ns(const char *s) { return NS::String::string(s, NS::UTF8StringEncoding); }
 
         // ============================================================ resources
         struct MetalTexture
@@ -67,16 +64,10 @@ namespace engine::rhi
         };
 
         template <class RhiH, class T>
-        RhiH to_rhi(pool::Handle<T> h)
-        {
-            return RhiH{.index = h.index, .gen = h.gen};
-        }
+        RhiH to_rhi(pool::Handle<T> h) { return RhiH{.index = h.index, .gen = h.gen}; }
 
         template <class T, class RhiH>
-        pool::Handle<T> to_pool(RhiH h)
-        {
-            return pool::Handle<T>{.index = h.index, .gen = h.gen};
-        }
+        pool::Handle<T> to_pool(RhiH h) { return pool::Handle<T>{.index = h.index, .gen = h.gen}; }
 
         class MetalDevice;
 
@@ -124,35 +115,17 @@ namespace engine::rhi
             }
 
             // ---- milestone 3 ----
-            void set_pso(PSOHandle) override
-            {
-                engine_check(false && "m3");
-            }
+            void set_pso(PSOHandle) override { engine_check(false && "m3"); }
 
-            void set_index_buffer(BufferHandle, Format) override
-            {
-                engine_check(false && "m3");
-            }
+            void set_index_buffer(BufferHandle, Format) override { engine_check(false && "m3"); }
 
-            void push_constants(const void *, uint32_t) override
-            {
-                engine_check(false && "m3");
-            }
+            void push_constants(const void *, uint32_t) override { engine_check(false && "m3"); }
 
-            void draw(uint32_t, uint32_t) override
-            {
-                engine_check(false && "m3");
-            }
+            void draw(uint32_t, uint32_t) override { engine_check(false && "m3"); }
 
-            void draw_indexed(uint32_t, uint32_t) override
-            {
-                engine_check(false && "m3");
-            }
+            void draw_indexed(uint32_t, uint32_t) override { engine_check(false && "m3"); }
 
-            void dispatch(uint32_t, uint32_t, uint32_t) override
-            {
-                engine_check(false && "m3");
-            }
+            void dispatch(uint32_t, uint32_t, uint32_t) override { engine_check(false && "m3"); }
 
         private:
             MetalDevice *dev_ = nullptr;
@@ -353,10 +326,7 @@ namespace engine::rhi
                 return {};
             }
 
-            void destroy(BufferHandle) override
-            {
-                engine_check(false && "m3");
-            }
+            void destroy(BufferHandle) override { engine_check(false && "m3"); }
 
             void destroy(TextureHandle) override
             {
@@ -365,10 +335,7 @@ namespace engine::rhi
                 engine_check(false && "m3");
             }
 
-            void destroy(PSOHandle) override
-            {
-                engine_check(false && "m3");
-            }
+            void destroy(PSOHandle) override { engine_check(false && "m3"); }
 
             uint32_t bindless_index(BufferHandle) override
             {
@@ -388,15 +355,9 @@ namespace engine::rhi
                 return nullptr;
             }
 
-            void unmap(BufferHandle) override
-            {
-                engine_check(false && "m3");
-            }
+            void unmap(BufferHandle) override { engine_check(false && "m3"); }
 
-            [[nodiscard]] const DeviceCaps &caps() const override
-            {
-                return caps_;
-            }
+            [[nodiscard]] const DeviceCaps &caps() const override { return caps_; }
 
             // ================================================== internals
             MetalTexture *texture(const TextureHandle h)
@@ -475,8 +436,5 @@ namespace engine::rhi
         }
     } // namespace
 
-    IDevice *create_metal_device(const DeviceDesc &desc)
-    {
-        return new MetalDevice(desc);
-    }
+    IDevice *create_metal_device(const DeviceDesc &desc) { return new MetalDevice(desc); }
 } // namespace engine::rhi

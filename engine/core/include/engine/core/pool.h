@@ -24,10 +24,7 @@ namespace engine::pool
         uint32_t index: 24 = 0; // C++20: default member init on bitfields
         uint32_t gen: 8 = 0;
 
-        [[nodiscard]] bool is_null() const
-        {
-            return gen == 0;
-        }
+        [[nodiscard]] bool is_null() const { return gen == 0; }
 
         bool operator==(const Handle &) const = default; // C++20: defaulted comparisons
     };
@@ -65,10 +62,7 @@ namespace engine::pool
             return Handle<T>{.index = index, .gen = s.gen}; // C++20: designated init
         }
 
-        [[nodiscard]] Handle<T> create(T &&v)
-        {
-            return emplace(std::move(v));
-        }
+        [[nodiscard]] Handle<T> create(T &&v) { return emplace(std::move(v)); }
 
         void destroy(Handle<T> h)
         {
@@ -103,7 +97,7 @@ namespace engine::pool
             return *p;
         }
 
-        #ifdef __cpp_explicit_this_parameter
+#ifdef __cpp_explicit_this_parameter
         // C++23: deducing this — one for_each serves Pool& and const Pool&,
         // deducing const-ness through `self`. Pre-23 this was two overloads
         // (or a CRTP dance). Feature-tested because compiler support is the
@@ -115,7 +109,7 @@ namespace engine::pool
                 if (s.alive)
                     fn(s.value);
         }
-        #else
+#else
         // Fallback: the classic pre-23 overload pair — same behavior.
         template <class Fn>
         void for_each(Fn &&fn)
@@ -132,17 +126,11 @@ namespace engine::pool
                 if (s.alive)
                     fn(s.value);
         }
-        #endif
+#endif
 
-        [[nodiscard]] size_t live_count() const
-        {
-            return live_;
-        }
+        [[nodiscard]] size_t live_count() const { return live_; }
 
-        [[nodiscard]] size_t slot_count() const
-        {
-            return slots_.size();
-        }
+        [[nodiscard]] size_t slot_count() const { return slots_.size(); }
 
     private:
         struct Slot
@@ -155,9 +143,7 @@ namespace engine::pool
             uint8_t gen = 1; // slots are BORN at gen 1 — gen 0 = null handle
             bool alive = false;
 
-            Slot() noexcept
-            {
-            } // does NOT construct value
+            Slot() noexcept {} // does NOT construct value
             Slot(Slot &&o) noexcept : gen(o.gen), alive(o.alive)
             {
                 if (alive)
@@ -179,10 +165,9 @@ namespace engine::pool
         static auto resolve(Self &self, Handle<T> h)
         {
             using SlotPtr = std::conditional_t<std::is_const_v<Self>, const Slot *, Slot *>;
-            if (h.is_null() || h.index >= self.slots_.size())
-                return SlotPtr{nullptr};
+            if (h.is_null() || h.index >= self.slots_.size()) return SlotPtr{nullptr};
             auto &s = self.slots_[h.index];
-            return (s.alive && s.gen == h.gen) ? SlotPtr{&s} : SlotPtr{nullptr};
+            return s.alive && s.gen == h.gen ? SlotPtr{&s} : SlotPtr{nullptr};
         }
 
         std::vector<Slot> slots_;

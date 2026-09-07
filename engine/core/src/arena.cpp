@@ -16,15 +16,9 @@ namespace engine::arena
         offset_ = m.offset;
     }
 
-    Arena::Marker Arena::mark() const
-    {
-        return {offset_};
-    }
+    Arena::Marker Arena::mark() const { return {offset_}; }
 
-    void Arena::reset()
-    {
-        offset_ = 0;
-    }
+    void Arena::reset() { offset_ = 0; }
 
     void *Arena::push(const size_t size, const size_t align)
     {

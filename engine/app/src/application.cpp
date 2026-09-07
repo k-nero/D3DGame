@@ -18,11 +18,11 @@ namespace engine::app
 {
     Application::Application(const ApplicationDesc &desc)
     {
-        #ifdef ENGINE_DEBUG
+#ifdef ENGINE_DEBUG
         log::init(boost::log::trivial::debug, true);
-        #else
+#else
         log::init(boost::log::trivial::error, false);
-        #endif
+#endif
 
         window_ = std::make_unique<Window>(WindowDesc{
             .title = desc.title, .width = desc.width, .height = desc.height
@@ -42,9 +42,9 @@ namespace engine::app
     {
         rhi::destroy_device(device_); // wait_idle inside
         window_.reset();
-        #ifdef _WIN32
+#ifdef _WIN32
         rhi::d3d12_report_live_objects(); // zero-leaks proof, automated for every app
-        #endif
+#endif
     }
 
     int Application::run()

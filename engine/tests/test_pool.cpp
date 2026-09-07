@@ -19,7 +19,7 @@ namespace
 
 TEST_CASE(
     "create / get roundtrip"
-    )
+)
 {
     Pool<Enemy> pool;
     auto h = pool.emplace(100, "grunt");
@@ -33,7 +33,7 @@ TEST_CASE(
 
 TEST_CASE(
     "default handle is null and never resolves"
-    )
+)
 {
     Pool<Enemy> pool;
     (void)pool.emplace(1, "a"); // slot 0 exists and is alive...
@@ -45,7 +45,7 @@ TEST_CASE(
 
 TEST_CASE(
     "destroy: old handle goes stale, memory is reused under a new identity"
-    )
+)
 {
     Pool<Enemy> pool;
     auto h1 = pool.emplace(50, "first");
@@ -64,7 +64,7 @@ TEST_CASE(
 
 TEST_CASE(
     "generation wrap skips 0 (the null sentinel)"
-    )
+)
 {
     Pool<int> pool;
     for (int i = 0; i < 300; ++i)
@@ -83,7 +83,7 @@ TEST_CASE(
 
 TEST_CASE(
     "for_each visits live only; const overload deduces const"
-    )
+)
 {
     Pool<int> pool;
     auto a = pool.create(1);
@@ -92,16 +92,12 @@ TEST_CASE(
     pool.destroy(b);
 
     int sum = 0;
-    pool.for_each([&](const int &v) {
-        sum += v;
-    });
+    pool.for_each([&](const int &v) { sum += v; });
     CHECK(sum == 4); // 1 + 3, dead slot skipped
 
     const Pool<int> &cpool = pool;
     sum = 0;
-    cpool.for_each([&](const int &v) {
-        sum += v;
-    });
+    cpool.for_each([&](const int &v) { sum += v; });
     CHECK(sum == 4);
 
     pool.destroy(a);
@@ -110,7 +106,7 @@ TEST_CASE(
 
 TEST_CASE(
     "get_checked returns a reference for valid handles"
-    )
+)
 {
     Pool<int> pool;
     const auto h = pool.create(9);
@@ -121,7 +117,7 @@ TEST_CASE(
 
 TEST_CASE(
     "move-only types satisfy Poolable; growth relocates live slots"
-    )
+)
 {
     Pool<std::unique_ptr<int> > pool;
 
@@ -145,7 +141,7 @@ TEST_CASE(
 
 TEST_CASE(
     "typed handles: Handle<A> does not cross-resolve pools of A"
-    )
+)
 {
     Pool<int> ints;
     Pool<int> other_ints;

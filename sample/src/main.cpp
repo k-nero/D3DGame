@@ -48,7 +48,4 @@ namespace
     };
 }
 
-int main()
-{
-    return ClearSample({.title = "m2: clear", .width = 1280, .height = 720}).run();
-}
+int main() { return ClearSample({.title = "m2: clear", .width = 1280, .height = 720}).run(); }

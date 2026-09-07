@@ -82,10 +82,7 @@ namespace engine::app
             DestroyWindow(static_cast<HWND>(impl_));
     }
 
-    void *Window::native_handle() const
-    {
-        return impl_;
-    }
+    void *Window::native_handle() const { return impl_; }
 
     bool Window::pump()
     {
@@ -94,10 +91,7 @@ namespace engine::app
         MSG msg;
         while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE))
         {
-            if (msg.message == WM_QUIT)
-            {
-                should_close_ = true;
-            } // belt & braces
+            if (msg.message == WM_QUIT) { should_close_ = true; } // belt & braces
             TranslateMessage(&msg);
             DispatchMessageW(&msg);
         }

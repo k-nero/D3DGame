@@ -30,15 +30,9 @@ namespace engine::app
         [[nodiscard]] ENGINE_API bool pump();
 
         [[nodiscard]] ENGINE_API void *native_handle() const; // HWND
-        [[nodiscard]] uint32_t width() const
-        {
-            return width_;
-        }
+        [[nodiscard]] uint32_t width() const { return width_; }
 
-        [[nodiscard]] uint32_t height() const
-        {
-            return height_;
-        }
+        [[nodiscard]] uint32_t height() const { return height_; }
 
         // True exactly once after a size change settles (not per WM_SIZE spam);
         // caller consumes it and calls device->resize().

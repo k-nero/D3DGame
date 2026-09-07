@@ -3,7 +3,4 @@
 
 TEST_CASE(
     "build system is alive"
-    )
-{
-    CHECK(1 + 1 == 2);
-}
+) { CHECK(1 + 1 == 2); }

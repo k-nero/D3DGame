@@ -60,7 +60,7 @@ namespace engine::log
 
         bool enable_vt_mode()
         {
-            #ifdef _WIN32
+#ifdef _WIN32
             HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
             if (h == INVALID_HANDLE_VALUE)
                 return false;
@@ -68,9 +68,9 @@ namespace engine::log
             if (!GetConsoleMode(h, &mode))
                 return false; // fails if redirected to a file/pipe
             return SetConsoleMode(h, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING) != 0;
-            #else
+#else
             return isatty(fileno(stdout));
-            #endif
+#endif
         }
 
         std::string common_attributes(const logging::record_view &rec)
@@ -89,40 +89,22 @@ namespace engine::log
 
             if (colors && sev)
             {
-                if (sev == boost::log::trivial::fatal)
-                {
-                    strm << color_for(*sev) << common_attributes(rec) << " ";
-                }
-                else
-                {
-                    strm << GRAY << common_attributes(rec) << RESET << " " << color_for(*sev);
-                }
+                if (sev == boost::log::trivial::fatal) strm << color_for(*sev) << common_attributes(rec) << " ";
+                else strm << GRAY << common_attributes(rec) << RESET << " " << color_for(*sev);
             }
-            else
-            {
-                strm << common_attributes(rec) << " ";
-            }
+            else strm << common_attributes(rec) << " ";
 
             strm << std::setw(7) << std::left << *sev << " ";
 
             if (colors && sev)
             {
-                if (sev == boost::log::trivial::fatal)
-                {
-                    strm << rec[expr::smessage] << reset;
-                }
-                else
-                {
-                    strm << reset << rec[expr::smessage];
-                }
+                if (sev == boost::log::trivial::fatal) strm << rec[expr::smessage] << reset;
+                else strm << reset << rec[expr::smessage];
             }
-            else
-            {
-                strm << rec[expr::smessage];
-            }
+            else strm << rec[expr::smessage];
         }
 
-        #ifdef _WIN32
+#ifdef _WIN32
         void attach_console()
         {
             // Reuse the parent console if launched from a terminal, else make one
@@ -140,20 +122,17 @@ namespace engine::log
             std::cout.clear();
             std::cerr.clear();
         }
-        #endif
+#endif
         using pid_value = boost::log::attributes::current_process_id::value_type; // = process_id
-        unsigned long native_pid(logging::value_ref<pid_value> const &ref)
-        {
-            return ref ? ref->native_id() : 0ul;
-        }
+        unsigned long native_pid(logging::value_ref<pid_value> const &ref) { return ref ? ref->native_id() : 0ul; }
     } // anonymous namespace
     void init(boost::log::trivial::severity_level level, const bool enable_colors)
     {
         logging::add_common_attributes(); // TimeStamp, ThreadID, etc.
         logging::core::get()->add_global_attribute("Scope", boost::log::attributes::named_scope());
-        #ifdef _WIN32
+#ifdef _WIN32
         attach_console();
-        #endif
+#endif
         const bool colors = enable_colors && enable_vt_mode();
         // Console sink — colored
         using console_sink_t = sinks::synchronous_sink<sinks::text_ostream_backend>;
@@ -172,23 +151,22 @@ namespace engine::log
             logging::keywords::file_name = "engine_%N.log",
             logging::keywords::rotation_size = 10 * 1024 * 1024,
             logging::keywords::auto_flush = true,
-            logging::keywords::format = (
-                (
-                    expr::stream
-                    << expr::attr<unsigned int>("LineID")
-                    << " " << expr::format_date_time<boost::posix_time::ptime>("TimeStamp", "%Y-%m-%dT%H:%M:%S")
-                    << " PID:" << boost::phoenix::bind(&native_pid, expr::attr<pid_value>("ProcessID").or_none())
-                    << " " << expr::format_named_scope("Scope",
-                                                       logging::keywords::format = "%n (%f:%l)",
-                                                       // name, file, line of the scope
-                                                       logging::keywords::depth = 2, // only innermost 2 entries
-                                                       logging::keywords::delimiter = " <- ")
-                    << " " << std::left << std::setw(7) << logging::trivial::severity
-                    << " " << expr::smessage
-                )
-            ));
+            logging::keywords::format = expr::stream
+                                        << expr::attr<unsigned int>("LineID")
+                                        << " " << expr::format_date_time<boost::posix_time::ptime>(
+                                            "TimeStamp", "%Y-%m-%dT%H:%M:%S")
+                                        << " PID:" << boost::phoenix::bind(
+                                            &native_pid, expr::attr<pid_value>("ProcessID").or_none())
+                                        << " " << expr::format_named_scope("Scope",
+                                                                           logging::keywords::format = "%n (%f:%l)",
+                                                                           // name, file, line of the scope
+                                                                           logging::keywords::depth = 2,
+                                                                           // only innermost 2 entries
+                                                                           logging::keywords::delimiter = " <- ")
+                                        << " " << std::left << std::setw(7) << logging::trivial::severity
+                                        << " " << expr::smessage);
 
-        #ifdef _WIN32
+#ifdef _WIN32
         using debug_sink_t = sinks::synchronous_sink<sinks::debug_output_backend>;
         auto debug_sink = boost::make_shared<debug_sink_t>();
         // Only emit when a debugger is actually listening
@@ -199,15 +177,15 @@ namespace engine::log
                 strm << std::endl; // Add a newline for debugger output
             });
         logging::core::get()->add_sink(debug_sink);
-        #endif
+#endif
 
-        #ifdef NDEBUG
+#ifdef NDEBUG
         logging::core::get()->set_filter(logging::trivial::severity >= level);
-        #else
+#else
         logging::core::get()->set_filter([level](const logging::attribute_value_set &attrs) {
             const auto sev = logging::extract<boost::log::trivial::severity_level>("Severity", attrs);
             return sev && *sev >= level;
         });
-        #endif
+#endif
     }
 }

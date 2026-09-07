@@ -22,10 +22,7 @@ namespace engine::refcount
         RefCounted(const RefCounted &) = delete; // count is identity-bound;
         RefCounted &operator=(const RefCounted &) = delete; // copying it is always a bug
 
-        void add_ref() const
-        {
-            refs_.fetch_add(1, std::memory_order_relaxed);
-        }
+        void add_ref() const { refs_.fetch_add(1, std::memory_order_relaxed); }
 
         void release() const
         {
@@ -64,14 +61,10 @@ namespace engine::refcount
     public:
         Ref() = default;
 
-        explicit Ref(std::nullptr_t)
-        {
-        }
+        explicit Ref(std::nullptr_t) {}
 
         // explicit on purpose: adoption must be visible at the call site.
-        explicit Ref(T *p) : ptr_(p)
-        {
-        } // ADOPTS (see convention above)
+        explicit Ref(T *p) : ptr_(p) {} // ADOPTS (see convention above)
 
         Ref(const Ref &o) : ptr_(o.ptr_)
         {
@@ -79,9 +72,7 @@ namespace engine::refcount
                 ptr_->add_ref();
         }
 
-        Ref(Ref &&o) noexcept : ptr_(std::exchange(o.ptr_, nullptr))
-        {
-        }
+        Ref(Ref &&o) noexcept : ptr_(std::exchange(o.ptr_, nullptr)) {}
 
         // Copy-and-swap: one operator= covers copy-assign, move-assign, and
         // self-assign correctly. `o` arrives as a copy (or move) and carries
@@ -98,10 +89,7 @@ namespace engine::refcount
                 ptr_->release();
         }
 
-        [[nodiscard]] T *get() const
-        {
-            return ptr_;
-        }
+        [[nodiscard]] T *get() const { return ptr_; }
 
         T *operator->() const
         {
@@ -115,20 +103,11 @@ namespace engine::refcount
             return *ptr_;
         }
 
-        explicit operator bool() const
-        {
-            return ptr_ != nullptr;
-        }
+        explicit operator bool() const { return ptr_ != nullptr; }
 
-        void reset()
-        {
-            Ref{}.swap(*this);
-        }
+        void reset() { Ref{}.swap(*this); }
 
-        void swap(Ref &o) noexcept
-        {
-            std::swap(ptr_, o.ptr_);
-        }
+        void swap(Ref &o) noexcept { std::swap(ptr_, o.ptr_); }
 
         bool operator==(const Ref &) const = default; // C++20: defaulted comparison
 

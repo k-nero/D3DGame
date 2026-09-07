@@ -14,10 +14,7 @@ namespace
 
     struct Counter : RefCounted
     {
-        ~Counter() override
-        {
-            ++destroyed;
-        }
+        ~Counter() override { ++destroyed; }
 
         int v = 7;
     };
@@ -25,7 +22,7 @@ namespace
 
 TEST_CASE(
     "make_ref adopts the constructor's reference; scope exit destroys once"
-    )
+)
 {
     destroyed = 0;
     {
@@ -37,7 +34,7 @@ TEST_CASE(
 
 TEST_CASE(
     "copy add_refs, move steals, destruction happens exactly once"
-    )
+)
 {
     destroyed = 0;
     {
@@ -58,7 +55,7 @@ TEST_CASE(
 
 TEST_CASE(
     "self-assignment is safe (copy-and-swap)"
-    )
+)
 {
     destroyed = 0;
     auto r = make_ref<Counter>();
@@ -71,7 +68,7 @@ TEST_CASE(
 
 TEST_CASE(
     "Ref<const T> counts through const"
-    )
+)
 {
     destroyed = 0;
     {
@@ -85,7 +82,7 @@ TEST_CASE(
 
 TEST_CASE(
     "reset releases immediately"
-    )
+)
 {
     destroyed = 0;
     auto r = make_ref<Counter>();

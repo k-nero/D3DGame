@@ -26,15 +26,9 @@ namespace engine::object
             return &id;
         }
 
-        virtual const ClassId *get_class() const
-        {
-            return static_class();
-        }
+        virtual const ClassId *get_class() const { return static_class(); }
 
-        [[nodiscard]] const char *class_name() const
-        {
-            return get_class()->name;
-        }
+        [[nodiscard]] const char *class_name() const { return get_class()->name; }
 
     protected:
         Object() = default;
@@ -47,7 +41,7 @@ namespace engine::object
     //
     // Provides: SuperClass alias, static_class(), get_class() override.
     // REMINDER: Super must be the ONLY Object-derived base (see rule above).
-    #define ENGINE_CLASS(Type, Super)                                          \
+#define ENGINE_CLASS(Type, Super)                                          \
 public:                                                                    \
     using SuperClass = Super;                                              \
     static const ::engine::object::ClassId* static_class() {                       \
@@ -76,16 +70,10 @@ private:
     // Checked downcast: nullptr when the dynamic type doesn't match.
     // The engine's dynamic_cast replacement (built with /GR- in mind).
     template <std::derived_from<Object> T>
-    [[nodiscard]] T *cast(Object *o)
-    {
-        return is_a<T>(o) ? static_cast<T *>(o) : nullptr;
-    }
+    [[nodiscard]] T *cast(Object *o) { return is_a<T>(o) ? static_cast<T *>(o) : nullptr; }
 
     template <std::derived_from<Object> T>
-    [[nodiscard]] const T *cast(const Object *o)
-    {
-        return is_a<T>(o) ? static_cast<const T *>(o) : nullptr;
-    }
+    [[nodiscard]] const T *cast(const Object *o) { return is_a<T>(o) ? static_cast<const T *>(o) : nullptr; }
 }
 
 #endif //ENGINE_OBJECT_H
