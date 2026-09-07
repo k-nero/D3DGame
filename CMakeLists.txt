@@ -24,9 +24,9 @@ cmake_minimum_required(VERSION 3.25...4.3)
 # CMAKE_CURRENT_SOURCE_DIR, never CMAKE_SOURCE_DIR — the latter would point at
 # the wrong tree the day this repo is add_subdirectory()'d into a bigger one.
 # ---------------------------------------------------------------------------
-set(VCPKG_MANIFEST_DIR   "${CMAKE_CURRENT_SOURCE_DIR}")
-set(VCPKG_INSTALLED_DIR  "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg_installed")
-set(VCPKG_MANIFEST_MODE  ON)
+set(VCPKG_MANIFEST_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+set(VCPKG_INSTALLED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg_installed")
+set(VCPKG_MANIFEST_MODE ON)
 
 project(engine_workspace VERSION 0.1.0 LANGUAGES C CXX)
 
@@ -49,7 +49,7 @@ set(ENGINE_INSTALL ON CACHE BOOL "Generate install and export rules for the engi
 # Settings that belong to whoever owns the build tree. Guarded, because
 # stomping an embedder's output layout or compile_commands.json is rude.
 # ---------------------------------------------------------------------------
-if(PROJECT_IS_TOP_LEVEL)
+if (PROJECT_IS_TOP_LEVEL)
     set(CMAKE_CXX_EXTENSIONS OFF)              # std=c++23, not gnu++23
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)      # clangd on the Mac side
 
@@ -59,23 +59,23 @@ if(PROJECT_IS_TOP_LEVEL)
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
-    foreach(cfg IN ITEMS DEBUG RELEASE RELWITHDEBINFO MINSIZEREL)
+    foreach (cfg IN ITEMS DEBUG RELEASE RELWITHDEBINFO MINSIZEREL)
         set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${cfg} "${CMAKE_BINARY_DIR}/lib")
         set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${cfg} "${CMAKE_BINARY_DIR}/lib")
         set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${cfg} "${CMAKE_BINARY_DIR}/bin")
-    endforeach()
+    endforeach ()
 
     # Unconditional, and before the add_subdirectory() that registers tests:
     # enable_testing() only takes effect in the top-level directory, and it has
     # to run whether or not ENGINE_BUILD_TESTS (declared inside engine/) is on.
     enable_testing()
-endif()
+endif ()
 
 add_subdirectory(engine)
 
-if(ENGINE_BUILD_SAMPLES)
+if (ENGINE_BUILD_SAMPLES)
     add_subdirectory(sample)
-endif()
+endif ()
 
 # ---------------------------------------------------------------------------
 # Packaging (CPack).
@@ -93,10 +93,10 @@ endif()
 #            set", and the public surface still leaks Boost::log and std::span.
 #            When it lands, add it to CPACK_COMPONENTS_ALL below.
 # ---------------------------------------------------------------------------
-if(PROJECT_IS_TOP_LEVEL)
-    set(CPACK_PACKAGE_NAME                "engine")
-    set(CPACK_PACKAGE_VENDOR              "Nero")
-    set(CPACK_PACKAGE_VERSION             "${PROJECT_VERSION}")
+if (PROJECT_IS_TOP_LEVEL)
+    set(CPACK_PACKAGE_NAME "engine")
+    set(CPACK_PACKAGE_VENDOR "Nero")
+    set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
     set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "D3D12-first, RHI-portable game engine")
 
     # CMAKE_SYSTEM_PROCESSOR, not the triplet: the archive name should say what
@@ -112,8 +112,8 @@ if(PROJECT_IS_TOP_LEVEL)
     # on - so with CPACK_ARCHIVE_COMPONENT_INSTALL below it must be set back
     # explicitly, or the tarball unpacks its contents straight into whatever
     # directory the user happened to be standing in.
-    set(CPACK_PACKAGE_INSTALL_DIRECTORY   "engine-${PROJECT_VERSION}")
-    set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY  ON)
+    set(CPACK_PACKAGE_INSTALL_DIRECTORY "engine-${PROJECT_VERSION}")
+    set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY ON)
 
     # Apache-2.0 section 4(a) requires a copy of the License to travel with any
     # distribution of the work, so this is a correctness item, not a nicety.
@@ -131,11 +131,11 @@ if(PROJECT_IS_TOP_LEVEL)
     # Plain if(), NOT a generator expression: CPACK_GENERATOR is consumed by
     # the cpack SCRIPT reading CPackConfig.cmake, where nothing expands genexes.
     # A $<IF:...> here would be written through verbatim and match no generator.
-    if(WIN32)
+    if (WIN32)
         set(CPACK_GENERATOR ZIP)
-    else()
+    else ()
         set(CPACK_GENERATOR TGZ)
-    endif()
+    endif ()
 
     # OFF: one archive holding both components, WITH a top-level directory.
     #
@@ -161,4 +161,4 @@ if(PROJECT_IS_TOP_LEVEL)
     # them; anything set afterwards is silently ignored. That is the single
     # most common way a CPack setup quietly does the wrong thing.
     include(CPack)
-endif()
+endif ()

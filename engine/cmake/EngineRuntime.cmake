@@ -11,28 +11,28 @@
 # CMakeLists is how a "library" stops being one.
 # ===========================================================================
 function(engine_stage_runtime_dependencies TARGET_NAME)
-    if(NOT TARGET ${TARGET_NAME})
+    if (NOT TARGET ${TARGET_NAME})
         message(FATAL_ERROR
                 "engine_stage_runtime_dependencies: '${TARGET_NAME}' is not a target")
-    endif()
-    if(NOT WIN32)
+    endif ()
+    if (NOT WIN32)
         return()
-    endif()
+    endif ()
 
     # D3D12SDKVersion/D3D12SDKPath must be exported by the EXECUTABLE. A static
     # library dead-strips the object because nothing references it, so the
     # source is carried on an INTERFACE target and compiled into each exe.
-    if(TARGET engine_agility_exports)
+    if (TARGET engine_agility_exports)
         target_link_libraries(${TARGET_NAME} PRIVATE engine_agility_exports)
-    endif()
+    endif ()
 
     # dxcompiler.dll IS a link-time dependency, so TARGET_RUNTIME_DLLS finds it.
     # (find_package(directx-dxc REQUIRED) in rhi/ guarantees the list is
     # non-empty on Windows; an empty list would make this command malformed.)
     add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                    "$<TARGET_RUNTIME_DLLS:${TARGET_NAME}>"
-                    "$<TARGET_FILE_DIR:${TARGET_NAME}>"
+            "$<TARGET_RUNTIME_DLLS:${TARGET_NAME}>"
+            "$<TARGET_FILE_DIR:${TARGET_NAME}>"
             COMMAND_EXPAND_LISTS
             COMMENT "Staging runtime DLLs for ${TARGET_NAME}")
 
@@ -41,46 +41,46 @@ function(engine_stage_runtime_dependencies TARGET_NAME)
     # PSO creation then rejects the unsigned bytecode.
     find_file(ENGINE_DXIL_DLL dxil.dll
             PATHS "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/tools/directx-dxc"
-                  "${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}/tools/directx-dxc"
-                  "$ENV{VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}/tools/directx-dxc"
-                  "$ENV{VCPKG_ROOT}/installed/x64-windows/tools/directx-dxc"
+            "${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}/tools/directx-dxc"
+            "$ENV{VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}/tools/directx-dxc"
+            "$ENV{VCPKG_ROOT}/installed/x64-windows/tools/directx-dxc"
             NO_DEFAULT_PATH)
-    if(ENGINE_DXIL_DLL)
+    if (ENGINE_DXIL_DLL)
         add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                        "${ENGINE_DXIL_DLL}" "$<TARGET_FILE_DIR:${TARGET_NAME}>"
+                "${ENGINE_DXIL_DLL}" "$<TARGET_FILE_DIR:${TARGET_NAME}>"
                 COMMENT "Staging dxil.dll for ${TARGET_NAME}")
-    else()
+    else ()
         message(WARNING
                 "dxil.dll not found - shaders will compile but fail signing at PSO creation")
-    endif()
+    endif ()
 
     # Agility redistributables must live in a D3D12/ subfolder next to the exe;
     # D3D12SDKPath in d3d12_agility.cpp points there. make_directory runs at
     # build time, not configure time, so it lands in the right per-config dir
     # under a multi-config generator.
-    if(TARGET Microsoft::DirectX12-Core)
+    if (TARGET Microsoft::DirectX12-Core)
         add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E make_directory
-                        "$<TARGET_FILE_DIR:${TARGET_NAME}>/D3D12"
+                "$<TARGET_FILE_DIR:${TARGET_NAME}>/D3D12"
                 COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                        "$<TARGET_PROPERTY:Microsoft::DirectX12-Core,IMPORTED_LOCATION_RELEASE>"
-                        "$<TARGET_FILE_DIR:${TARGET_NAME}>/D3D12"
+                "$<TARGET_PROPERTY:Microsoft::DirectX12-Core,IMPORTED_LOCATION_RELEASE>"
+                "$<TARGET_FILE_DIR:${TARGET_NAME}>/D3D12"
                 COMMAND_EXPAND_LISTS
                 COMMENT "Staging D3D12Core.dll for ${TARGET_NAME}")
-    else()
+    else ()
         message(WARNING "Microsoft::DirectX12-Core not found - D3D12Core.dll will be missing")
-    endif()
+    endif ()
 
     # D3D12SDKLayers.dll only exists in the debug redistributable.
-    if(TARGET Microsoft::DirectX12-Layers)
+    if (TARGET Microsoft::DirectX12-Layers)
         add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                        "$<TARGET_PROPERTY:Microsoft::DirectX12-Layers,IMPORTED_LOCATION_DEBUG>"
-                        "$<TARGET_FILE_DIR:${TARGET_NAME}>/D3D12"
+                "$<TARGET_PROPERTY:Microsoft::DirectX12-Layers,IMPORTED_LOCATION_DEBUG>"
+                "$<TARGET_FILE_DIR:${TARGET_NAME}>/D3D12"
                 COMMAND_EXPAND_LISTS
                 COMMENT "Staging D3D12SDKLayers.dll for ${TARGET_NAME}")
-    endif()
+    endif ()
 endfunction()
 
 # ===========================================================================
@@ -96,10 +96,10 @@ endfunction()
 # learn that D3D12Core.dll lives in a D3D12/ subfolder. No-op off Windows.
 # ===========================================================================
 function(engine_install_runtime_dependencies TARGET_NAME DEST COMPONENT)
-    if(NOT TARGET ${TARGET_NAME})
+    if (NOT TARGET ${TARGET_NAME})
         message(FATAL_ERROR
                 "engine_install_runtime_dependencies: '${TARGET_NAME}' is not a target")
-    endif()
+    endif ()
 
     # ------------------------------------------------------------------
     # Non-Windows: the only non-system shared library the engine drags in is
@@ -118,8 +118,8 @@ function(engine_install_runtime_dependencies TARGET_NAME DEST COMPONENT)
     # an RPATH that says "look beside me". BUILD_RPATH is untouched, so the
     # normal dev loop keeps resolving out of vcpkg_installed exactly as before.
     # ------------------------------------------------------------------
-    if(NOT WIN32)
-        if(APPLE AND Vulkan_LIBRARY)
+    if (NOT WIN32)
+        if (APPLE AND Vulkan_LIBRARY)
             # REAL_PATH, not Vulkan_LIBRARY itself. That variable names
             # libvulkan.dylib, the head of a two-link symlink chain, and
             # install(FILES) copies a symlink's CONTENT under the name it was
@@ -138,7 +138,7 @@ function(engine_install_runtime_dependencies TARGET_NAME DEST COMPONENT)
                     COMPONENT ${COMPONENT})
             set_property(TARGET ${TARGET_NAME}
                     PROPERTY INSTALL_RPATH "@executable_path")
-        elseif(NOT APPLE)
+        elseif (NOT APPLE)
             # Linux would additionally need the SONAME symlink recreated
             # (DT_NEEDED says libvulkan.so.1, the real file is
             # libvulkan.so.1.x.y), and there is no window layer there yet to
@@ -146,7 +146,7 @@ function(engine_install_runtime_dependencies TARGET_NAME DEST COMPONENT)
             message(STATUS
                     "engine_install_runtime_dependencies: Vulkan loader staging is "
                     "macOS-only so far - a packaged '${TARGET_NAME}' will not run on Linux")
-        endif()
+        endif ()
 
         # NOT staged, and this is the known gap: on macOS the Vulkan DRIVER is
         # the vendored MoltenVK, reached through an ICD manifest whose absolute
@@ -158,7 +158,7 @@ function(engine_install_runtime_dependencies TARGET_NAME DEST COMPONENT)
         # does not have yet - a runtime change, not a packaging one. Called out
         # here rather than papered over.
         return()
-    endif()
+    endif ()
 
     # $<TARGET_RUNTIME_DLLS:> is valid in install(FILES) since CMake 3.21; our
     # floor is 3.25. The list is guaranteed non-empty because rhi/ does
@@ -173,22 +173,22 @@ function(engine_install_runtime_dependencies TARGET_NAME DEST COMPONENT)
     # functions must not be reordered relative to each other... except that it
     # is a CACHE entry, so it survives into this scope regardless of call order
     # within a configure. Still: the staging call is the one that defines it.
-    if(ENGINE_DXIL_DLL)
+    if (ENGINE_DXIL_DLL)
         install(FILES ${ENGINE_DXIL_DLL}
                 DESTINATION ${DEST}
                 COMPONENT ${COMPONENT})
-    endif()
+    endif ()
 
     # RELEASE redistributable only, deliberately. The debug pair
     # (D3D12SDKLayers.dll) is a development artifact: shipping it invites the
     # debug layer to load on a user's machine, which is a large slowdown and a
     # dependency on a DLL they have no reason to have.
-    if(TARGET Microsoft::DirectX12-Core)
+    if (TARGET Microsoft::DirectX12-Core)
         install(FILES $<TARGET_PROPERTY:Microsoft::DirectX12-Core,IMPORTED_LOCATION_RELEASE>
                 DESTINATION ${DEST}/D3D12
                 COMPONENT ${COMPONENT})
-    else()
+    else ()
         message(WARNING
                 "Microsoft::DirectX12-Core not found - packaged builds will be missing D3D12Core.dll")
-    endif()
+    endif ()
 endfunction()

@@ -50,34 +50,53 @@
 #include <string>
 #include <vector>
 
-namespace engine::rhi {
-    namespace {
+namespace engine::rhi
+{
+    namespace
+    {
         using pool::Handle;
         using pool::Pool;
 
-        const char *vk_result_str(const VkResult r) {
-            switch (r) {
-                case VK_SUCCESS: return "VK_SUCCESS";
-                case VK_NOT_READY: return "VK_NOT_READY";
-                case VK_TIMEOUT: return "VK_TIMEOUT";
-                case VK_SUBOPTIMAL_KHR: return "VK_SUBOPTIMAL_KHR";
-                case VK_ERROR_OUT_OF_HOST_MEMORY: return "VK_ERROR_OUT_OF_HOST_MEMORY";
-                case VK_ERROR_OUT_OF_DEVICE_MEMORY: return "VK_ERROR_OUT_OF_DEVICE_MEMORY";
-                case VK_ERROR_INITIALIZATION_FAILED: return "VK_ERROR_INITIALIZATION_FAILED";
-                case VK_ERROR_DEVICE_LOST: return "VK_ERROR_DEVICE_LOST";
-                case VK_ERROR_LAYER_NOT_PRESENT: return "VK_ERROR_LAYER_NOT_PRESENT";
-                case VK_ERROR_EXTENSION_NOT_PRESENT: return "VK_ERROR_EXTENSION_NOT_PRESENT";
-                case VK_ERROR_FEATURE_NOT_PRESENT: return "VK_ERROR_FEATURE_NOT_PRESENT";
-                case VK_ERROR_INCOMPATIBLE_DRIVER: return "VK_ERROR_INCOMPATIBLE_DRIVER";
-                case VK_ERROR_SURFACE_LOST_KHR: return "VK_ERROR_SURFACE_LOST_KHR";
-                case VK_ERROR_OUT_OF_DATE_KHR: return "VK_ERROR_OUT_OF_DATE_KHR";
-                default: return "VK_ERROR_<other>";
+        const char *vk_result_str(const VkResult r)
+        {
+            switch (r)
+            {
+            case VK_SUCCESS:
+                return "VK_SUCCESS";
+            case VK_NOT_READY:
+                return "VK_NOT_READY";
+            case VK_TIMEOUT:
+                return "VK_TIMEOUT";
+            case VK_SUBOPTIMAL_KHR:
+                return "VK_SUBOPTIMAL_KHR";
+            case VK_ERROR_OUT_OF_HOST_MEMORY:
+                return "VK_ERROR_OUT_OF_HOST_MEMORY";
+            case VK_ERROR_OUT_OF_DEVICE_MEMORY:
+                return "VK_ERROR_OUT_OF_DEVICE_MEMORY";
+            case VK_ERROR_INITIALIZATION_FAILED:
+                return "VK_ERROR_INITIALIZATION_FAILED";
+            case VK_ERROR_DEVICE_LOST:
+                return "VK_ERROR_DEVICE_LOST";
+            case VK_ERROR_LAYER_NOT_PRESENT:
+                return "VK_ERROR_LAYER_NOT_PRESENT";
+            case VK_ERROR_EXTENSION_NOT_PRESENT:
+                return "VK_ERROR_EXTENSION_NOT_PRESENT";
+            case VK_ERROR_FEATURE_NOT_PRESENT:
+                return "VK_ERROR_FEATURE_NOT_PRESENT";
+            case VK_ERROR_INCOMPATIBLE_DRIVER:
+                return "VK_ERROR_INCOMPATIBLE_DRIVER";
+            case VK_ERROR_SURFACE_LOST_KHR:
+                return "VK_ERROR_SURFACE_LOST_KHR";
+            case VK_ERROR_OUT_OF_DATE_KHR:
+                return "VK_ERROR_OUT_OF_DATE_KHR";
+            default:
+                return "VK_ERROR_<other>";
             }
         }
 
         // The ENGINE_HR of this backend. Logs the actual VkResult before dying —
         // "vkCreateDevice failed" without the code is a wasted debugging hour.
-#define ENGINE_VK(expr)                                                        \
+        #define ENGINE_VK(expr)                                                        \
     do {                                                                       \
         const VkResult vkr_ = (expr);                                          \
         if (vkr_ != VK_SUCCESS) {                                              \
@@ -91,17 +110,23 @@ namespace engine::rhi {
         // rhi.h was designed against; D3D12 and Vulkan agree almost field-for-field
         // because enhanced barriers were modeled on VK_KHR_synchronization2.
 
-        VkPipelineStageFlags2 to_vk(const Sync s) {
+        VkPipelineStageFlags2 to_vk(const Sync s)
+        {
             VkPipelineStageFlags2 r = VK_PIPELINE_STAGE_2_NONE;
-            if (any(s & Sync::All)) r |= VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
-            if (any(s & Sync::Draw)) r |= VK_PIPELINE_STAGE_2_ALL_GRAPHICS_BIT;
-            if (any(s & Sync::PixelShading)) r |= VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT;
-            if (any(s & Sync::RenderTarget)) r |= VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
+            if (any(s & Sync::All))
+                r |= VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
+            if (any(s & Sync::Draw))
+                r |= VK_PIPELINE_STAGE_2_ALL_GRAPHICS_BIT;
+            if (any(s & Sync::PixelShading))
+                r |= VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT;
+            if (any(s & Sync::RenderTarget))
+                r |= VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
             if (any(s & Sync::DepthStencil))
-                r |= VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT |
-                     VK_PIPELINE_STAGE_2_LATE_FRAGMENT_TESTS_BIT;
-            if (any(s & Sync::Compute)) r |= VK_PIPELINE_STAGE_2_COMPUTE_SHADER_BIT;
-            if (any(s & Sync::Copy)) r |= VK_PIPELINE_STAGE_2_ALL_TRANSFER_BIT;
+                r |= VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_2_LATE_FRAGMENT_TESTS_BIT;
+            if (any(s & Sync::Compute))
+                r |= VK_PIPELINE_STAGE_2_COMPUTE_SHADER_BIT;
+            if (any(s & Sync::Copy))
+                r |= VK_PIPELINE_STAGE_2_ALL_TRANSFER_BIT;
             return r;
         }
 
@@ -110,93 +135,137 @@ namespace engine::rhi {
         // SYNC_NONE. Vulkan has no such rule — ACCESS_2_NONE with STAGE_2_NONE is
         // the ordinary "nothing to wait on" spelling, which is exactly what a
         // first-use / from-UNDEFINED transition wants.
-        VkAccessFlags2 to_vk(const Access a) {
+        VkAccessFlags2 to_vk(const Access a)
+        {
             VkAccessFlags2 r = VK_ACCESS_2_NONE;
             if (any(a & Access::RenderTarget))
-                r |= VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT |
-                     VK_ACCESS_2_COLOR_ATTACHMENT_READ_BIT;
+                r |= VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_2_COLOR_ATTACHMENT_READ_BIT;
             if (any(a & Access::DepthWrite))
-                r |= VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT |
-                     VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_READ_BIT;
-            if (any(a & Access::ShaderRead)) r |= VK_ACCESS_2_SHADER_READ_BIT;
+                r |= VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT | VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_READ_BIT;
+            if (any(a & Access::ShaderRead))
+                r |= VK_ACCESS_2_SHADER_READ_BIT;
             if (any(a & Access::UnorderedAccess))
-                r |= VK_ACCESS_2_SHADER_STORAGE_READ_BIT |
-                     VK_ACCESS_2_SHADER_STORAGE_WRITE_BIT;
-            if (any(a & Access::CopySrc)) r |= VK_ACCESS_2_TRANSFER_READ_BIT;
-            if (any(a & Access::CopyDst)) r |= VK_ACCESS_2_TRANSFER_WRITE_BIT;
+                r |= VK_ACCESS_2_SHADER_STORAGE_READ_BIT | VK_ACCESS_2_SHADER_STORAGE_WRITE_BIT;
+            if (any(a & Access::CopySrc))
+                r |= VK_ACCESS_2_TRANSFER_READ_BIT;
+            if (any(a & Access::CopyDst))
+                r |= VK_ACCESS_2_TRANSFER_WRITE_BIT;
             return r;
         }
 
-        VkImageLayout to_vk(const Layout l) {
-            switch (l) {
-                case Layout::Undefined: return VK_IMAGE_LAYOUT_UNDEFINED;
-                case Layout::Present: return VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-                case Layout::RenderTarget: return VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-                case Layout::DepthWrite: return VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-                case Layout::ShaderRead: return VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-                case Layout::UnorderedAccess: return VK_IMAGE_LAYOUT_GENERAL;
-                case Layout::CopySrc: return VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
-                case Layout::CopyDst: return VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+        VkImageLayout to_vk(const Layout l)
+        {
+            switch (l)
+            {
+            case Layout::Undefined:
+                return VK_IMAGE_LAYOUT_UNDEFINED;
+            case Layout::Present:
+                return VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+            case Layout::RenderTarget:
+                return VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+            case Layout::DepthWrite:
+                return VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+            case Layout::ShaderRead:
+                return VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            case Layout::UnorderedAccess:
+                return VK_IMAGE_LAYOUT_GENERAL;
+            case Layout::CopySrc:
+                return VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+            case Layout::CopyDst:
+                return VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
             }
             engine_check(false);
             return VK_IMAGE_LAYOUT_UNDEFINED;
         }
 
         // ============================================================== resources
-        struct VulkanTexture {
+        struct VulkanTexture
+        {
             VkImage image = VK_NULL_HANDLE; // swapchain-owned at m2: do NOT vkDestroyImage
             VkImageView view = VK_NULL_HANDLE; // ours: vkDestroyImageView on teardown
             uint32_t width = 0, height = 0;
         };
 
-        template<class RhiH, class T>
-        RhiH to_rhi(Handle<T> h) { return RhiH{.index = h.index, .gen = h.gen}; }
+        template <class RhiH, class T>
+        RhiH to_rhi(Handle<T> h)
+        {
+            return RhiH{.index = h.index, .gen = h.gen};
+        }
 
-        template<class T, class RhiH>
-        Handle<T> to_pool(RhiH h) { return Handle<T>{.index = h.index, .gen = h.gen}; }
+        template <class T, class RhiH>
+        Handle<T> to_pool(RhiH h)
+        {
+            return Handle<T>{.index = h.index, .gen = h.gen};
+        }
 
         class VulkanDevice;
 
         // =========================================================== command list
-        class VulkanCommandList final : public ICommandList {
+        class VulkanCommandList final : public ICommandList
+        {
         public:
-            void init(VulkanDevice *dev, const VkCommandBuffer cmd) {
+            void init(VulkanDevice *dev, const VkCommandBuffer cmd)
+            {
                 dev_ = dev;
                 cmd_ = cmd;
             }
 
-            void barrier(std::span<const TextureBarrier> textures,
-                         std::span<const BufferBarrier> buffers) override;
+            void barrier(std::span<const TextureBarrier> textures, std::span<const BufferBarrier> buffers) override;
 
             void clear_render_target(TextureHandle, std::array<float, 4> rgba) override;
 
-            void set_render_targets(std::span<const TextureHandle>, TextureHandle) override {
+            void set_render_targets(std::span<const TextureHandle>, TextureHandle) override
+            {
                 // Same story as Metal: with dynamic rendering the attachments belong
                 // to vkCmdBeginRendering, not to persistent state. Caching the
                 // VkRenderingInfo and opening the scope lazily at first draw is m3.
                 engine_check(false && "m3");
             }
 
-            void set_viewport_scissor(const uint32_t w, const uint32_t h) override {
+            void set_viewport_scissor(const uint32_t w, const uint32_t h) override
+            {
                 // Legal to record outside a rendering scope (unlike Metal, where the
                 // viewport is an encoder call), so just do it.
                 const VkViewport vp{
                     .x = 0.f, .y = 0.f,
-                    .width = float(w), .height = float(h),
+                    .width = static_cast<float>(w), .height = static_cast<float>(h),
                     .minDepth = 0.f, .maxDepth = 1.f, // depth [0,1], matching the
-                };                                    // math conventions in tests/
-                const VkRect2D sc{.offset = {0, 0}, .extent = {w, h}};
+                }; // math conventions in tests/
+                const VkRect2D sc{.offset = {.x = 0, .y = 0}, .extent = {w, h}};
                 vkCmdSetViewport(cmd_, 0, 1, &vp);
                 vkCmdSetScissor(cmd_, 0, 1, &sc);
             }
 
             // ---- milestone 3 ----
-            void set_pso(PSOHandle) override { engine_check(false && "m3"); }
-            void set_index_buffer(BufferHandle, Format) override { engine_check(false && "m3"); }
-            void push_constants(const void *, uint32_t) override { engine_check(false && "m3"); }
-            void draw(uint32_t, uint32_t) override { engine_check(false && "m3"); }
-            void draw_indexed(uint32_t, uint32_t) override { engine_check(false && "m3"); }
-            void dispatch(uint32_t, uint32_t, uint32_t) override { engine_check(false && "m3"); }
+            void set_pso(PSOHandle) override
+            {
+                engine_check(false && "m3");
+            }
+
+            void set_index_buffer(BufferHandle, Format) override
+            {
+                engine_check(false && "m3");
+            }
+
+            void push_constants(const void *, uint32_t) override
+            {
+                engine_check(false && "m3");
+            }
+
+            void draw(uint32_t, uint32_t) override
+            {
+                engine_check(false && "m3");
+            }
+
+            void draw_indexed(uint32_t, uint32_t) override
+            {
+                engine_check(false && "m3");
+            }
+
+            void dispatch(uint32_t, uint32_t, uint32_t) override
+            {
+                engine_check(false && "m3");
+            }
 
         private:
             VulkanDevice *dev_ = nullptr;
@@ -204,11 +273,12 @@ namespace engine::rhi {
         };
 
         // ================================================================= device
-        class VulkanDevice final : public IDevice {
+        class VulkanDevice final : public IDevice
+        {
         public:
-            explicit VulkanDevice(const DeviceDesc &desc) : desc_(desc) {
-                engine_check(desc.frames_in_flight >= 1 &&
-                    desc.frames_in_flight <= kMaxFramesInFlight);
+            explicit VulkanDevice(const DeviceDesc &desc) : desc_(desc)
+            {
+                engine_check(desc.frames_in_flight >= 1 && desc.frames_in_flight <= kMaxFramesInFlight);
                 engine_check(desc.native_window && "Vulkan backend needs a native window handle");
 
                 create_instance();
@@ -219,28 +289,30 @@ namespace engine::rhi {
                 create_frame_resources();
             }
 
-            ~VulkanDevice() override {
+            ~VulkanDevice() override
+            {
                 // destroy_device already ran wait_idle, so nothing is in flight.
                 destroy_frame_resources();
                 destroy_swapchain();
                 if (device_) vkDestroyDevice(device_, nullptr);
                 if (surface_) vkDestroySurfaceKHR(instance_, surface_, nullptr);
-                if (messenger_) {
-                    const auto destroy = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
-                        vkGetInstanceProcAddr(instance_, "vkDestroyDebugUtilsMessengerEXT"));
-                    if (destroy) destroy(instance_, messenger_, nullptr);
+                if (messenger_)
+                {
+                    if (const auto destroy = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
+                        vkGetInstanceProcAddr(instance_, "vkDestroyDebugUtilsMessengerEXT")))
+                        destroy(instance_, messenger_, nullptr);
                 }
                 if (instance_) vkDestroyInstance(instance_, nullptr);
             }
 
             // ================================================== frame loop
-            FrameContext begin_frame() override {
+            FrameContext begin_frame() override
+            {
                 engine_check(!in_frame_);
                 in_frame_ = true;
 
-                const auto idx =
-                        static_cast<uint32_t>(frame_counter_ % desc_.frames_in_flight);
-                FrameSlot &slot = frame_[idx];
+                const auto idx = static_cast<uint32_t>(frame_counter_ % desc_.frames_in_flight);
+                const FrameSlot &slot = frame_[idx];
 
                 // THE wait, on the timeline semaphore: this slot's previous
                 // submission must be fully consumed before its command pool is
@@ -269,12 +341,13 @@ namespace engine::rhi {
                 };
             }
 
-            void end_frame() override {
+            void end_frame() override
+            {
                 engine_check(in_frame_);
                 in_frame_ = false;
 
                 const auto idx =
-                        static_cast<uint32_t>(frame_counter_ % desc_.frames_in_flight);
+                    static_cast<uint32_t>(frame_counter_ % desc_.frames_in_flight);
                 FrameSlot &slot = frame_[idx];
                 ENGINE_VK(vkEndCommandBuffer(slot.cmd));
 
@@ -337,12 +410,17 @@ namespace engine::rhi {
                 // OUT_OF_DATE/SUBOPTIMAL here are NOT errors: the window changed
                 // under us. Flag it and rebuild at the top of the next frame.
                 if (const VkResult pr = vkQueuePresentKHR(queue_, &pi);
-                    pr == VK_ERROR_OUT_OF_DATE_KHR || pr == VK_SUBOPTIMAL_KHR) {
+                    pr == VK_ERROR_OUT_OF_DATE_KHR || pr == VK_SUBOPTIMAL_KHR)
+                {
                     needs_rebuild_ = true;
-                } else if (pr == VK_ERROR_DEVICE_LOST) {
+                }
+                else if (pr == VK_ERROR_DEVICE_LOST)
+                {
                     log::error("vulkan: DEVICE LOST on present");
                     engine_check(false);
-                } else {
+                }
+                else
+                {
                     ENGINE_VK(pr);
                 }
 
@@ -350,10 +428,13 @@ namespace engine::rhi {
                 ++frame_counter_;
             }
 
-            void resize(const uint32_t w, const uint32_t h) override {
+            void resize(const uint32_t w, const uint32_t h) override
+            {
                 engine_check(!in_frame_);
-                if (w == 0 || h == 0) return; // minimized
-                if (w == desc_.width && h == desc_.height) return;
+                if (w == 0 || h == 0)
+                    return; // minimized
+                if (w == desc_.width && h == desc_.height)
+                    return;
                 desc_.width = w;
                 desc_.height = h;
                 needs_rebuild_ = true;
@@ -361,81 +442,111 @@ namespace engine::rhi {
                 log::info("vulkan: resized to {}x{}", w, h);
             }
 
-            void wait_idle() override { ENGINE_VK(vkDeviceWaitIdle(device_)); }
+            void wait_idle() override
+            {
+                ENGINE_VK(vkDeviceWaitIdle(device_));
+            }
 
             // ================================================== resources (m3)
-            BufferHandle create_buffer(const BufferDesc &) override {
+            BufferHandle create_buffer(const BufferDesc &) override
+            {
                 engine_check(false && "m3");
                 return {};
             }
 
-            TextureHandle create_texture(const TextureDesc &) override {
+            TextureHandle create_texture(const TextureDesc &) override
+            {
                 engine_check(false && "m3");
                 return {};
             }
 
-            PSOHandle create_graphics_pso(const GraphicsPSODesc &) override {
+            PSOHandle create_graphics_pso(const GraphicsPSODesc &) override
+            {
                 engine_check(false && "m3");
                 return {};
             }
 
-            void destroy(BufferHandle) override { engine_check(false && "m3"); }
+            void destroy(BufferHandle) override
+            {
+                engine_check(false && "m3");
+            }
 
-            void destroy(TextureHandle) override {
+            void destroy(TextureHandle) override
+            {
                 // Only swapchain images exist today, and rebuild_swapchain owns them.
                 engine_check(false && "m3");
             }
 
-            void destroy(PSOHandle) override { engine_check(false && "m3"); }
+            void destroy(PSOHandle) override
+            {
+                engine_check(false && "m3");
+            }
 
-            uint32_t bindless_index(BufferHandle) override {
+            uint32_t bindless_index(BufferHandle) override
+            {
                 engine_check(false && "m3");
                 return 0;
             }
 
-            uint32_t bindless_index(TextureHandle) override {
+            uint32_t bindless_index(TextureHandle) override
+            {
                 engine_check(false && "m3");
                 return 0;
             }
 
-            void *map(BufferHandle) override {
+            void *map(BufferHandle) override
+            {
                 engine_check(false && "m3");
                 return nullptr;
             }
 
-            void unmap(BufferHandle) override { engine_check(false && "m3"); }
+            void unmap(BufferHandle) override
+            {
+                engine_check(false && "m3");
+            }
 
-            [[nodiscard]] const DeviceCaps &caps() const override { return caps_; }
+            [[nodiscard]] const DeviceCaps &caps() const override
+            {
+                return caps_;
+            }
 
             // ================================================== internals
-            VulkanTexture *texture(TextureHandle h) {
+            VulkanTexture *texture(const TextureHandle h)
+            {
                 VulkanTexture *t = textures_.get(to_pool<VulkanTexture>(h));
                 engine_check(t && "stale TextureHandle");
                 return t;
             }
 
-            [[nodiscard]] VkExtent2D extent() const { return extent_; }
+            [[nodiscard]] VkExtent2D extent() const
+            {
+                return extent_;
+            }
 
             // Is this handle a swapchain image that has never been presented, and so
             // is still in VK_IMAGE_LAYOUT_UNDEFINED whatever the caller believes?
             // Only the backend can answer: it created these images, the application
             // did not. Returns false for ordinary textures, whose layout_before the
             // caller genuinely does own.
-            [[nodiscard]] bool swapchain_image_is_undefined(const TextureHandle h) const {
-                for (const SwapImage &img: images_)
-                    if (img.handle == h) return !img.presented;
+            [[nodiscard]] bool swapchain_image_is_undefined(const TextureHandle h) const
+            {
+                for (const SwapImage &img : images_)
+                    if (img.handle == h)
+                        return !img.presented;
                 return false;
             }
 
         private:
-            struct FrameSlot {
+            struct FrameSlot
+            {
                 VkCommandPool pool = VK_NULL_HANDLE;
                 VkCommandBuffer cmd = VK_NULL_HANDLE;
                 VkSemaphore acquire = VK_NULL_HANDLE; // binary, per frame-in-flight
                 uint64_t timeline_value = 0; // 0 => never submitted: no wait
             };
 
-            struct SwapImage {
+            struct SwapImage
+            {
                 TextureHandle handle{};
                 // Per SWAPCHAIN IMAGE, not per frame-in-flight. The validation trap:
                 // vkQueuePresentKHR keeps waiting on this semaphore until the
@@ -454,7 +565,8 @@ namespace engine::rhi {
             };
 
             // ---------------------------------------------------------- §1: instance
-            void create_instance() {
+            void create_instance()
+            {
                 // FIRST: before any Vulkan entry point, including the extension
                 // and layer queries below - see configure_loader_search_paths().
                 configure_loader_search_paths();
@@ -462,9 +574,9 @@ namespace engine::rhi {
                 std::vector<const char *> layers;
                 std::vector<const char *> exts{VK_KHR_SURFACE_EXTENSION_NAME};
                 VkInstanceCreateFlags flags = 0;
-#if defined(_WIN32)
+                #if defined(_WIN32)
                 exts.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
-#elif defined(__APPLE__)
+                #elif defined(__APPLE__)
                 exts.push_back(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
 
                 // THE MoltenVK trap. MoltenVK is not a conformant Vulkan driver, it
@@ -473,23 +585,30 @@ namespace engine::rhi {
                 // Forget it and vkEnumeratePhysicalDevices returns zero devices with
                 // VK_SUCCESS — no error, nothing to grep for, and you go hunting for
                 // a driver problem that does not exist.
-                if (has_instance_extension(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME)) {
+                if (has_instance_extension(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME))
+                {
                     exts.push_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
                     flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
-                } else {
+                }
+                else
+                {
                     log::warn("vulkan: {} unavailable — MoltenVK will not be enumerated",
                               VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
                 }
-#endif
-                if (desc_.enable_debug) {
+                #endif
+                if (desc_.enable_debug)
+                {
                     // The debug arsenal, Vulkan-flavoured: validation layer +
                     // debug-utils messenger, the analog of D3D12's debug layer +
                     // InfoQueue1 callback.
                     //
-                    if (has_layer("VK_LAYER_KHRONOS_validation")) {
+                    if (has_layer("VK_LAYER_KHRONOS_validation"))
+                    {
                         layers.push_back("VK_LAYER_KHRONOS_validation");
                         exts.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-                    } else {
+                    }
+                    else
+                    {
                         log::warn("vulkan: VK_LAYER_KHRONOS_validation not found - running "
                             "UNVALIDATED. Is vulkan-validationlayers installed for this "
                             "triplet? (engine_rhi bakes the manifest dir in as "
@@ -517,7 +636,8 @@ namespace engine::rhi {
                 };
                 ENGINE_VK(vkCreateInstance(&ci, nullptr, &instance_));
 
-                if (!layers.empty()) create_debug_messenger();
+                if (!layers.empty())
+                    create_debug_messenger();
             }
 
             // Append to a loader search variable without clobbering a value the
@@ -527,22 +647,24 @@ namespace engine::rhi {
             // only OUR CRT's copy of the environment, while the loader lives in
             // vulkan-1.dll with its own CRT and reads the Win32 process block.
             // Setting just one is a silent no-op depending on which the loader used.
-            static void append_env_path(const char *var, const char *value) {
-#if defined(_WIN32)
+            static void append_env_path(const char *var, const char *value)
+            {
+                #if defined(_WIN32)
                 constexpr char sep = ';';
-#else
+                #else
                 constexpr char sep = ':';
-#endif
+                #endif
                 std::string v = value;
-                if (const char *existing = std::getenv(var); existing && *existing) {
+                if (const char *existing = std::getenv(var); existing && *existing)
+                {
                     v = std::string(existing) + sep + v;
                 }
-#if defined(_WIN32)
+                #if defined(_WIN32)
                 _putenv_s(var, v.c_str());
                 SetEnvironmentVariableA(var, v.c_str());
-#else
+                #else
                 setenv(var, v.c_str(), /*overwrite=*/1);
-#endif
+                #endif
                 log::debug("vulkan: {}={}", var, v);
             }
 
@@ -555,22 +677,24 @@ namespace engine::rhi {
             // and layer lists lazily on first use, and vkEnumerateInstanceExtension-
             // Properties already needs the driver list to collect ICD-provided
             // instance extensions — so "before vkCreateInstance" is not early enough.
-            static void configure_loader_search_paths() {
-#ifdef ENGINE_VK_ICD_FILE
+            static void configure_loader_search_paths()
+            {
+                #ifdef ENGINE_VK_ICD_FILE
                 // A FILE, not a directory - the manifest itself. Its "library_path"
                 // is relative, so libMoltenVK.dylib must sit beside it.
                 append_env_path("VK_ADD_DRIVER_FILES", ENGINE_VK_ICD_FILE);
-#endif
-#ifdef ENGINE_VK_LAYER_PATH
+                #endif
+                #ifdef ENGINE_VK_LAYER_PATH
                 // A DIRECTORY of manifests. vcpkg does not register layers with the
                 // loader the way the LunarG installer does - its own `usage` text
                 // tells you to set this by hand - so without it validation is
                 // silently absent and you run UNVALIDATED.
                 append_env_path("VK_ADD_LAYER_PATH", ENGINE_VK_LAYER_PATH);
-#endif
+                #endif
             }
 
-            static bool has_instance_extension(const char *name) {
+            static bool has_instance_extension(const char *name)
+            {
                 uint32_t n = 0;
                 vkEnumerateInstanceExtensionProperties(nullptr, &n, nullptr);
                 std::vector<VkExtensionProperties> props(n);
@@ -580,7 +704,8 @@ namespace engine::rhi {
                 });
             }
 
-            static bool has_layer(const char *name) {
+            static bool has_layer(const char *name)
+            {
                 uint32_t n = 0;
                 vkEnumerateInstanceLayerProperties(&n, nullptr);
                 std::vector<VkLayerProperties> props(n);
@@ -591,10 +716,12 @@ namespace engine::rhi {
                 });
             }
 
-            void create_debug_messenger() {
+            void create_debug_messenger()
+            {
                 const auto create = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(
                     vkGetInstanceProcAddr(instance_, "vkCreateDebugUtilsMessengerEXT"));
-                if (!create) return;
+                if (!create)
+                    return;
 
                 const VkDebugUtilsMessengerCreateInfoEXT ci{
                     .sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT,
@@ -614,37 +741,39 @@ namespace engine::rhi {
                 const VkDebugUtilsMessageSeverityFlagBitsEXT severity,
                 VkDebugUtilsMessageTypeFlagsEXT,
                 const VkDebugUtilsMessengerCallbackDataEXT *data,
-                void *) {
-                if (severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {
+                void *)
+            {
+                if (severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
+                {
                     log::error("vulkan validation: {}", data->pMessage);
                     engine_check(false);
-                } else {
-                    log::warn("vulkan validation: {}", data->pMessage);
                 }
+                log::warn("vulkan validation: {}", data->pMessage);
                 return VK_FALSE; // VK_TRUE would abort the offending call itself
             }
 
             // ----------------------------------------------------------- §2: surface
-            void create_surface() {
-#if defined(_WIN32)
+            void create_surface()
+            {
+                #if defined(_WIN32)
                 const VkWin32SurfaceCreateInfoKHR ci{
                     .sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
                     .hinstance = GetModuleHandleW(nullptr),
                     .hwnd = static_cast<HWND>(desc_.native_window),
                 };
                 ENGINE_VK(vkCreateWin32SurfaceKHR(instance_, &ci, nullptr, &surface_));
-#elif defined(__APPLE__)
+                #elif defined(__APPLE__)
                 // native_window is ALREADY a CAMetalLayer* here — app_macos.mm builds
                 // one for the layer-hosting content view and the Metal backend casts
                 // the same pointer to CA::MetalLayer*. Nothing new to plumb.
-                engine_check(desc_.native_window &&
-                    "Vulkan/MoltenVK needs the CAMetalLayer* from Window::native_handle()");
+                engine_check(
+                    desc_.native_window && "Vulkan/MoltenVK needs the CAMetalLayer* from Window::native_handle()");
                 const VkMetalSurfaceCreateInfoEXT ci{
                     .sType = VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT,
                     .pLayer = static_cast<const CAMetalLayer *>(desc_.native_window),
                 };
                 ENGINE_VK(vkCreateMetalSurfaceEXT(instance_, &ci, nullptr, &surface_));
-#else
+                #else
                 // Linux is NOT wired up, and deliberately not guessed at. There is no
                 // Window implementation for it at all — engine/app/CMakeLists.txt has
                 // only if(WIN32)/elseif(APPLE), so engine_app does not even link on
@@ -659,24 +788,27 @@ namespace engine::rhi {
                 // implement VK_KHR_xcb_surface / VK_KHR_wayland_surface here.
                 engine_check(false && "Linux surface: no Window implementation exists yet "
                     "(see engine/app/src/ — only win32/ and macos/)");
-#endif
+                #endif
             }
 
             // --------------------------------------------- §3: physical device
-            void pick_physical_device() {
+            void pick_physical_device()
+            {
                 uint32_t n = 0;
                 ENGINE_VK(vkEnumeratePhysicalDevices(instance_, &n, nullptr));
                 engine_check(n > 0 && "no Vulkan physical device — is a GPU driver installed?");
                 std::vector<VkPhysicalDevice> devices(n);
                 ENGINE_VK(vkEnumeratePhysicalDevices(instance_, &n, devices.data()));
 
-                for (const VkPhysicalDevice pd: devices) {
+                for (const VkPhysicalDevice pd : devices)
+                {
                     VkPhysicalDeviceProperties props{};
                     vkGetPhysicalDeviceProperties(pd, &props);
                     // Say WHY a device was skipped. This is the single most likely
                     // MoltenVK failure: if it reports less than 1.3 every device
                     // silently disappears and the check below blames the driver.
-                    if (props.apiVersion < VK_API_VERSION_1_3) {
+                    if (props.apiVersion < VK_API_VERSION_1_3)
+                    {
                         log::warn("vulkan: skipping '{}' — reports {}.{}.{}, need 1.3 for "
                                   "sync2 + dynamic rendering + timeline semaphores in core",
                                   props.deviceName,
@@ -685,18 +817,22 @@ namespace engine::rhi {
                                   VK_API_VERSION_PATCH(props.apiVersion));
                         continue;
                     }
-                    if (!has_device_extension(pd, VK_KHR_SWAPCHAIN_EXTENSION_NAME)) continue;
+                    if (!has_device_extension(pd, VK_KHR_SWAPCHAIN_EXTENSION_NAME))
+                        continue;
 
                     uint32_t family = 0;
-                    if (!find_graphics_present_family(pd, family)) continue;
-                    if (!has_required_features(pd)) continue;
+                    if (!find_graphics_present_family(pd, family))
+                        continue;
+                    if (!has_required_features(pd))
+                        continue;
 
                     // Prefer discrete; keep looking if this one is integrated.
                     physical_ = pd;
                     queue_family_ = family;
                     std::snprintf(caps_.adapter_name, sizeof(caps_.adapter_name), "%s",
                                   props.deviceName);
-                    if (props.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) break;
+                    if (props.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+                        break;
                 }
                 engine_check(physical_ &&
                     "no Vulkan 1.3 device with swapchain + graphics/present queue + "
@@ -712,7 +848,8 @@ namespace engine::rhi {
                           caps_.vram_bytes / (1024 * 1024));
             }
 
-            static bool has_device_extension(VkPhysicalDevice pd, const char *name) {
+            static bool has_device_extension(const VkPhysicalDevice pd, const char *name)
+            {
                 uint32_t n = 0;
                 vkEnumerateDeviceExtensionProperties(pd, nullptr, &n, nullptr);
                 std::vector<VkExtensionProperties> props(n);
@@ -722,20 +859,24 @@ namespace engine::rhi {
                 });
             }
 
-            bool find_graphics_present_family(VkPhysicalDevice pd, uint32_t &out) const {
+            bool find_graphics_present_family(const VkPhysicalDevice pd, uint32_t &out) const
+            {
                 uint32_t n = 0;
                 vkGetPhysicalDeviceQueueFamilyProperties(pd, &n, nullptr);
                 std::vector<VkQueueFamilyProperties> families(n);
                 vkGetPhysicalDeviceQueueFamilyProperties(pd, &n, families.data());
 
-                for (uint32_t i = 0; i < n; ++i) {
-                    if (!(families[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)) continue;
+                for (uint32_t i = 0; i < n; ++i)
+                {
+                    if (!(families[i].queueFlags & VK_QUEUE_GRAPHICS_BIT))
+                        continue;
                     VkBool32 present = VK_FALSE;
                     vkGetPhysicalDeviceSurfaceSupportKHR(pd, i, surface_, &present);
                     // One family doing both keeps the swapchain in EXCLUSIVE sharing
                     // mode — no concurrent-access plumbing, and it is what desktop
                     // drivers actually expose.
-                    if (present) {
+                    if (present)
+                    {
                         out = i;
                         return true;
                     }
@@ -743,7 +884,8 @@ namespace engine::rhi {
                 return false;
             }
 
-            static bool has_required_features(VkPhysicalDevice pd) {
+            static bool has_required_features(VkPhysicalDevice pd)
+            {
                 VkPhysicalDeviceVulkan13Features f13{
                     .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES
                 };
@@ -760,7 +902,8 @@ namespace engine::rhi {
             }
 
             // ------------------------------------------------- §4: device + queue
-            void create_device_and_queue() {
+            void create_device_and_queue()
+            {
                 constexpr float priority = 1.f;
                 const VkDeviceQueueCreateInfo qci{
                     .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
@@ -815,7 +958,8 @@ namespace engine::rhi {
             }
 
             // ---------------------------------------------------- §5: swap chain
-            void create_swapchain() {
+            void create_swapchain()
+            {
                 VkSurfaceCapabilitiesKHR surf{};
                 ENGINE_VK(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physical_, surface_, &surf));
 
@@ -834,7 +978,8 @@ namespace engine::rhi {
 
                 uint32_t want = desc_.frames_in_flight + 1; // one to present, N to fill
                 want = std::max(want, surf.minImageCount);
-                if (surf.maxImageCount != 0) want = std::min(want, surf.maxImageCount);
+                if (surf.maxImageCount != 0)
+                    want = std::min(want, surf.maxImageCount);
 
                 const VkSwapchainCreateInfoKHR ci{
                     .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
@@ -862,7 +1007,8 @@ namespace engine::rhi {
                 ENGINE_VK(vkGetSwapchainImagesKHR(device_, swapchain_, &n, vk_images.data()));
 
                 images_.resize(n);
-                for (uint32_t i = 0; i < n; ++i) {
+                for (uint32_t i = 0; i < n; ++i)
+                {
                     VulkanTexture t;
                     t.image = vk_images[i]; // swapchain-owned; never vkDestroyImage
                     t.width = extent_.width;
@@ -892,14 +1038,15 @@ namespace engine::rhi {
                 log::info("vulkan: swapchain {}x{}, {} images", extent_.width, extent_.height, n);
             }
 
-            [[nodiscard]] VkSurfaceFormatKHR pick_surface_format() const {
+            [[nodiscard]] VkSurfaceFormatKHR pick_surface_format() const
+            {
                 uint32_t n = 0;
                 vkGetPhysicalDeviceSurfaceFormatsKHR(physical_, surface_, &n, nullptr);
                 std::vector<VkSurfaceFormatKHR> formats(n);
                 vkGetPhysicalDeviceSurfaceFormatsKHR(physical_, surface_, &n, formats.data());
                 engine_check(n > 0);
 
-                for (const auto &f: formats)
+                for (const auto &f : formats)
                     // B8G8R8A8_UNORM to match Format::BGRA8_UNorm and the D3D12
                     // swapchain's DXGI_FORMAT_B8G8R8A8_UNORM. UNORM not SRGB: the
                     // sample writes its rainbow in whatever space it likes and we
@@ -910,11 +1057,14 @@ namespace engine::rhi {
                 return formats[0];
             }
 
-            void destroy_swapchain() {
-                for (SwapImage &img: images_) {
+            void destroy_swapchain()
+            {
+                for (SwapImage &img : images_)
+                {
                     if (img.render_finished)
                         vkDestroySemaphore(device_, img.render_finished, nullptr);
-                    if (!img.handle.is_null()) {
+                    if (!img.handle.is_null())
+                    {
                         if (const VulkanTexture *t =
                             textures_.get(to_pool<VulkanTexture>(img.handle)))
                             vkDestroyImageView(device_, t->view, nullptr);
@@ -922,13 +1072,15 @@ namespace engine::rhi {
                     }
                 }
                 images_.clear();
-                if (swapchain_) {
+                if (swapchain_)
+                {
                     vkDestroySwapchainKHR(device_, swapchain_, nullptr);
                     swapchain_ = VK_NULL_HANDLE;
                 }
             }
 
-            void rebuild_swapchain() {
+            void rebuild_swapchain()
+            {
                 // Like D3D12's ResizeBuffers path: the images must have zero
                 // outstanding references NOW, so this is a full stall, not the
                 // deferred-delete queue.
@@ -938,15 +1090,20 @@ namespace engine::rhi {
                 needs_rebuild_ = false;
             }
 
-            void acquire_next_image(const uint32_t frame_idx) {
-                if (needs_rebuild_) rebuild_swapchain();
+            void acquire_next_image(const uint32_t frame_idx)
+            {
+                if (needs_rebuild_)
+                    rebuild_swapchain();
 
-                for (;;) {
+                for (;;)
+                {
                     const VkResult r = vkAcquireNextImageKHR(
                         device_, swapchain_, UINT64_MAX,
                         frame_[frame_idx].acquire, VK_NULL_HANDLE, &image_index_);
-                    if (r == VK_SUCCESS || r == VK_SUBOPTIMAL_KHR) return;
-                    if (r == VK_ERROR_OUT_OF_DATE_KHR) {
+                    if (r == VK_SUCCESS || r == VK_SUBOPTIMAL_KHR)
+                        return;
+                    if (r == VK_ERROR_OUT_OF_DATE_KHR)
+                    {
                         // Not an error. The semaphore is NOT signalled on this path,
                         // so it is safe to reuse on the retry.
                         rebuild_swapchain();
@@ -957,8 +1114,10 @@ namespace engine::rhi {
             }
 
             // ------------------------------------------------ §6: frame resources
-            void create_frame_resources() {
-                for (uint32_t i = 0; i < desc_.frames_in_flight; ++i) {
+            void create_frame_resources()
+            {
+                for (uint32_t i = 0; i < desc_.frames_in_flight; ++i)
+                {
                     const VkCommandPoolCreateInfo pci{
                         .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
                         // TRANSIENT: we reset the whole pool every frame and never
@@ -984,19 +1143,26 @@ namespace engine::rhi {
                 }
             }
 
-            void destroy_frame_resources() {
-                for (uint32_t i = 0; i < desc_.frames_in_flight; ++i) {
-                    if (frame_[i].acquire) vkDestroySemaphore(device_, frame_[i].acquire, nullptr);
+            void destroy_frame_resources()
+            {
+                for (uint32_t i = 0; i < desc_.frames_in_flight; ++i)
+                {
+                    if (frame_[i].acquire)
+                        vkDestroySemaphore(device_, frame_[i].acquire, nullptr);
                     // Destroying the pool frees its command buffers too.
-                    if (frame_[i].pool) vkDestroyCommandPool(device_, frame_[i].pool, nullptr);
+                    if (frame_[i].pool)
+                        vkDestroyCommandPool(device_, frame_[i].pool, nullptr);
                     frame_[i] = {};
                 }
-                if (timeline_) vkDestroySemaphore(device_, timeline_, nullptr);
+                if (timeline_)
+                    vkDestroySemaphore(device_, timeline_, nullptr);
                 timeline_ = VK_NULL_HANDLE;
             }
 
-            void wait_timeline(const uint64_t value) const {
-                if (value == 0) return; // never submitted
+            void wait_timeline(const uint64_t value) const
+            {
+                if (value == 0)
+                    return; // never submitted
                 const VkSemaphoreWaitInfo wi{
                     .sType = VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO,
                     .semaphoreCount = 1,
@@ -1036,15 +1202,17 @@ namespace engine::rhi {
 
         // =========================================== command list (out-of-line)
         void VulkanCommandList::barrier(const std::span<const TextureBarrier> textures,
-                                        const std::span<const BufferBarrier> buffers) {
+                                        const std::span<const BufferBarrier> buffers)
+        {
             // The one backend where this is real work. D3D12 needs the same
             // information; Metal needs none of it.
             std::vector<VkImageMemoryBarrier2> images;
             images.reserve(textures.size());
             for (const auto &[texture, sync_before,
-                sync_after, access_before,
-                access_after, layout_before,
-                layout_after]: textures) {
+                     sync_after, access_before,
+                     access_after, layout_before,
+                     layout_after] : textures)
+            {
                 const VulkanTexture *t = dev_->texture(texture);
 
                 // oldLayout is a PROMISE about current contents, not a request. On a
@@ -1060,9 +1228,9 @@ namespace engine::rhi {
                 // in PRESENT) and Metal never hits it (barrier() is a no-op), so
                 // Vulkan validation is the only place this surfaces.
                 const VkImageLayout old_layout =
-                        dev_->swapchain_image_is_undefined(texture)
-                            ? VK_IMAGE_LAYOUT_UNDEFINED
-                            : to_vk(layout_before);
+                    dev_->swapchain_image_is_undefined(texture)
+                        ? VK_IMAGE_LAYOUT_UNDEFINED
+                        : to_vk(layout_before);
 
                 images.push_back(VkImageMemoryBarrier2{
                     .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
@@ -1095,7 +1263,8 @@ namespace engine::rhi {
         }
 
         void VulkanCommandList::clear_render_target(const TextureHandle h,
-                                                    const std::array<float, 4> rgba) {
+                                                    const std::array<float, 4> rgba)
+        {
             const VulkanTexture *t = dev_->texture(h);
 
             // Same shape as the Metal backend, for the same reason: with dynamic
@@ -1124,7 +1293,8 @@ namespace engine::rhi {
         }
     } // namespace
 
-    IDevice *create_vulkan_device(const DeviceDesc &desc) {
+    IDevice *create_vulkan_device(const DeviceDesc &desc)
+    {
         return new VulkanDevice(desc);
     }
 } // namespace engine::rhi

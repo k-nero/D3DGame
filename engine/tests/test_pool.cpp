@@ -8,14 +8,19 @@
 using engine::pool::Handle;
 using engine::pool::Pool;
 
-namespace {
-    struct Enemy {
+namespace
+{
+    struct Enemy
+    {
         int hp = 0;
         std::string name; // non-trivial member: exercises Slot's manual lifetime
     };
 } // namespace
 
-TEST_CASE("create / get roundtrip") {
+TEST_CASE(
+    "create / get roundtrip"
+    )
+{
     Pool<Enemy> pool;
     auto h = pool.emplace(100, "grunt");
 
@@ -26,16 +31,22 @@ TEST_CASE("create / get roundtrip") {
     CHECK(pool.live_count() == 1);
 }
 
-TEST_CASE("default handle is null and never resolves") {
+TEST_CASE(
+    "default handle is null and never resolves"
+    )
+{
     Pool<Enemy> pool;
-    (void) pool.emplace(1, "a"); // slot 0 exists and is alive...
+    (void)pool.emplace(1, "a"); // slot 0 exists and is alive...
 
     constexpr Handle<Enemy> null_h{}; // ...but index 0 + gen 0 must NOT find it
     CHECK(null_h.is_null());
     CHECK(pool.get(null_h) == nullptr);
 }
 
-TEST_CASE("destroy: old handle goes stale, memory is reused under a new identity") {
+TEST_CASE(
+    "destroy: old handle goes stale, memory is reused under a new identity"
+    )
+{
     Pool<Enemy> pool;
     auto h1 = pool.emplace(50, "first");
     pool.destroy(h1);
@@ -51,9 +62,13 @@ TEST_CASE("destroy: old handle goes stale, memory is reused under a new identity
     CHECK(pool.get(h2)->hp == 75);
 }
 
-TEST_CASE("generation wrap skips 0 (the null sentinel)") {
+TEST_CASE(
+    "generation wrap skips 0 (the null sentinel)"
+    )
+{
     Pool<int> pool;
-    for (int i = 0; i < 300; ++i) {
+    for (int i = 0; i < 300; ++i)
+    {
         // 300 > 255: forces a full gen cycle on slot 0
         auto h = pool.create(std::forward<int>(i));
         CHECK(h.gen != 0); // THE invariant: live handle never gen 0
@@ -66,7 +81,10 @@ TEST_CASE("generation wrap skips 0 (the null sentinel)") {
     CHECK(pool.slot_count() == 1); // it really was one slot the whole time
 }
 
-TEST_CASE("for_each visits live only; const overload deduces const") {
+TEST_CASE(
+    "for_each visits live only; const overload deduces const"
+    )
+{
     Pool<int> pool;
     auto a = pool.create(1);
     auto b = pool.create(2);
@@ -74,19 +92,26 @@ TEST_CASE("for_each visits live only; const overload deduces const") {
     pool.destroy(b);
 
     int sum = 0;
-    pool.for_each([&](const int &v) { sum += v; });
+    pool.for_each([&](const int &v) {
+        sum += v;
+    });
     CHECK(sum == 4); // 1 + 3, dead slot skipped
 
     const Pool<int> &cpool = pool;
     sum = 0;
-    cpool.for_each([&](const int &v) { sum += v; });
+    cpool.for_each([&](const int &v) {
+        sum += v;
+    });
     CHECK(sum == 4);
 
     pool.destroy(a);
     pool.destroy(c);
 }
 
-TEST_CASE("get_checked returns a reference for valid handles") {
+TEST_CASE(
+    "get_checked returns a reference for valid handles"
+    )
+{
     Pool<int> pool;
     const auto h = pool.create(9);
     pool.get_checked(h) = 11; // writable reference
@@ -94,7 +119,10 @@ TEST_CASE("get_checked returns a reference for valid handles") {
     // stale get_checked is a check() abort — verified manually, not in ctest
 }
 
-TEST_CASE("move-only types satisfy Poolable; growth relocates live slots") {
+TEST_CASE(
+    "move-only types satisfy Poolable; growth relocates live slots"
+    )
+{
     Pool<std::unique_ptr<int> > pool;
 
     // enough creates to force several vector reallocations while slots are alive,
@@ -103,17 +131,22 @@ TEST_CASE("move-only types satisfy Poolable; growth relocates live slots") {
     for (int i = 0; i < 64; ++i)
         handles[i] = pool.emplace(std::make_unique<int>(i));
 
-    for (int i = 0; i < 64; ++i) {
+    for (int i = 0; i < 64; ++i)
+    {
         auto *p = pool.get(handles[i]);
         REQUIRE(p != nullptr);
         CHECK(**p == i); // values survived relocation intact
     }
 
-    for (auto &h: handles) pool.destroy(h);
+    for (auto &h : handles)
+        pool.destroy(h);
     CHECK(pool.live_count() == 0);
 }
 
-TEST_CASE("typed handles: Handle<A> does not cross-resolve pools of A") {
+TEST_CASE(
+    "typed handles: Handle<A> does not cross-resolve pools of A"
+    )
+{
     Pool<int> ints;
     Pool<int> other_ints;
     const auto h = ints.create(5);

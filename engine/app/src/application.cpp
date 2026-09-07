@@ -8,18 +8,21 @@
 #include <chrono>
 
 #ifdef _WIN32
-namespace engine::rhi {
+namespace engine::rhi
+{
     void d3d12_report_live_objects();
 } // TODO: move decl to rhi.h
 #endif
 
-namespace engine::app {
-    Application::Application(const ApplicationDesc &desc) {
-#ifdef ENGINE_DEBUG
+namespace engine::app
+{
+    Application::Application(const ApplicationDesc &desc)
+    {
+        #ifdef ENGINE_DEBUG
         log::init(boost::log::trivial::debug, true);
-#else
+        #else
         log::init(boost::log::trivial::error, false);
-#endif
+        #endif
 
         window_ = std::make_unique<Window>(WindowDesc{
             .title = desc.title, .width = desc.width, .height = desc.height
@@ -35,23 +38,27 @@ namespace engine::app {
         log::info("app: '{}' on '{}'", desc.title, device_->caps().adapter_name);
     }
 
-    Application::~Application() {
+    Application::~Application()
+    {
         rhi::destroy_device(device_); // wait_idle inside
         window_.reset();
-#ifdef _WIN32
+        #ifdef _WIN32
         rhi::d3d12_report_live_objects(); // zero-leaks proof, automated for every app
-#endif
+        #endif
     }
 
-    int Application::run() {
+    int Application::run()
+    {
         on_start();
 
         // steady_clock is QPC-backed on Windows — the high-res timer, portably.
         using clock = std::chrono::steady_clock;
         auto last = clock::now();
 
-        while (!quit_ && window_->pump()) {
-            if (window_->consume_resize()) {
+        while (!quit_ && window_->pump())
+        {
+            if (window_->consume_resize())
+            {
                 device_->resize(window_->width(), window_->height());
                 on_resize(window_->width(), window_->height());
             }

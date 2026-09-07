@@ -13,12 +13,12 @@ file(GLOB_RECURSE ENGINE_ASSETS_SRC CONFIGURE_DEPENDS
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${ENGINE_ASSETS_SRC})
 target_sources(engine_assets PRIVATE ${ENGINE_ASSETS_SRC})
 
-if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include)
+if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_include_directories(engine_assets PUBLIC include)
-endif()
+endif ()
 target_include_directories(engine_assets
         PRIVATE src ${STB_INCLUDE_DIRS} ${CGLTF_INCLUDE_DIRS})
 
 target_link_libraries(engine_assets
-        PUBLIC  engine_core
+        PUBLIC engine_core
         PRIVATE nlohmann_json::nlohmann_json)

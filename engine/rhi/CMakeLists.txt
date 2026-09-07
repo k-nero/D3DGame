@@ -12,7 +12,7 @@ list(APPEND ENGINE_RHI_SRC ${ENGINE_RHI_PUBLIC_HEADERS})
 target_sources(engine_rhi PRIVATE ${ENGINE_RHI_SRC})
 
 target_include_directories(engine_rhi
-        PUBLIC  include        # NO platform types allowed in here
+        PUBLIC include        # NO platform types allowed in here
         PRIVATE src)
 
 target_link_libraries(engine_rhi PUBLIC engine_core)
@@ -97,20 +97,20 @@ if (WIN32 OR UNIX)
     # tree on purpose: a release layer module loading into a Debug app is
     # fine (separate module, C ABI), and it is what the LunarG SDK gives you.
     # ------------------------------------------------------------------
-    if(WIN32)
+    if (WIN32)
         set(ENGINE_VK_LAYER_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin")
-    else()
+    else ()
         set(ENGINE_VK_LAYER_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/share/vulkan/explicit_layer.d")
-    endif()
+    endif ()
 
-    if(EXISTS "${ENGINE_VK_LAYER_DIR}")
+    if (EXISTS "${ENGINE_VK_LAYER_DIR}")
         target_compile_definitions(engine_rhi PRIVATE
                 ENGINE_VK_LAYER_PATH="${ENGINE_VK_LAYER_DIR}")
-    else()
+    else ()
         message(STATUS
                 "vulkan: no layer manifests at ${ENGINE_VK_LAYER_DIR} - validation will "
                 "need VK_ADD_LAYER_PATH set by hand")
-    endif()
+    endif ()
 
     # ------------------------------------------------------------------
     # macOS has no Vulkan driver of its own, so the ICD is the vendored
@@ -125,17 +125,17 @@ if (WIN32 OR UNIX)
     # remaining piece of "self-contained", and it needs an executable-path
     # primitive the engine does not have yet.
     # ------------------------------------------------------------------
-    if(APPLE)
+    if (APPLE)
         set(ENGINE_MOLTENVK_ICD "${ENGINE_ROOT_DIR}/third_party/MoltenVK/MoltenVK_icd.json")
-        if(EXISTS "${ENGINE_MOLTENVK_ICD}")
+        if (EXISTS "${ENGINE_MOLTENVK_ICD}")
             target_compile_definitions(engine_rhi PRIVATE
                     ENGINE_VK_ICD_FILE="${ENGINE_MOLTENVK_ICD}")
-        else()
+        else ()
             message(STATUS
                     "vulkan: no vendored MoltenVK at ${ENGINE_MOLTENVK_ICD} - the Vulkan "
                     "backend will find no driver on macOS (see third_party/MoltenVK/VERSION.txt)")
-        endif()
-    endif()
+        endif ()
+    endif ()
 endif ()
 
 # ------------------------------------------------------------------

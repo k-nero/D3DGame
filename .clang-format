@@ -1,0 +1,15 @@
+---
+BasedOnStyle: Microsoft
+Language: Cpp
+
+InsertNewlineAtEOF: true
+
+NamespaceIndentation: All
+IndentPPDirectives: BeforeHash
+PPIndentWidth: 4
+
+AllowShortIfStatementsOnASingleLine: Always
+AllowShortFunctionsOnASingleLine: All
+AllowShortLambdasOnASingleLine: All
+
+SortIncludes: CaseSensitive

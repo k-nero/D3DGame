@@ -8,9 +8,9 @@ file(GLOB_RECURSE ENGINE_SCENE_SRC CONFIGURE_DEPENDS
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${ENGINE_SCENE_SRC})
 target_sources(engine_scene PRIVATE ${ENGINE_SCENE_SRC})
 
-if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include)
+if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_include_directories(engine_scene PUBLIC include)
-endif()
+endif ()
 target_include_directories(engine_scene PRIVATE src)
 
 target_link_libraries(engine_scene PUBLIC engine_renderer)

@@ -18,7 +18,8 @@
 #define engine_ensure(expr) \
     ( (expr) ? true : (engine::assert::on_ensure_failed(#expr, __FILE__, __LINE__), false) )
 
-namespace engine::assert {
+namespace engine::assert
+{
     ENGINE_API void on_check_failed(const char *expr, const char *file, int line);
 
     ENGINE_API void on_ensure_failed(const char *expr, const char *file, int line);

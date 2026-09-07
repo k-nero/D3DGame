@@ -48,43 +48,53 @@
 // with it. Qualify pool::Handle / pool::Pool instead. Same reason `Point` and
 // `Rect` are landmines in this file.
 
-namespace engine::rhi {
-    namespace {
+namespace engine::rhi
+{
+    namespace
+    {
         // NS::String::string() is autoreleased, so every call site below has to
         // already be inside a pool. All of them are.
-        NS::String *ns(const char *s) {
+        NS::String *ns(const char *s)
+        {
             return NS::String::string(s, NS::UTF8StringEncoding);
         }
 
         // ============================================================ resources
-        struct MetalTexture {
+        struct MetalTexture
+        {
             NS::SharedPtr<MTL::Texture> mtl;
             uint32_t width = 0, height = 0;
         };
 
-        template<class RhiH, class T>
-        RhiH to_rhi(pool::Handle<T> h) { return RhiH{.index = h.index, .gen = h.gen}; }
+        template <class RhiH, class T>
+        RhiH to_rhi(pool::Handle<T> h)
+        {
+            return RhiH{.index = h.index, .gen = h.gen};
+        }
 
-        template<class T, class RhiH>
-        pool::Handle<T> to_pool(RhiH h) {
+        template <class T, class RhiH>
+        pool::Handle<T> to_pool(RhiH h)
+        {
             return pool::Handle<T>{.index = h.index, .gen = h.gen};
         }
 
         class MetalDevice;
 
         // ========================================================= command list
-        class MetalCommandList final : public ICommandList {
+        class MetalCommandList final : public ICommandList
+        {
         public:
             // No allocator to reset — MTL::CommandQueue recycles internally, so unlike
             // D3D12 there is no per-frame CommandAllocator in FrameSlot. begin_frame
             // just re-points this at the new command buffer.
-            void init(MetalDevice *dev, MTL::CommandBuffer *cmd) {
+            void init(MetalDevice *dev, MTL::CommandBuffer *cmd)
+            {
                 dev_ = dev;
                 cmd_ = cmd;
             }
 
-            void barrier(std::span<const TextureBarrier>,
-                         std::span<const BufferBarrier>) override {
+            void barrier(std::span<const TextureBarrier>, std::span<const BufferBarrier>) override
+            {
                 // Intentionally empty, and CORRECT — not a stub. Metal hazard-tracks
                 // every resource not allocated from an Untracked MTL::Heap, and the
                 // drawable's layout is CoreAnimation's business — Present/RenderTarget
@@ -93,9 +103,11 @@ namespace engine::rhi {
                 // Not before.
             }
 
+
             void clear_render_target(TextureHandle h, std::array<float, 4> rgba) override;
 
-            void set_render_targets(std::span<const TextureHandle>, TextureHandle) override {
+            void set_render_targets(std::span<const TextureHandle>, TextureHandle) override
+            {
                 // Metal has no "set targets" state: targets are baked into the
                 // MTL::RenderPassDescriptor at encoder creation. The real impl
                 // (cache the descriptor, open the encoder lazily at first draw) is
@@ -103,7 +115,8 @@ namespace engine::rhi {
                 engine_check(false && "m3");
             }
 
-            void set_viewport_scissor(const uint32_t w, const uint32_t h) override {
+            void set_viewport_scissor(const uint32_t w, const uint32_t h) override
+            {
                 // Metal viewport is an ENCODER call, and m2 opens no long-lived encoder.
                 // Cache it; m3 applies it right after renderCommandEncoder().
                 vp_w_ = w;
@@ -111,12 +124,35 @@ namespace engine::rhi {
             }
 
             // ---- milestone 3 ----
-            void set_pso(PSOHandle) override { engine_check(false && "m3"); }
-            void set_index_buffer(BufferHandle, Format) override { engine_check(false && "m3"); }
-            void push_constants(const void *, uint32_t) override { engine_check(false && "m3"); }
-            void draw(uint32_t, uint32_t) override { engine_check(false && "m3"); }
-            void draw_indexed(uint32_t, uint32_t) override { engine_check(false && "m3"); }
-            void dispatch(uint32_t, uint32_t, uint32_t) override { engine_check(false && "m3"); }
+            void set_pso(PSOHandle) override
+            {
+                engine_check(false && "m3");
+            }
+
+            void set_index_buffer(BufferHandle, Format) override
+            {
+                engine_check(false && "m3");
+            }
+
+            void push_constants(const void *, uint32_t) override
+            {
+                engine_check(false && "m3");
+            }
+
+            void draw(uint32_t, uint32_t) override
+            {
+                engine_check(false && "m3");
+            }
+
+            void draw_indexed(uint32_t, uint32_t) override
+            {
+                engine_check(false && "m3");
+            }
+
+            void dispatch(uint32_t, uint32_t, uint32_t) override
+            {
+                engine_check(false && "m3");
+            }
 
         private:
             MetalDevice *dev_ = nullptr;
@@ -125,17 +161,17 @@ namespace engine::rhi {
         };
 
         // =============================================================== device
-        class MetalDevice final : public IDevice {
+        class MetalDevice final : public IDevice
+        {
         public:
-            explicit MetalDevice(const DeviceDesc &desc) : desc_(desc) {
-                engine_check(desc.frames_in_flight >= 1 &&
-                    desc.frames_in_flight <= kMaxFramesInFlight);
+            explicit MetalDevice(const DeviceDesc &desc) : desc_(desc)
+            {
+                engine_check(desc.frames_in_flight >= 1 && desc.frames_in_flight <= kMaxFramesInFlight);
 
                 // Cocoa autorelease: device_->name() and queue_->commandBuffer() return
                 // AUTORELEASED objects. app_macos.mm pumps events manually and never calls
                 // [NSApp run], so there is no run-loop pool to catch them here. Own one.
-                const NS::SharedPtr<NS::AutoreleasePool> pool =
-                        NS::TransferPtr(NS::AutoreleasePool::alloc()->init());
+                const NS::SharedPtr<NS::AutoreleasePool> pool = NS::TransferPtr(NS::AutoreleasePool::alloc()->init());
                 // ---------- §1: device ----------
                 // Create*/new*/alloc-init results are OWNED (+1) -> TransferPtr.
                 // Anything else is autoreleased -> RetainPtr, or don't store it.
@@ -176,7 +212,7 @@ namespace engine::rhi {
                 layer_ = NS::RetainPtr(static_cast<CA::MetalLayer *>(desc.native_window));
                 layer_->setDevice(device_.get());
                 layer_->setPixelFormat(MTL::PixelFormatBGRA8Unorm); // = Format::BGRA8_UNorm,
-                                                                    // matches app_macos.mm
+                // matches app_macos.mm
                 layer_->setFramebufferOnly(true); // no sampling/readback of the drawable at m2
                 // Window::width()/height() already report PIXELS (points x
                 // backingScaleFactor), so this is the drawable size verbatim.
@@ -193,13 +229,15 @@ namespace engine::rhi {
                 backbuffer_ = to_rhi<TextureHandle>(textures_.emplace());
             }
 
-            ~MetalDevice() override {
+            ~MetalDevice() override
+            {
                 // destroy_device already ran wait_idle.
                 textures_.destroy(to_pool<MetalTexture>(backbuffer_));
             }
 
             // ================================================== frame loop
-            FrameContext begin_frame() override {
+            FrameContext begin_frame() override
+            {
                 engine_check(!in_frame_);
                 in_frame_ = true;
 
@@ -208,8 +246,7 @@ namespace engine::rhi {
                 // drains and the loop wedges after ~3 frames.
                 frame_pool_ = NS::TransferPtr(NS::AutoreleasePool::alloc()->init());
 
-                const auto idx =
-                        static_cast<uint32_t>(frame_counter_ % desc_.frames_in_flight);
+                const auto idx = static_cast<uint32_t>(frame_counter_ % desc_.frames_in_flight);
 
                 // THE wait: this slot's previous submission must be fully consumed
                 // before we hand its resources out again. Same single line as D3D12,
@@ -237,7 +274,8 @@ namespace engine::rhi {
                 };
             }
 
-            void end_frame() override {
+            void end_frame() override
+            {
                 engine_check(in_frame_);
                 in_frame_ = false;
 
@@ -262,10 +300,13 @@ namespace engine::rhi {
                 frame_pool_.reset();
             }
 
-            void resize(const uint32_t w, const uint32_t h) override {
+            void resize(const uint32_t w, const uint32_t h) override
+            {
                 engine_check(!in_frame_);
-                if (w == 0 || h == 0) return; // minimized
-                if (w == desc_.width && h == desc_.height) return;
+                if (w == 0 || h == 0)
+                    return; // minimized
+                if (w == desc_.width && h == desc_.height)
+                    return;
                 desc_.width = w;
                 desc_.height = h;
 
@@ -277,9 +318,10 @@ namespace engine::rhi {
                 log::info("metal: resized to {}x{}", w, h);
             }
 
-            void wait_idle() override {
+            void wait_idle() override
+            {
                 const NS::SharedPtr<NS::AutoreleasePool> pool =
-                        NS::TransferPtr(NS::AutoreleasePool::alloc()->init());
+                    NS::TransferPtr(NS::AutoreleasePool::alloc()->init());
 
                 // No queue->Signal(fence, v) on Metal: a signal must be ENCODED, so an
                 // idle-wait costs one empty command buffer.
@@ -293,65 +335,88 @@ namespace engine::rhi {
             }
 
             // ================================================== resources (m3)
-            BufferHandle create_buffer(const BufferDesc &) override {
+            BufferHandle create_buffer(const BufferDesc &) override
+            {
                 engine_check(false && "m3");
                 return {};
             }
 
-            TextureHandle create_texture(const TextureDesc &) override {
+            TextureHandle create_texture(const TextureDesc &) override
+            {
                 engine_check(false && "m3");
                 return {};
             }
 
-            PSOHandle create_graphics_pso(const GraphicsPSODesc &) override {
+            PSOHandle create_graphics_pso(const GraphicsPSODesc &) override
+            {
                 engine_check(false && "m3");
                 return {};
             }
 
-            void destroy(BufferHandle) override { engine_check(false && "m3"); }
+            void destroy(BufferHandle) override
+            {
+                engine_check(false && "m3");
+            }
 
-            void destroy(TextureHandle) override {
+            void destroy(TextureHandle) override
+            {
                 // Only the backbuffer slot exists today, and begin_frame/teardown own
                 // it — forbid external destroy.
                 engine_check(false && "m3");
             }
 
-            void destroy(PSOHandle) override { engine_check(false && "m3"); }
+            void destroy(PSOHandle) override
+            {
+                engine_check(false && "m3");
+            }
 
-            uint32_t bindless_index(BufferHandle) override {
+            uint32_t bindless_index(BufferHandle) override
+            {
                 engine_check(false && "m3");
                 return 0;
             }
 
-            uint32_t bindless_index(TextureHandle) override {
+            uint32_t bindless_index(TextureHandle) override
+            {
                 engine_check(false && "m3");
                 return 0;
             }
 
-            void *map(BufferHandle) override {
+            void *map(BufferHandle) override
+            {
                 engine_check(false && "m3");
                 return nullptr;
             }
 
-            void unmap(BufferHandle) override { engine_check(false && "m3"); }
+            void unmap(BufferHandle) override
+            {
+                engine_check(false && "m3");
+            }
 
-            [[nodiscard]] const DeviceCaps &caps() const override { return caps_; }
+            [[nodiscard]] const DeviceCaps &caps() const override
+            {
+                return caps_;
+            }
 
             // ================================================== internals
-            MetalTexture *texture(const TextureHandle h) {
+            MetalTexture *texture(const TextureHandle h)
+            {
                 MetalTexture *t = textures_.get(to_pool<MetalTexture>(h));
                 engine_check(t && "stale TextureHandle");
                 return t;
             }
 
         private:
-            struct FrameSlot {
+            struct FrameSlot
+            {
                 uint64_t fence_value = 0; // 0 => never submitted: no wait
             };
 
             // wait_fence: fence_->GetCompletedValue() -> signaledValue()
-            void wait_fence(const uint64_t value) const {
-                if (value == 0 || fence_->signaledValue() >= value) return;
+            void wait_fence(const uint64_t value) const
+            {
+                if (value == 0 || fence_->signaledValue() >= value)
+                    return;
                 // timeout is MILLISECONDS, not ns/ticks. Returns false on timeout.
                 const bool ok = fence_->waitUntilSignaledValue(value, ~0ull);
                 engine_check(ok && "GPU fence wait timed out");
@@ -381,8 +446,8 @@ namespace engine::rhi {
         };
 
         // ============================================ command list (out-of-line)
-        void MetalCommandList::clear_render_target(const TextureHandle h,
-                                                   const std::array<float, 4> rgba) {
+        void MetalCommandList::clear_render_target(const TextureHandle h, const std::array<float, 4> rgba)
+        {
             engine_check(cmd_ && dev_ && "clear outside begin_frame/end_frame");
 
             // D3D12 has ClearRenderTargetView as a standalone command. Metal does not:
@@ -397,7 +462,7 @@ namespace engine::rhi {
             c0->setTexture(dev_->texture(h)->mtl.get());
             c0->setLoadAction(MTL::LoadActionClear);
             c0->setStoreAction(MTL::StoreActionStore); // set BOTH explicitly; don't
-                                                       // lean on descriptor defaults
+            // lean on descriptor defaults
             c0->setClearColor(MTL::ClearColor(rgba[0], rgba[1], rgba[2], rgba[3]));
 
             MTL::RenderCommandEncoder *enc = cmd_->renderCommandEncoder(pass);
@@ -410,7 +475,8 @@ namespace engine::rhi {
         }
     } // namespace
 
-    IDevice *create_metal_device(const DeviceDesc &desc) {
+    IDevice *create_metal_device(const DeviceDesc &desc)
+    {
         return new MetalDevice(desc);
     }
 } // namespace engine::rhi
