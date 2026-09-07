@@ -41,16 +41,16 @@ namespace engine::object
     //
     // Provides: SuperClass alias, static_class(), get_class() override.
     // REMINDER: Super must be the ONLY Object-derived base (see rule above).
-#define ENGINE_CLASS(Type, Super)                                          \
-public:                                                                    \
-    using SuperClass = Super;                                              \
+#define ENGINE_CLASS(Type, Super)                                                  \
+public:                                                                            \
+    using SuperClass = Super;                                                      \
     static const ::engine::object::ClassId* static_class() {                       \
         static const ::engine::object::ClassId id{#Type, Super::static_class()};   \
-        return &id;                                                        \
-    }                                                                      \
+        return &id;                                                                \
+    }                                                                              \
     const ::engine::object::ClassId* get_class() const override {                  \
-        return static_class();                                             \
-    }                                                                      \
+        return static_class();                                                     \
+    }                                                                              \
 private:
 
     // "Is this OBJECT (dynamic type) a T?" — the runtime question type traits
@@ -59,11 +59,8 @@ private:
     template <std::derived_from<Object> T>
     [[nodiscard]] bool is_a(const Object *o)
     {
-        if (!o)
-            return false;
-        for (const ClassId *c = o->get_class(); c; c = c->parent)
-            if (c == T::static_class())
-                return true;
+        if (!o) return false;
+        for (const ClassId *c = o->get_class(); c; c = c->parent) if (c == T::static_class()) return true;
         return false;
     }
 

@@ -71,7 +71,7 @@ namespace engine::rhi
 
     // -------------------------------------------------------------------- flags
     // enum-class flags need their operators spelled out once:
-#define ENGINE_RHI_FLAG_OPS(E)                                                   \
+#define ENGINE_RHI_FLAG_OPS(E)                                                \
     constexpr E operator|(E a, E b) {                                         \
         return E(uint32_t(a) | uint32_t(b));                                  \
     }                                                                         \

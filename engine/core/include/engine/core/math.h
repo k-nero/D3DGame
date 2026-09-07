@@ -45,14 +45,13 @@ namespace engine::math
 
     // Convention 1 wrappers: the ONLY projection/view helpers the engine uses.
     // Reaching past these to a *LH function is a convention violation.
-    [[nodiscard]] inline DirectX::XMMATRIX perspective(float fov_y, float aspect,
-                                                       float near_z, float far_z)
+    [[nodiscard]] inline DirectX::XMMATRIX perspective(const float fov_y, const float aspect, const float near_z,
+                                                       const float far_z)
     {
         return DirectX::XMMatrixPerspectiveFovRH(fov_y, aspect, near_z, far_z);
     }
 
-    [[nodiscard]] inline DirectX::XMMATRIX look_at(const float3 &eye, const float3 &target,
-                                                   const float3 &up)
+    [[nodiscard]] inline DirectX::XMMATRIX look_at(const float3 &eye, const float3 &target, const float3 &up)
     {
         using namespace DirectX;
         return XMMatrixLookAtRH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up));
