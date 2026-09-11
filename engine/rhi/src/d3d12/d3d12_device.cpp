@@ -35,10 +35,7 @@ namespace engine::rhi {
 		// is "any compatible access". Our empty flag set therefore translates
 		// context-sensitively:
 		D3D12_BARRIER_ACCESS to_d3d12(Access a, Sync paired_sync) {
-			if (a == Access::NoAccess)
-				return paired_sync == Sync::None
-				? D3D12_BARRIER_ACCESS_NO_ACCESS
-				: D3D12_BARRIER_ACCESS_COMMON;
+			if (a == Access::NoAccess) return paired_sync == Sync::None ? D3D12_BARRIER_ACCESS_NO_ACCESS : D3D12_BARRIER_ACCESS_COMMON;
 			D3D12_BARRIER_ACCESS r = D3D12_BARRIER_ACCESS_COMMON;
 			if (any(a & Access::RenderTarget)) r |= D3D12_BARRIER_ACCESS_RENDER_TARGET;
 			if (any(a & Access::DepthWrite)) r |= D3D12_BARRIER_ACCESS_DEPTH_STENCIL_WRITE;
