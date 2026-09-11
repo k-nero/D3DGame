@@ -41,11 +41,10 @@ namespace engine::rhi
     // Same 24/8 generational layout as eng::Handle, restated here so rhi.h has
     // zero dependencies on core containers. The Tag makes BufferHandle and
     // TextureHandle distinct types — they cannot be swapped at a call site.
-    template <class Tag>
-    struct GpuHandle
+    template <class Tag> struct GpuHandle
     {
-        uint32_t index: 24 = 0;
-        uint32_t gen: 8 = 0; // gen 0 = null, same convention as pool.h
+        uint32_t index : 24 = 0;
+        uint32_t gen : 8 = 0; // gen 0 = null, same convention as pool.h
 
         [[nodiscard]] bool is_null() const { return gen == 0; }
 
@@ -71,20 +70,16 @@ namespace engine::rhi
 
     // -------------------------------------------------------------------- flags
     // enum-class flags need their operators spelled out once:
-#define ENGINE_RHI_FLAG_OPS(E)                                                \
-    constexpr E operator|(E a, E b) {                                         \
-        return E(uint32_t(a) | uint32_t(b));                                  \
-    }                                                                         \
-    constexpr E operator&(E a, E b) {                                         \
-        return E(uint32_t(a) & uint32_t(b));                                  \
-    }                                                                         \
+#define ENGINE_RHI_FLAG_OPS(E)                                                                                         \
+    constexpr E operator|(E a, E b) { return E(uint32_t(a) | uint32_t(b)); }                                           \
+    constexpr E operator&(E a, E b) { return E(uint32_t(a) & uint32_t(b)); }                                           \
     constexpr bool any(E a) { return uint32_t(a) != 0; }
 
     enum class BufferUsage : uint8_t
     {
         None = 0,
         Vertex = 1 << 0, // NOTE: bindless vertex *pulling* wants Storage, not this;
-        Index = 1 << 1, //       Vertex exists for tooling/interop completeness
+        Index = 1 << 1,  //       Vertex exists for tooling/interop completeness
         Constant = 1 << 2,
         Storage = 1 << 3,
     };
@@ -105,8 +100,8 @@ namespace engine::rhi
     // Where the memory lives — the D3D12 heap-type trio, portable spelling.
     enum class Memory : uint8_t
     {
-        GpuOnly, // DEFAULT heap: fast, not CPU-visible
-        Upload, // CPU-write / GPU-read; map() works only on these
+        GpuOnly,  // DEFAULT heap: fast, not CPU-visible
+        Upload,   // CPU-write / GPU-read; map() works only on these
         Readback, // GPU-write / CPU-read
     };
 
@@ -181,7 +176,7 @@ namespace engine::rhi
         Memory memory = Memory::GpuOnly;
         BufferUsage usage = BufferUsage::None;
         std::span<const std::byte> initial_data{}; // staged through the upload ring
-        const char *debug_name = nullptr; // shows up in PIX / debug layer
+        const char *debug_name = nullptr;          // shows up in PIX / debug layer
     };
 
     struct TextureDesc
@@ -206,7 +201,12 @@ namespace engine::rhi
         bool depth_test = true;
         bool depth_write = true;
 
-        enum class Cull : uint8_t { None, Back, Front } cull = Cull::Back;
+        enum class Cull : uint8_t
+        {
+            None,
+            Back,
+            Front
+        } cull = Cull::Back;
 
         const char *debug_name = nullptr;
     };
@@ -228,13 +228,11 @@ namespace engine::rhi
 
         void set_render_targets(const std::span<const TextureHandle> colors) { set_render_targets(colors, {}); }
 
-        virtual void barrier(std::span<const TextureBarrier> textures,
-                             std::span<const BufferBarrier> buffers) = 0;
+        virtual void barrier(std::span<const TextureBarrier> textures, std::span<const BufferBarrier> buffers) = 0;
 
         virtual void clear_render_target(TextureHandle, std::array<float, 4> rgba) = 0;
 
-        virtual void set_render_targets(std::span<const TextureHandle> colors,
-                                        TextureHandle depth) = 0;
+        virtual void set_render_targets(std::span<const TextureHandle> colors, TextureHandle depth) = 0;
 
         virtual void set_viewport_scissor(uint32_t width, uint32_t height) = 0;
 
@@ -329,8 +327,8 @@ namespace engine::rhi
     // into the ABI. Leave them alone.
     enum class Backend : uint8_t
     {
-        D3D12, // Windows
-        Metal, // MacOS
+        D3D12,  // Windows
+        Metal,  // MacOS
         Vulkan, // Linux
     };
 
@@ -340,12 +338,12 @@ namespace engine::rhi
         uint32_t width = 1280;
         uint32_t height = 720;
         uint32_t frames_in_flight = 2; // <= kMaxFramesInFlight
-        bool enable_debug = true; // debug layer + GPU validation + DRED
+        bool enable_debug = true;      // debug layer + GPU validation + DRED
     };
 
     [[nodiscard]] ENGINE_API IDevice *create_device(Backend, const DeviceDesc &);
 
     ENGINE_API void destroy_device(IDevice *); // wait_idle + teardown
-} // namespace eng::rhi
+} // namespace engine::rhi
 
-#endif //ENGINE_RHI_H
+#endif // ENGINE_RHI_H

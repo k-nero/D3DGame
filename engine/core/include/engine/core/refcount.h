@@ -6,20 +6,19 @@
 #ifndef ENGINE_REFCOUNT_H
 #define ENGINE_REFCOUNT_H
 #include <atomic>
-#include <concepts>         // C++20: std::derived_from
+#include <concepts> // C++20: std::derived_from
 #include <cstdint>
 #include <type_traits>
 #include <utility>
 
 #include "asserts.h"
 
-
 namespace engine::refcount
 {
     class RefCounted
     {
     public:
-        RefCounted(const RefCounted &) = delete; // count is identity-bound;
+        RefCounted(const RefCounted &) = delete;            // count is identity-bound;
         RefCounted &operator=(const RefCounted &) = delete; // copying it is always a bug
 
         void add_ref() const { refs_.fetch_add(1, std::memory_order_relaxed); }
@@ -29,8 +28,7 @@ namespace engine::refcount
             // acq_rel: the thread that deletes must observe all writes made by
             // other threads before they released. Single-threaded until
             // milestone 10, but this is the version we'd write then anyway.
-            if (refs_.fetch_sub(1, std::memory_order_acq_rel) == 1)
-                delete this;
+            if (refs_.fetch_sub(1, std::memory_order_acq_rel) == 1) delete this;
         }
 
         [[nodiscard]] uint32_t ref_count() const
@@ -46,7 +44,7 @@ namespace engine::refcount
 
     private:
         // mutable + const methods: a Ref<const T> can still count references.
-        mutable std::atomic<uint32_t> refs_{1};
+        mutable std::atomic<uint32_t> refs_{ 1 };
     };
 
     // C++20 concept: constrain at the declaration, error at the call site.
@@ -55,8 +53,7 @@ namespace engine::refcount
     template <class T>
     concept RefCountable = std::derived_from<std::remove_const_t<T>, RefCounted>;
 
-    template <RefCountable T>
-    class Ref
+    template <RefCountable T> class Ref
     {
     public:
         Ref() = default;
@@ -68,8 +65,7 @@ namespace engine::refcount
 
         Ref(const Ref &o) : ptr_(o.ptr_)
         {
-            if (ptr_)
-                ptr_->add_ref();
+            if (ptr_) ptr_->add_ref();
         }
 
         Ref(Ref &&o) noexcept : ptr_(std::exchange(o.ptr_, nullptr)) {}
@@ -85,8 +81,7 @@ namespace engine::refcount
 
         ~Ref()
         {
-            if (ptr_)
-                ptr_->release();
+            if (ptr_) ptr_->release();
         }
 
         [[nodiscard]] T *get() const { return ptr_; }
@@ -115,10 +110,9 @@ namespace engine::refcount
         T *ptr_ = nullptr;
     };
 
-    template <RefCountable T, class... Args>
-    [[nodiscard]] Ref<T> make_ref(Args &&... args)
+    template <RefCountable T, class... Args> [[nodiscard]] Ref<T> make_ref(Args &&...args)
     {
         return Ref<T>(new T(std::forward<Args>(args)...)); // ctor's ref = the one we adopt
     }
-}
-#endif //ENGINE_REFCOUNT_H
+} // namespace engine::refcount
+#endif // ENGINE_REFCOUNT_H

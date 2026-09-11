@@ -16,14 +16,11 @@ namespace engine::app
             if (msg == WM_NCCREATE)
             {
                 auto *cs = reinterpret_cast<CREATESTRUCTW *>(lp);
-                SetWindowLongPtrW(hwnd, GWLP_USERDATA,
-                                  reinterpret_cast<LONG_PTR>(cs->lpCreateParams));
+                SetWindowLongPtrW(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(cs->lpCreateParams));
                 return DefWindowProcW(hwnd, msg, wp, lp);
             }
-            auto *w = reinterpret_cast<Window *>(
-                GetWindowLongPtrW(hwnd, GWLP_USERDATA));
-            if (!w)
-                return DefWindowProcW(hwnd, msg, wp, lp);
+            auto *w = reinterpret_cast<Window *>(GetWindowLongPtrW(hwnd, GWLP_USERDATA));
+            if (!w) return DefWindowProcW(hwnd, msg, wp, lp);
 
             switch (msg)
             {
@@ -59,17 +56,16 @@ namespace engine::app
         RegisterClassW(&wc); // idempotent enough for one window; fine for now
 
         // Client area (the render target) should be WxH, not the outer frame:
-        RECT r{0, 0, LONG(desc.width), LONG(desc.height)};
+        RECT r{ 0, 0, LONG(desc.width), LONG(desc.height) };
         AdjustWindowRect(&r, WS_OVERLAPPEDWINDOW, FALSE);
 
         wchar_t wtitle[256];
         MultiByteToWideChar(CP_UTF8, 0, desc.title, -1, wtitle, 256);
 
         HWND hwnd = CreateWindowExW(
-            0, wc.lpszClassName, wtitle, WS_OVERLAPPEDWINDOW,
-            CW_USEDEFAULT, CW_USEDEFAULT,
-            r.right - r.left, r.bottom - r.top,
-            nullptr, nullptr, inst, this);
+            0, wc.lpszClassName, wtitle, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, r.right - r.left,
+            r.bottom - r.top, nullptr, nullptr, inst, this
+        );
         engine_check(hwnd);
         impl_ = hwnd;
 
@@ -78,16 +74,14 @@ namespace engine::app
 
     Window::~Window()
     {
-        if (impl_)
-            DestroyWindow(static_cast<HWND>(impl_));
+        if (impl_) DestroyWindow(static_cast<HWND>(impl_));
     }
 
     void *Window::native_handle() const { return impl_; }
 
     bool Window::pump()
     {
-        if (should_close_)
-            return false;
+        if (should_close_) return false;
         MSG msg;
         while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE))
         {
@@ -104,4 +98,4 @@ namespace engine::app
         resized_ = false;
         return r;
     }
-} // namespace eng::app
+} // namespace engine::app

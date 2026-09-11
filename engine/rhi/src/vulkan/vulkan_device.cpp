@@ -28,15 +28,15 @@
 //     time; resize is not the only path that rebuilds the swapchain
 
 #if defined(_WIN32)
-#  define VK_USE_PLATFORM_WIN32_KHR
-#  define WIN32_LEAN_AND_MEAN
-#  define NOMINMAX
-#  include <windows.h>
+#define VK_USE_PLATFORM_WIN32_KHR
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <windows.h>
 #elif defined(__APPLE__)
 // VK_EXT_metal_surface, not the deprecated VK_MVK_macos_surface: it takes a
 // CAMetalLayer* directly, which is exactly what Window::native_handle() already
 // hands the Metal backend. Same pointer, no new seam in the app layer.
-#  define VK_USE_PLATFORM_METAL_EXT
+#define VK_USE_PLATFORM_METAL_EXT
 #endif
 
 #include <vulkan/vulkan.h>
@@ -96,13 +96,15 @@ namespace engine::rhi
 
         // The ENGINE_HR of this backend. Logs the actual VkResult before dying —
         // "vkCreateDevice failed" without the code is a wasted debugging hour.
-#define ENGINE_VK(expr)                                                        \
-    do {                                                                       \
-        const VkResult vkr_ = (expr);                                          \
-        if (vkr_ != VK_SUCCESS) {                                              \
-            log::error("vulkan: {} -> {}", #expr, vk_result_str(vkr_));        \
-            engine_check(false);                                               \
-        }                                                                      \
+#define ENGINE_VK(expr)                                                                                                \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        const VkResult vkr_ = (expr);                                                                                  \
+        if (vkr_ != VK_SUCCESS)                                                                                        \
+        {                                                                                                              \
+            log::error("vulkan: {} -> {}", #expr, vk_result_str(vkr_));                                                \
+            engine_check(false);                                                                                       \
+        }                                                                                                              \
     } while (0)
 
         // ============================================================ translation
@@ -113,20 +115,13 @@ namespace engine::rhi
         VkPipelineStageFlags2 to_vk(const Sync s)
         {
             VkPipelineStageFlags2 r = VK_PIPELINE_STAGE_2_NONE;
-            if (any(s & Sync::All))
-                r |= VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
-            if (any(s & Sync::Draw))
-                r |= VK_PIPELINE_STAGE_2_ALL_GRAPHICS_BIT;
-            if (any(s & Sync::PixelShading))
-                r |= VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT;
-            if (any(s & Sync::RenderTarget))
-                r |= VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
-            if (any(s & Sync::DepthStencil))
-                r |= VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_2_LATE_FRAGMENT_TESTS_BIT;
-            if (any(s & Sync::Compute))
-                r |= VK_PIPELINE_STAGE_2_COMPUTE_SHADER_BIT;
-            if (any(s & Sync::Copy))
-                r |= VK_PIPELINE_STAGE_2_ALL_TRANSFER_BIT;
+            if (any(s & Sync::All)) r |= VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
+            if (any(s & Sync::Draw)) r |= VK_PIPELINE_STAGE_2_ALL_GRAPHICS_BIT;
+            if (any(s & Sync::PixelShading)) r |= VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT;
+            if (any(s & Sync::RenderTarget)) r |= VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
+            if (any(s & Sync::DepthStencil)) r |= VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_2_LATE_FRAGMENT_TESTS_BIT;
+            if (any(s & Sync::Compute)) r |= VK_PIPELINE_STAGE_2_COMPUTE_SHADER_BIT;
+            if (any(s & Sync::Copy)) r |= VK_PIPELINE_STAGE_2_ALL_TRANSFER_BIT;
             return r;
         }
 
@@ -142,14 +137,11 @@ namespace engine::rhi
                 r |= VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_2_COLOR_ATTACHMENT_READ_BIT;
             if (any(a & Access::DepthWrite))
                 r |= VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT | VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_READ_BIT;
-            if (any(a & Access::ShaderRead))
-                r |= VK_ACCESS_2_SHADER_READ_BIT;
+            if (any(a & Access::ShaderRead)) r |= VK_ACCESS_2_SHADER_READ_BIT;
             if (any(a & Access::UnorderedAccess))
                 r |= VK_ACCESS_2_SHADER_STORAGE_READ_BIT | VK_ACCESS_2_SHADER_STORAGE_WRITE_BIT;
-            if (any(a & Access::CopySrc))
-                r |= VK_ACCESS_2_TRANSFER_READ_BIT;
-            if (any(a & Access::CopyDst))
-                r |= VK_ACCESS_2_TRANSFER_WRITE_BIT;
+            if (any(a & Access::CopySrc)) r |= VK_ACCESS_2_TRANSFER_READ_BIT;
+            if (any(a & Access::CopyDst)) r |= VK_ACCESS_2_TRANSFER_WRITE_BIT;
             return r;
         }
 
@@ -181,16 +173,14 @@ namespace engine::rhi
         // ============================================================== resources
         struct VulkanTexture
         {
-            VkImage image = VK_NULL_HANDLE; // swapchain-owned at m2: do NOT vkDestroyImage
+            VkImage image = VK_NULL_HANDLE;    // swapchain-owned at m2: do NOT vkDestroyImage
             VkImageView view = VK_NULL_HANDLE; // ours: vkDestroyImageView on teardown
             uint32_t width = 0, height = 0;
         };
 
-        template <class RhiH, class T>
-        RhiH to_rhi(Handle<T> h) { return RhiH{.index = h.index, .gen = h.gen}; }
+        template <class RhiH, class T> RhiH to_rhi(Handle<T> h) { return RhiH{ .index = h.index, .gen = h.gen }; }
 
-        template <class T, class RhiH>
-        Handle<T> to_pool(RhiH h) { return Handle<T>{.index = h.index, .gen = h.gen}; }
+        template <class T, class RhiH> Handle<T> to_pool(RhiH h) { return Handle<T>{ .index = h.index, .gen = h.gen }; }
 
         class VulkanDevice;
 
@@ -221,11 +211,17 @@ namespace engine::rhi
                 // Legal to record outside a rendering scope (unlike Metal, where the
                 // viewport is an encoder call), so just do it.
                 const VkViewport vp{
-                    .x = 0.f, .y = 0.f,
-                    .width = static_cast<float>(w), .height = static_cast<float>(h),
-                    .minDepth = 0.f, .maxDepth = 1.f, // depth [0,1], matching the
+                    .x = 0.f,
+                    .y = 0.f,
+                    .width = static_cast<float>(w),
+                    .height = static_cast<float>(h),
+                    .minDepth = 0.f,
+                    .maxDepth = 1.f, // depth [0,1], matching the
                 }; // math conventions in tests/
-                const VkRect2D sc{.offset = {.x = 0, .y = 0}, .extent = {w, h}};
+                const VkRect2D sc{
+                    .offset = { .x = 0, .y = 0 },
+                      .extent = { w,      h      }
+                };
                 vkCmdSetViewport(cmd_, 0, 1, &vp);
                 vkCmdSetScissor(cmd_, 0, 1, &sc);
             }
@@ -275,7 +271,8 @@ namespace engine::rhi
                 if (messenger_)
                 {
                     if (const auto destroy = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
-                        vkGetInstanceProcAddr(instance_, "vkDestroyDebugUtilsMessengerEXT")))
+                            vkGetInstanceProcAddr(instance_, "vkDestroyDebugUtilsMessengerEXT")
+                        ))
                         destroy(instance_, messenger_, nullptr);
                 }
                 if (instance_) vkDestroyInstance(instance_, nullptr);
@@ -322,8 +319,7 @@ namespace engine::rhi
                 engine_check(in_frame_);
                 in_frame_ = false;
 
-                const auto idx =
-                    static_cast<uint32_t>(frame_counter_ % desc_.frames_in_flight);
+                const auto idx = static_cast<uint32_t>(frame_counter_ % desc_.frames_in_flight);
                 FrameSlot &slot = frame_[idx];
                 ENGINE_VK(vkEndCommandBuffer(slot.cmd));
 
@@ -340,17 +336,17 @@ namespace engine::rhi
                 };
                 const VkSemaphoreSubmitInfo signal[2]{
                     {
-                        .sType = VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO,
-                        .semaphore = images_[image_index_].render_finished,
-                        .value = 0, // binary
+                     .sType = VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO,
+                     .semaphore = images_[image_index_].render_finished,
+                     .value = 0,                                       // binary
                         .stageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT,
-                    },
+                     },
                     {
-                        .sType = VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO,
-                        .semaphore = timeline_,
-                        .value = v, // timeline: THIS is the fence value
+                     .sType = VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO,
+                     .semaphore = timeline_,
+                     .value = v, // timeline: THIS is the fence value
                         .stageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT,
-                    },
+                     },
                 };
                 const VkCommandBufferSubmitInfo cbi{
                     .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO,
@@ -386,13 +382,19 @@ namespace engine::rhi
                 // OUT_OF_DATE/SUBOPTIMAL here are NOT errors: the window changed
                 // under us. Flag it and rebuild at the top of the next frame.
                 if (const VkResult pr = vkQueuePresentKHR(queue_, &pi);
-                    pr == VK_ERROR_OUT_OF_DATE_KHR || pr == VK_SUBOPTIMAL_KHR) { needs_rebuild_ = true; }
+                    pr == VK_ERROR_OUT_OF_DATE_KHR || pr == VK_SUBOPTIMAL_KHR)
+                {
+                    needs_rebuild_ = true;
+                }
                 else if (pr == VK_ERROR_DEVICE_LOST)
                 {
                     log::error("vulkan: DEVICE LOST on present");
                     engine_check(false);
                 }
-                else { ENGINE_VK(pr); }
+                else
+                {
+                    ENGINE_VK(pr);
+                }
 
                 slot.timeline_value = v;
                 ++frame_counter_;
@@ -401,10 +403,8 @@ namespace engine::rhi
             void resize(const uint32_t w, const uint32_t h) override
             {
                 engine_check(!in_frame_);
-                if (w == 0 || h == 0)
-                    return; // minimized
-                if (w == desc_.width && h == desc_.height)
-                    return;
+                if (w == 0 || h == 0) return; // minimized
+                if (w == desc_.width && h == desc_.height) return;
                 desc_.width = w;
                 desc_.height = h;
                 needs_rebuild_ = true;
@@ -483,8 +483,7 @@ namespace engine::rhi
             [[nodiscard]] bool swapchain_image_is_undefined(const TextureHandle h) const
             {
                 for (const SwapImage &img : images_)
-                    if (img.handle == h)
-                        return !img.presented;
+                    if (img.handle == h) return !img.presented;
                 return false;
             }
 
@@ -494,7 +493,7 @@ namespace engine::rhi
                 VkCommandPool pool = VK_NULL_HANDLE;
                 VkCommandBuffer cmd = VK_NULL_HANDLE;
                 VkSemaphore acquire = VK_NULL_HANDLE; // binary, per frame-in-flight
-                uint64_t timeline_value = 0; // 0 => never submitted: no wait
+                uint64_t timeline_value = 0;          // 0 => never submitted: no wait
             };
 
             struct SwapImage
@@ -524,7 +523,7 @@ namespace engine::rhi
                 configure_loader_search_paths();
 
                 std::vector<const char *> layers;
-                std::vector<const char *> exts{VK_KHR_SURFACE_EXTENSION_NAME};
+                std::vector<const char *> exts{ VK_KHR_SURFACE_EXTENSION_NAME };
                 VkInstanceCreateFlags flags = 0;
 #if defined(_WIN32)
                 exts.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
@@ -544,8 +543,10 @@ namespace engine::rhi
                 }
                 else
                 {
-                    log::warn("vulkan: {} unavailable — MoltenVK will not be enumerated",
-                              VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+                    log::warn(
+                        "vulkan: {} unavailable — MoltenVK will not be enumerated",
+                        VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME
+                    );
                 }
 #endif
                 if (desc_.enable_debug)
@@ -561,10 +562,12 @@ namespace engine::rhi
                     }
                     else
                     {
-                        log::warn("vulkan: VK_LAYER_KHRONOS_validation not found - running "
+                        log::warn(
+                            "vulkan: VK_LAYER_KHRONOS_validation not found - running "
                             "UNVALIDATED. Is vulkan-validationlayers installed for this "
                             "triplet? (engine_rhi bakes the manifest dir in as "
-                            "ENGINE_VK_LAYER_PATH; see engine/rhi/CMakeLists.txt)");
+                            "ENGINE_VK_LAYER_PATH; see engine/rhi/CMakeLists.txt)"
+                        );
                     }
                 }
 
@@ -588,8 +591,7 @@ namespace engine::rhi
                 };
                 ENGINE_VK(vkCreateInstance(&ci, nullptr, &instance_));
 
-                if (!layers.empty())
-                    create_debug_messenger();
+                if (!layers.empty()) create_debug_messenger();
             }
 
             // Append to a loader search variable without clobbering a value the
@@ -607,10 +609,7 @@ namespace engine::rhi
                 constexpr char sep = ':';
 #endif
                 std::string v = value;
-                if (const char *existing = std::getenv(var); existing && *existing)
-                {
-                    v = std::string(existing) + sep + v;
-                }
+                if (const char *existing = std::getenv(var); existing && *existing) v = std::string(existing) + sep + v;
 #if defined(_WIN32)
                 _putenv_s(var, v.c_str());
                 SetEnvironmentVariableA(var, v.c_str());
@@ -671,14 +670,14 @@ namespace engine::rhi
             void create_debug_messenger()
             {
                 const auto create = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(
-                    vkGetInstanceProcAddr(instance_, "vkCreateDebugUtilsMessengerEXT"));
-                if (!create)
-                    return;
+                    vkGetInstanceProcAddr(instance_, "vkCreateDebugUtilsMessengerEXT")
+                );
+                if (!create) return;
 
                 const VkDebugUtilsMessengerCreateInfoEXT ci{
                     .sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT,
-                    .messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
-                                       VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT,
+                    .messageSeverity =
+                        VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT,
                     .messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
                                    VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
                                    VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT,
@@ -690,10 +689,9 @@ namespace engine::rhi
             // Zero-validation-warnings policy, same as the D3D12 InfoQueue callback:
             // errors are bugs and die immediately.
             static VKAPI_ATTR VkBool32 VKAPI_CALL on_debug_message(
-                const VkDebugUtilsMessageSeverityFlagBitsEXT severity,
-                VkDebugUtilsMessageTypeFlagsEXT,
-                const VkDebugUtilsMessengerCallbackDataEXT *data,
-                void *)
+                const VkDebugUtilsMessageSeverityFlagBitsEXT severity, VkDebugUtilsMessageTypeFlagsEXT,
+                const VkDebugUtilsMessengerCallbackDataEXT *data, void *
+            )
             {
                 if (severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
                 {
@@ -719,7 +717,8 @@ namespace engine::rhi
                 // one for the layer-hosting content view and the Metal backend casts
                 // the same pointer to CA::MetalLayer*. Nothing new to plumb.
                 engine_check(
-                    desc_.native_window && "Vulkan/MoltenVK needs the CAMetalLayer* from Window::native_handle()");
+                    desc_.native_window && "Vulkan/MoltenVK needs the CAMetalLayer* from Window::native_handle()"
+                );
                 const VkMetalSurfaceCreateInfoEXT ci{
                     .sType = VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT,
                     .pLayer = static_cast<const CAMetalLayer *>(desc_.native_window),
@@ -738,8 +737,10 @@ namespace engine::rhi
                 // To finish Linux: add engine/app/src/linux/app_linux.cpp with an
                 // xcb or Wayland Window, decide what native_window carries, then
                 // implement VK_KHR_xcb_surface / VK_KHR_wayland_surface here.
-                engine_check(false && "Linux surface: no Window implementation exists yet "
-                    "(see engine/app/src/ — only win32/ and macos/)");
+                engine_check(
+                    false && "Linux surface: no Window implementation exists yet "
+                             "(see engine/app/src/ — only win32/ and macos/)"
+                );
 #endif
             }
 
@@ -761,34 +762,30 @@ namespace engine::rhi
                     // silently disappears and the check below blames the driver.
                     if (props.apiVersion < VK_API_VERSION_1_3)
                     {
-                        log::warn("vulkan: skipping '{}' — reports {}.{}.{}, need 1.3 for "
-                                  "sync2 + dynamic rendering + timeline semaphores in core",
-                                  props.deviceName,
-                                  VK_API_VERSION_MAJOR(props.apiVersion),
-                                  VK_API_VERSION_MINOR(props.apiVersion),
-                                  VK_API_VERSION_PATCH(props.apiVersion));
+                        log::warn(
+                            "vulkan: skipping '{}' — reports {}.{}.{}, need 1.3 for "
+                            "sync2 + dynamic rendering + timeline semaphores in core",
+                            props.deviceName, VK_API_VERSION_MAJOR(props.apiVersion),
+                            VK_API_VERSION_MINOR(props.apiVersion), VK_API_VERSION_PATCH(props.apiVersion)
+                        );
                         continue;
                     }
-                    if (!has_device_extension(pd, VK_KHR_SWAPCHAIN_EXTENSION_NAME))
-                        continue;
+                    if (!has_device_extension(pd, VK_KHR_SWAPCHAIN_EXTENSION_NAME)) continue;
 
                     uint32_t family = 0;
-                    if (!find_graphics_present_family(pd, family))
-                        continue;
-                    if (!has_required_features(pd))
-                        continue;
+                    if (!find_graphics_present_family(pd, family)) continue;
+                    if (!has_required_features(pd)) continue;
 
                     // Prefer discrete; keep looking if this one is integrated.
                     physical_ = pd;
                     queue_family_ = family;
-                    std::snprintf(caps_.adapter_name, sizeof(caps_.adapter_name), "%s",
-                                  props.deviceName);
-                    if (props.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
-                        break;
+                    std::snprintf(caps_.adapter_name, sizeof(caps_.adapter_name), "%s", props.deviceName);
+                    if (props.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) break;
                 }
-                engine_check(physical_ &&
-                    "no Vulkan 1.3 device with swapchain + graphics/present queue + "
-                    "dynamicRendering/synchronization2/timelineSemaphore");
+                engine_check(
+                    physical_ && "no Vulkan 1.3 device with swapchain + graphics/present queue + "
+                                 "dynamicRendering/synchronization2/timelineSemaphore"
+                );
 
                 VkPhysicalDeviceMemoryProperties mem{};
                 vkGetPhysicalDeviceMemoryProperties(physical_, &mem);
@@ -796,8 +793,9 @@ namespace engine::rhi
                     if (mem.memoryHeaps[i].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT)
                         caps_.vram_bytes = std::max(caps_.vram_bytes, mem.memoryHeaps[i].size);
 
-                log::info("vulkan: adapter '{}', {} MB device-local", caps_.adapter_name,
-                          caps_.vram_bytes / (1024 * 1024));
+                log::info(
+                    "vulkan: adapter '{}', {} MB device-local", caps_.adapter_name, caps_.vram_bytes / (1024 * 1024)
+                );
             }
 
             static bool has_device_extension(const VkPhysicalDevice pd, const char *name)
@@ -820,8 +818,7 @@ namespace engine::rhi
 
                 for (uint32_t i = 0; i < n; ++i)
                 {
-                    if (!(families[i].queueFlags & VK_QUEUE_GRAPHICS_BIT))
-                        continue;
+                    if (!(families[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)) continue;
                     VkBool32 present = VK_FALSE;
                     vkGetPhysicalDeviceSurfaceSupportKHR(pd, i, surface_, &present);
                     // One family doing both keeps the swapchain in EXCLUSIVE sharing
@@ -838,9 +835,7 @@ namespace engine::rhi
 
             static bool has_required_features(VkPhysicalDevice pd)
             {
-                VkPhysicalDeviceVulkan13Features f13{
-                    .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES
-                };
+                VkPhysicalDeviceVulkan13Features f13{ .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES };
                 VkPhysicalDeviceVulkan12Features f12{
                     .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES,
                     .pNext = &f13,
@@ -864,9 +859,7 @@ namespace engine::rhi
                     .pQueuePriorities = &priority,
                 };
 
-                VkPhysicalDeviceVulkan13Features f13{
-                    .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES
-                };
+                VkPhysicalDeviceVulkan13Features f13{ .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES };
                 f13.synchronization2 = VK_TRUE;
                 f13.dynamicRendering = VK_TRUE;
 
@@ -876,7 +869,7 @@ namespace engine::rhi
                 };
                 f12.timelineSemaphore = VK_TRUE;
 
-                std::vector<const char *> dev_exts{VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+                std::vector<const char *> dev_exts{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
                 // Not optional: the spec REQUIRES a portability driver's device to
                 // enable this if it advertises it, and vkCreateDevice fails if you
@@ -917,21 +910,17 @@ namespace engine::rhi
 
                 // currentExtent == UINT32_MAX means "you choose" (some Wayland/X11
                 // setups); otherwise the surface dictates and we must obey it.
-                extent_ = surf.currentExtent.width == UINT32_MAX
-                              ? VkExtent2D{
-                                  std::clamp(desc_.width, surf.minImageExtent.width,
-                                             surf.maxImageExtent.width),
-                                  std::clamp(desc_.height, surf.minImageExtent.height,
-                                             surf.maxImageExtent.height)
-                              }
-                              : surf.currentExtent;
+                extent_ =
+                    surf.currentExtent.width == UINT32_MAX
+                        ? VkExtent2D{ std::clamp(desc_.width, surf.minImageExtent.width, surf.maxImageExtent.width),
+                                      std::clamp(desc_.height, surf.minImageExtent.height, surf.maxImageExtent.height) }
+                        : surf.currentExtent;
 
                 format_ = pick_surface_format();
 
                 uint32_t want = desc_.frames_in_flight + 1; // one to present, N to fill
                 want = std::max(want, surf.minImageCount);
-                if (surf.maxImageCount != 0)
-                    want = std::min(want, surf.maxImageCount);
+                if (surf.maxImageCount != 0) want = std::min(want, surf.maxImageCount);
 
                 const VkSwapchainCreateInfoKHR ci{
                     .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
@@ -981,11 +970,8 @@ namespace engine::rhi
 
                     images_[i].handle = to_rhi<TextureHandle>(textures_.create(std::move(t)));
 
-                    constexpr VkSemaphoreCreateInfo sci{
-                        .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO
-                    };
-                    ENGINE_VK(vkCreateSemaphore(device_, &sci, nullptr,
-                        &images_[i].render_finished));
+                    constexpr VkSemaphoreCreateInfo sci{ .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO };
+                    ENGINE_VK(vkCreateSemaphore(device_, &sci, nullptr, &images_[i].render_finished));
                 }
                 log::info("vulkan: swapchain {}x{}, {} images", extent_.width, extent_.height, n);
             }
@@ -1003,8 +989,7 @@ namespace engine::rhi
                     // swapchain's DXGI_FORMAT_B8G8R8A8_UNORM. UNORM not SRGB: the
                     // sample writes its rainbow in whatever space it likes and we
                     // are not doing colour management at m2.
-                    if (f.format == VK_FORMAT_B8G8R8A8_UNORM &&
-                        f.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+                    if (f.format == VK_FORMAT_B8G8R8A8_UNORM && f.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
                         return f;
                 return formats[0];
             }
@@ -1013,12 +998,10 @@ namespace engine::rhi
             {
                 for (SwapImage &img : images_)
                 {
-                    if (img.render_finished)
-                        vkDestroySemaphore(device_, img.render_finished, nullptr);
+                    if (img.render_finished) vkDestroySemaphore(device_, img.render_finished, nullptr);
                     if (!img.handle.is_null())
                     {
-                        if (const VulkanTexture *t =
-                            textures_.get(to_pool<VulkanTexture>(img.handle)))
+                        if (const VulkanTexture *t = textures_.get(to_pool<VulkanTexture>(img.handle)))
                             vkDestroyImageView(device_, t->view, nullptr);
                         textures_.destroy(to_pool<VulkanTexture>(img.handle));
                     }
@@ -1044,16 +1027,14 @@ namespace engine::rhi
 
             void acquire_next_image(const uint32_t frame_idx)
             {
-                if (needs_rebuild_)
-                    rebuild_swapchain();
+                if (needs_rebuild_) rebuild_swapchain();
 
                 for (;;)
                 {
                     const VkResult r = vkAcquireNextImageKHR(
-                        device_, swapchain_, UINT64_MAX,
-                        frame_[frame_idx].acquire, VK_NULL_HANDLE, &image_index_);
-                    if (r == VK_SUCCESS || r == VK_SUBOPTIMAL_KHR)
-                        return;
+                        device_, swapchain_, UINT64_MAX, frame_[frame_idx].acquire, VK_NULL_HANDLE, &image_index_
+                    );
+                    if (r == VK_SUCCESS || r == VK_SUBOPTIMAL_KHR) return;
                     if (r == VK_ERROR_OUT_OF_DATE_KHR)
                     {
                         // Not an error. The semaphore is NOT signalled on this path,
@@ -1088,9 +1069,7 @@ namespace engine::rhi
                     };
                     ENGINE_VK(vkAllocateCommandBuffers(device_, &ai, &frame_[i].cmd));
 
-                    constexpr VkSemaphoreCreateInfo sci{
-                        .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO
-                    };
+                    constexpr VkSemaphoreCreateInfo sci{ .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO };
                     ENGINE_VK(vkCreateSemaphore(device_, &sci, nullptr, &frame_[i].acquire));
                 }
             }
@@ -1099,22 +1078,18 @@ namespace engine::rhi
             {
                 for (uint32_t i = 0; i < desc_.frames_in_flight; ++i)
                 {
-                    if (frame_[i].acquire)
-                        vkDestroySemaphore(device_, frame_[i].acquire, nullptr);
+                    if (frame_[i].acquire) vkDestroySemaphore(device_, frame_[i].acquire, nullptr);
                     // Destroying the pool frees its command buffers too.
-                    if (frame_[i].pool)
-                        vkDestroyCommandPool(device_, frame_[i].pool, nullptr);
+                    if (frame_[i].pool) vkDestroyCommandPool(device_, frame_[i].pool, nullptr);
                     frame_[i] = {};
                 }
-                if (timeline_)
-                    vkDestroySemaphore(device_, timeline_, nullptr);
+                if (timeline_) vkDestroySemaphore(device_, timeline_, nullptr);
                 timeline_ = VK_NULL_HANDLE;
             }
 
             void wait_timeline(const uint64_t value) const
             {
-                if (value == 0)
-                    return; // never submitted
+                if (value == 0) return; // never submitted
                 const VkSemaphoreWaitInfo wi{
                     .sType = VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO,
                     .semaphoreCount = 1,
@@ -1153,17 +1128,19 @@ namespace engine::rhi
         };
 
         // =========================================== command list (out-of-line)
-        void VulkanCommandList::barrier(const std::span<const TextureBarrier> textures,
-                                        const std::span<const BufferBarrier> buffers)
+        void VulkanCommandList::barrier(
+            const std::span<const TextureBarrier> textures, const std::span<const BufferBarrier> buffers
+        )
         {
             // The one backend where this is real work. D3D12 needs the same
             // information; Metal needs none of it.
             std::vector<VkImageMemoryBarrier2> images;
             images.reserve(textures.size());
-            for (const auto &[texture, sync_before,
-                     sync_after, access_before,
-                     access_after, layout_before,
-                     layout_after] : textures)
+            for (
+                const auto
+                    &[texture, sync_before, sync_after, access_before, access_after, layout_before, layout_after] :
+                textures
+            )
             {
                 const VulkanTexture *t = dev_->texture(texture);
 
@@ -1180,9 +1157,7 @@ namespace engine::rhi
                 // in PRESENT) and Metal never hits it (barrier() is a no-op), so
                 // Vulkan validation is the only place this surfaces.
                 const VkImageLayout old_layout =
-                    dev_->swapchain_image_is_undefined(texture)
-                        ? VK_IMAGE_LAYOUT_UNDEFINED
-                        : to_vk(layout_before);
+                    dev_->swapchain_image_is_undefined(texture) ? VK_IMAGE_LAYOUT_UNDEFINED : to_vk(layout_before);
 
                 images.push_back(VkImageMemoryBarrier2{
                     .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
@@ -1214,8 +1189,7 @@ namespace engine::rhi
             vkCmdPipelineBarrier2(cmd_, &di);
         }
 
-        void VulkanCommandList::clear_render_target(const TextureHandle h,
-                                                    const std::array<float, 4> rgba)
+        void VulkanCommandList::clear_render_target(const TextureHandle h, const std::array<float, 4> rgba)
         {
             const VulkanTexture *t = dev_->texture(h);
 
@@ -1231,11 +1205,11 @@ namespace engine::rhi
                 .imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
                 .loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
                 .storeOp = VK_ATTACHMENT_STORE_OP_STORE,
-                .clearValue = {.color = {.float32 = {rgba[0], rgba[1], rgba[2], rgba[3]}}},
+                .clearValue = { .color = { .float32 = { rgba[0], rgba[1], rgba[2], rgba[3] } } },
             };
             const VkRenderingInfo ri{
                 .sType = VK_STRUCTURE_TYPE_RENDERING_INFO,
-                .renderArea = {.offset = {0, 0}, .extent = dev_->extent()},
+                .renderArea = { .offset = { 0, 0 }, .extent = dev_->extent() },
                 .layerCount = 1,
                 .colorAttachmentCount = 1,
                 .pColorAttachments = &color,

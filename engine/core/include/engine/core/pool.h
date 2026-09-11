@@ -9,7 +9,6 @@
 
 #include "asserts.h"
 
-
 namespace engine::pool
 {
     template <class T>
@@ -18,19 +17,17 @@ namespace engine::pool
     // Typed handle: Handle<Mesh> is not convertible to Handle<Texture>.
     // 24-bit index (16.7M slots) + 8-bit generation. gen 0 is reserved as NULL,
     // so a default-constructed Handle is invalid forever.
-    template <Poolable T>
-    struct Handle
+    template <Poolable T> struct Handle
     {
-        uint32_t index: 24 = 0; // C++20: default member init on bitfields
-        uint32_t gen: 8 = 0;
+        uint32_t index : 24 = 0; // C++20: default member init on bitfields
+        uint32_t gen : 8 = 0;
 
         [[nodiscard]] bool is_null() const { return gen == 0; }
 
         bool operator==(const Handle &) const = default; // C++20: defaulted comparisons
     };
 
-    template <Poolable T>
-    class Pool
+    template <Poolable T> class Pool
     {
     public:
         Pool() = default;
@@ -39,8 +36,7 @@ namespace engine::pool
 
         Pool &operator=(const Pool &) = delete;
 
-        template <class... Args>
-        [[nodiscard]] Handle<T> emplace(Args &&... args)
+        template <class... Args> [[nodiscard]] Handle<T> emplace(Args &&...args)
         {
             uint32_t index;
             if (!free_.empty())
@@ -56,10 +52,10 @@ namespace engine::pool
             }
 
             Slot &s = slots_[index];
-            ::new(&s.value) T(std::forward<Args>(args)...);
+            ::new (&s.value) T(std::forward<Args>(args)...);
             s.alive = true;
             ++live_;
-            return Handle<T>{.index = index, .gen = s.gen}; // C++20: designated init
+            return Handle<T>{ .index = index, .gen = s.gen }; // C++20: designated init
         }
 
         [[nodiscard]] Handle<T> create(T &&v) { return emplace(std::move(v)); }
@@ -68,7 +64,7 @@ namespace engine::pool
         {
             Slot *s = resolve(*this, h);
             if (!engine_ensure(s)) // double-destroy / stale handle:
-                return; // loud in debug, harmless in release
+                return;            // loud in debug, harmless in release
             s->value.~T();
             s->alive = false;
             s->gen = (s->gen == 255) ? 1 : static_cast<uint8_t>(s->gen + 1); // wrap SKIPS 0 (= null)
@@ -102,29 +98,23 @@ namespace engine::pool
         // deducing const-ness through `self`. Pre-23 this was two overloads
         // (or a CRTP dance). Feature-tested because compiler support is the
         // newest thing this codebase uses: MSVC 17.2+, Clang 18+, GCC 14+.
-        template <class Self, class Fn>
-        void for_each(this Self &&self, Fn &&fn)
+        template <class Self, class Fn> void for_each(this Self &&self, Fn &&fn)
         {
             for (auto &s : self.slots_)
-                if (s.alive)
-                    fn(s.value);
+                if (s.alive) fn(s.value);
         }
 #else
         // Fallback: the classic pre-23 overload pair — same behavior.
-        template <class Fn>
-        void for_each(Fn &&fn)
+        template <class Fn> void for_each(Fn &&fn)
         {
             for (auto &s : slots_)
-                if (s.alive)
-                    fn(s.value);
+                if (s.alive) fn(s.value);
         }
 
-        template <class Fn>
-        void for_each(Fn &&fn) const
+        template <class Fn> void for_each(Fn &&fn) const
         {
             for (const auto &s : slots_)
-                if (s.alive)
-                    fn(s.value);
+                if (s.alive) fn(s.value);
         }
 #endif
 
@@ -135,8 +125,7 @@ namespace engine::pool
     private:
         struct Slot
         {
-            union
-            {
+            union {
                 T value;
             }; // manual lifetime: constructed by emplace,
             // destroyed by destroy() or ~Slot below
@@ -146,33 +135,30 @@ namespace engine::pool
             Slot() noexcept {} // does NOT construct value
             Slot(Slot &&o) noexcept : gen(o.gen), alive(o.alive)
             {
-                if (alive)
-                    ::new(&value) T(std::move(o.value)); // vector reallocation path
+                if (alive) ::new (&value) T(std::move(o.value)); // vector reallocation path
             }
 
             Slot &operator=(Slot &&) = delete;
 
             ~Slot()
             {
-                if (alive)
-                    value.~T();
+                if (alive) value.~T();
             } // pool teardown
         };
 
         // One resolve serving const and non-const via a deduced Self —
         // same trick as for_each, just spelled as a static helper.
-        template <class Self>
-        static auto resolve(Self &self, Handle<T> h)
+        template <class Self> static auto resolve(Self &self, Handle<T> h)
         {
             using SlotPtr = std::conditional_t<std::is_const_v<Self>, const Slot *, Slot *>;
-            if (h.is_null() || h.index >= self.slots_.size()) return SlotPtr{nullptr};
+            if (h.is_null() || h.index >= self.slots_.size()) return SlotPtr{ nullptr };
             auto &s = self.slots_[h.index];
-            return s.alive && s.gen == h.gen ? SlotPtr{&s} : SlotPtr{nullptr};
+            return s.alive && s.gen == h.gen ? SlotPtr{ &s } : SlotPtr{ nullptr };
         }
 
         std::vector<Slot> slots_;
         std::vector<uint32_t> free_;
         size_t live_ = 0;
     };
-}
-#endif //ENGINE_POOL_H
+} // namespace engine::pool
+#endif // ENGINE_POOL_H

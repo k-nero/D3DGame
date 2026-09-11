@@ -4,8 +4,8 @@
 // with engine_engine_check(false) and arrive in the next sections.
 #include "d3d12_common.h"
 
-#include <engine/rhi/rhi.h>
 #include <engine/core/pool.h>
+#include <engine/rhi/rhi.h>
 
 #include <cstring>
 using engine::pool::Handle;
@@ -24,20 +24,13 @@ namespace engine::rhi
         D3D12_BARRIER_SYNC to_d3d12(Sync s)
         {
             D3D12_BARRIER_SYNC r = D3D12_BARRIER_SYNC_NONE;
-            if (any(s & Sync::All))
-                r |= D3D12_BARRIER_SYNC_ALL;
-            if (any(s & Sync::Draw))
-                r |= D3D12_BARRIER_SYNC_DRAW;
-            if (any(s & Sync::PixelShading))
-                r |= D3D12_BARRIER_SYNC_PIXEL_SHADING;
-            if (any(s & Sync::RenderTarget))
-                r |= D3D12_BARRIER_SYNC_RENDER_TARGET;
-            if (any(s & Sync::DepthStencil))
-                r |= D3D12_BARRIER_SYNC_DEPTH_STENCIL;
-            if (any(s & Sync::Compute))
-                r |= D3D12_BARRIER_SYNC_COMPUTE_SHADING;
-            if (any(s & Sync::Copy))
-                r |= D3D12_BARRIER_SYNC_COPY;
+            if (any(s & Sync::All)) r |= D3D12_BARRIER_SYNC_ALL;
+            if (any(s & Sync::Draw)) r |= D3D12_BARRIER_SYNC_DRAW;
+            if (any(s & Sync::PixelShading)) r |= D3D12_BARRIER_SYNC_PIXEL_SHADING;
+            if (any(s & Sync::RenderTarget)) r |= D3D12_BARRIER_SYNC_RENDER_TARGET;
+            if (any(s & Sync::DepthStencil)) r |= D3D12_BARRIER_SYNC_DEPTH_STENCIL;
+            if (any(s & Sync::Compute)) r |= D3D12_BARRIER_SYNC_COMPUTE_SHADING;
+            if (any(s & Sync::Copy)) r |= D3D12_BARRIER_SYNC_COPY;
             return r;
         }
 
@@ -47,22 +40,14 @@ namespace engine::rhi
         D3D12_BARRIER_ACCESS to_d3d12(Access a, Sync paired_sync)
         {
             if (a == Access::NoAccess)
-                return paired_sync == Sync::None
-                           ? D3D12_BARRIER_ACCESS_NO_ACCESS
-                           : D3D12_BARRIER_ACCESS_COMMON;
+                return paired_sync == Sync::None ? D3D12_BARRIER_ACCESS_NO_ACCESS : D3D12_BARRIER_ACCESS_COMMON;
             D3D12_BARRIER_ACCESS r = D3D12_BARRIER_ACCESS_COMMON;
-            if (any(a & Access::RenderTarget))
-                r |= D3D12_BARRIER_ACCESS_RENDER_TARGET;
-            if (any(a & Access::DepthWrite))
-                r |= D3D12_BARRIER_ACCESS_DEPTH_STENCIL_WRITE;
-            if (any(a & Access::ShaderRead))
-                r |= D3D12_BARRIER_ACCESS_SHADER_RESOURCE;
-            if (any(a & Access::UnorderedAccess))
-                r |= D3D12_BARRIER_ACCESS_UNORDERED_ACCESS;
-            if (any(a & Access::CopySrc))
-                r |= D3D12_BARRIER_ACCESS_COPY_SOURCE;
-            if (any(a & Access::CopyDst))
-                r |= D3D12_BARRIER_ACCESS_COPY_DEST;
+            if (any(a & Access::RenderTarget)) r |= D3D12_BARRIER_ACCESS_RENDER_TARGET;
+            if (any(a & Access::DepthWrite)) r |= D3D12_BARRIER_ACCESS_DEPTH_STENCIL_WRITE;
+            if (any(a & Access::ShaderRead)) r |= D3D12_BARRIER_ACCESS_SHADER_RESOURCE;
+            if (any(a & Access::UnorderedAccess)) r |= D3D12_BARRIER_ACCESS_UNORDERED_ACCESS;
+            if (any(a & Access::CopySrc)) r |= D3D12_BARRIER_ACCESS_COPY_SOURCE;
+            if (any(a & Access::CopyDst)) r |= D3D12_BARRIER_ACCESS_COPY_DEST;
             return r;
         }
 
@@ -100,11 +85,9 @@ namespace engine::rhi
             uint32_t width = 0, height = 0;
         };
 
-        template <class RhiH, class T>
-        RhiH to_rhi(Handle<T> h) { return RhiH{.index = h.index, .gen = h.gen}; }
+        template <class RhiH, class T> RhiH to_rhi(Handle<T> h) { return RhiH{ .index = h.index, .gen = h.gen }; }
 
-        template <class T, class RhiH>
-        Handle<T> to_pool(RhiH h) { return Handle<T>{.index = h.index, .gen = h.gen}; }
+        template <class T, class RhiH> Handle<T> to_pool(RhiH h) { return Handle<T>{ .index = h.index, .gen = h.gen }; }
 
         class D3D12Device;
 
@@ -118,18 +101,16 @@ namespace engine::rhi
                 cl_ = cl;
             }
 
-            void barrier(std::span<const TextureBarrier> textures,
-                         std::span<const BufferBarrier> buffers) override;
+            void barrier(std::span<const TextureBarrier> textures, std::span<const BufferBarrier> buffers) override;
 
             void clear_render_target(TextureHandle, std::array<float, 4> rgba) override;
 
-            void set_render_targets(std::span<const TextureHandle> colors,
-                                    TextureHandle depth) override;
+            void set_render_targets(std::span<const TextureHandle> colors, TextureHandle depth) override;
 
             void set_viewport_scissor(uint32_t w, uint32_t h) override
             {
-                const D3D12_VIEWPORT vp{0.f, 0.f, float(w), float(h), 0.f, 1.f};
-                const D3D12_RECT sc{0, 0, LONG(w), LONG(h)};
+                const D3D12_VIEWPORT vp{ 0.f, 0.f, float(w), float(h), 0.f, 1.f };
+                const D3D12_RECT sc{ 0, 0, LONG(w), LONG(h) };
                 cl_->RSSetViewports(1, &vp);
                 cl_->RSSetScissorRects(1, &sc);
             }
@@ -168,7 +149,7 @@ namespace engine::rhi
                     {
                         debug->EnableDebugLayer();
                         ComPtr<ID3D12Debug1> debug1;
-                        if (SUCCEEDED(debug.As(&debug1))) { debug1->SetEnableGPUBasedValidation(TRUE); }
+                        if (SUCCEEDED(debug.As(&debug1))) debug1->SetEnableGPUBasedValidation(TRUE);
                     }
                     else
                     {
@@ -187,19 +168,18 @@ namespace engine::rhi
                 ENGINE_HR(CreateDXGIFactory2(ff, IID_PPV_ARGS(&factory_)));
 
                 ComPtr<IDXGIAdapter1> adapter;
-                for (UINT i = 0; ; ++i)
+                for (UINT i = 0;; ++i)
                 {
-                    auto hr = factory_->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_UNSPECIFIED,
-                                                                   IID_PPV_ARGS(&adapter));
-                    if (hr == DXGI_ERROR_NOT_FOUND)
-                        break;
+                    auto hr = factory_->EnumAdapterByGpuPreference(
+                        i, DXGI_GPU_PREFERENCE_UNSPECIFIED, IID_PPV_ARGS(&adapter)
+                    );
+                    if (hr == DXGI_ERROR_NOT_FOUND) break;
 
                     DXGI_ADAPTER_DESC1 ad{};
                     adapter->GetDesc1(&ad);
-                    if (ad.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
-                        continue;
-                    auto hr_device = D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_12_0, _uuidof(ID3D12Device),
-                                                       &device_);
+                    if (ad.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) continue;
+                    auto hr_device =
+                        D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_12_0, _uuidof(ID3D12Device), &device_);
                     if (SUCCEEDED(hr_device))
                     {
                         d3d12::wide_to_utf8(ad.Description, caps_.adapter_name, sizeof(caps_.adapter_name));
@@ -218,8 +198,9 @@ namespace engine::rhi
                     ComPtr<ID3D12InfoQueue1> iq;
                     if (SUCCEEDED(device_.As(&iq)))
                     {
-                        ENGINE_HR(iq->RegisterMessageCallback(&on_debug_message, D3D12_MESSAGE_CALLBACK_FLAG_NONE, this,
-                            &iq_cookie_));
+                        ENGINE_HR(iq->RegisterMessageCallback(
+                            &on_debug_message, D3D12_MESSAGE_CALLBACK_FLAG_NONE, this, &iq_cookie_
+                        ));
                     }
                 }
 
@@ -228,19 +209,21 @@ namespace engine::rhi
                 fence_event_ = CreateEventW(nullptr, FALSE, FALSE, nullptr);
                 engine_check(fence_event_);
 
-                const D3D12_COMMAND_QUEUE_DESC qd{.Type = D3D12_COMMAND_LIST_TYPE_DIRECT};
+                const D3D12_COMMAND_QUEUE_DESC qd{ .Type = D3D12_COMMAND_LIST_TYPE_DIRECT };
                 ENGINE_HR(device_->CreateCommandQueue(&qd, IID_PPV_ARGS(&queue_)));
 
                 // ---------- §3: per-frame allocators + one recycled list ----------
                 for (uint32_t i = 0; i < desc_.frames_in_flight; ++i)
                 {
-                    ENGINE_HR(device_->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
-                        IID_PPV_ARGS(&frame_[i].allocator)));
+                    ENGINE_HR(device_->CreateCommandAllocator(
+                        D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&frame_[i].allocator)
+                    ));
                 }
 
                 // CreateCommandList1 births the list CLOSED — begin_frame resets it.
-                ENGINE_HR(device_->CreateCommandList1(0, D3D12_COMMAND_LIST_TYPE_DIRECT, D3D12_COMMAND_LIST_FLAG_NONE,
-                    IID_PPV_ARGS(&cmdlist_)));
+                ENGINE_HR(device_->CreateCommandList1(
+                    0, D3D12_COMMAND_LIST_TYPE_DIRECT, D3D12_COMMAND_LIST_FLAG_NONE, IID_PPV_ARGS(&cmdlist_)
+                ));
                 cmd_.init(this, cmdlist_.Get());
 
                 // ---------- §4: RTV heap + swap chain ----------
@@ -261,8 +244,7 @@ namespace engine::rhi
                 // destroy_device already ran wait_idle; drain the deferred queue
                 // so ReportLiveDeviceObjects afterwards shows only true leaks.
                 collect_deferred(UINT64_MAX);
-                if (fence_event_)
-                    CloseHandle(fence_event_);
+                if (fence_event_) CloseHandle(fence_event_);
             }
 
             // ================================================== frame loop (§5)
@@ -297,15 +279,17 @@ namespace engine::rhi
                 in_frame_ = false;
 
                 ENGINE_HR(cmdlist_->Close());
-                ID3D12CommandList *lists[] = {cmdlist_.Get()};
+                ID3D12CommandList *lists[] = { cmdlist_.Get() };
                 queue_->ExecuteCommandLists(1, lists);
 
                 const HRESULT pr = swapchain_->Present(1, 0); // vsync on; (0,ALLOW_TEARING) later
                 if (pr == DXGI_ERROR_DEVICE_REMOVED || pr == DXGI_ERROR_DEVICE_RESET)
                 {
                     const HRESULT reason = device_->GetDeviceRemovedReason();
-                    log::error("d3d12: DEVICE REMOVED, reason 0x{:08x} — DRED breadcrumbs available in a debugger",
-                               uint32_t(reason));
+                    log::error(
+                        "d3d12: DEVICE REMOVED, reason 0x{:08x} — DRED breadcrumbs available in a debugger",
+                        uint32_t(reason)
+                    );
                     engine_check(false);
                 }
                 ENGINE_HR(pr);
@@ -323,10 +307,8 @@ namespace engine::rhi
             void resize(uint32_t w, uint32_t h) override
             {
                 engine_check(!in_frame_);
-                if (w == 0 || h == 0)
-                    return; // minimized
-                if (w == desc_.width && h == desc_.height)
-                    return;
+                if (w == 0 || h == 0) return; // minimized
+                if (w == desc_.width && h == desc_.height) return;
                 desc_.width = w;
                 desc_.height = h;
 
@@ -407,7 +389,7 @@ namespace engine::rhi
                 return t;
             }
 
-            void destroy_later(ComPtr<ID3D12Resource> r) { deferred_.push_back({std::move(r), fence_value_ + 1}); }
+            void destroy_later(ComPtr<ID3D12Resource> r) { deferred_.push_back({ std::move(r), fence_value_ + 1 }); }
 
         private:
             static constexpr uint32_t kRtvCapacity = 64;
@@ -427,16 +409,18 @@ namespace engine::rhi
 
             void assert_features()
             {
-                D3D12_FEATURE_DATA_SHADER_MODEL sm{D3D_SHADER_MODEL_6_6};
+                D3D12_FEATURE_DATA_SHADER_MODEL sm{ D3D_SHADER_MODEL_6_6 };
                 ENGINE_HR(device_->CheckFeatureSupport(D3D12_FEATURE_SHADER_MODEL, &sm, sizeof(sm)));
                 engine_check(
                     sm.HighestShaderModel >= D3D_SHADER_MODEL_6_6 &&
-                    "SM 6.6 required — on the Agility runtime? check exe_dir/D3D12/");
+                    "SM 6.6 required — on the Agility runtime? check exe_dir/D3D12/"
+                );
 
                 D3D12_FEATURE_DATA_D3D12_OPTIONS o{};
                 ENGINE_HR(device_->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &o, sizeof(o)));
                 engine_check(
-                    o.ResourceBindingTier == D3D12_RESOURCE_BINDING_TIER_3 && "binding tier 3 required (bindless)");
+                    o.ResourceBindingTier == D3D12_RESOURCE_BINDING_TIER_3 && "binding tier 3 required (bindless)"
+                );
 
                 D3D12_FEATURE_DATA_D3D12_OPTIONS12 o12{};
                 ENGINE_HR(device_->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS12, &o12, sizeof(o12)));
@@ -449,15 +433,14 @@ namespace engine::rhi
                     .Width = desc_.width,
                     .Height = desc_.height,
                     .Format = DXGI_FORMAT_B8G8R8A8_UNORM,
-                    .SampleDesc = {1, 0},
+                    .SampleDesc = { 1, 0 },
                     .BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT,
                     .BufferCount = kBackbufferCount,
                     .SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD,
                 };
                 const HWND hwnd = static_cast<HWND>(desc_.native_window);
                 ComPtr<IDXGISwapChain1> sc1;
-                ENGINE_HR(factory_->CreateSwapChainForHwnd(queue_.Get(), hwnd, &sd,
-                    nullptr, nullptr, &sc1));
+                ENGINE_HR(factory_->CreateSwapChainForHwnd(queue_.Get(), hwnd, &sd, nullptr, nullptr, &sc1));
                 ENGINE_HR(sc1.As(&swapchain_));
                 // We own resize; DXGI's alt-enter fullscreen toggle would fight us.
                 ENGINE_HR(factory_->MakeWindowAssociation(hwnd, DXGI_MWA_NO_ALT_ENTER));
@@ -483,12 +466,10 @@ namespace engine::rhi
             {
                 for (auto &h : backbuffers_)
                 {
-                    if (h.is_null())
-                        continue;
-                    if (D3D12Texture *t = textures_.get(to_pool<D3D12Texture>(h)))
-                        free_rtv_slot(t->rtv_slot);
+                    if (h.is_null()) continue;
+                    if (D3D12Texture *t = textures_.get(to_pool<D3D12Texture>(h))) free_rtv_slot(t->rtv_slot);
                     textures_.destroy(to_pool<D3D12Texture>(h)); // ComPtr released NOW
-                    h = {}; // (post-wait_idle: safe)
+                    h = {};                                      // (post-wait_idle: safe)
                 }
             }
 
@@ -508,16 +489,14 @@ namespace engine::rhi
 
             D3D12_CPU_DESCRIPTOR_HANDLE rtv_cpu(uint32_t slot) const
             {
-                D3D12_CPU_DESCRIPTOR_HANDLE h =
-                    rtv_heap_->GetCPUDescriptorHandleForHeapStart();
+                D3D12_CPU_DESCRIPTOR_HANDLE h = rtv_heap_->GetCPUDescriptorHandleForHeapStart();
                 h.ptr += SIZE_T(slot) * rtv_size_;
                 return h;
             }
 
             void wait_fence(uint64_t value)
             {
-                if (value == 0 || fence_->GetCompletedValue() >= value)
-                    return;
+                if (value == 0 || fence_->GetCompletedValue() >= value) return;
                 ENGINE_HR(fence_->SetEventOnCompletion(value, fence_event_));
                 WaitForSingleObject(fence_event_, INFINITE);
             }
@@ -530,10 +509,9 @@ namespace engine::rhi
                 });
             }
 
-            static void CALLBACK on_debug_message(D3D12_MESSAGE_CATEGORY,
-                                                  D3D12_MESSAGE_SEVERITY severity,
-                                                  D3D12_MESSAGE_ID,
-                                                  LPCSTR description, void *)
+            static void CALLBACK on_debug_message(
+                D3D12_MESSAGE_CATEGORY, D3D12_MESSAGE_SEVERITY severity, D3D12_MESSAGE_ID, LPCSTR description, void *
+            )
             {
                 switch (severity)
                 {
@@ -582,8 +560,7 @@ namespace engine::rhi
         };
 
         // ============================================ command list bodies
-        void D3D12CommandList::barrier(std::span<const TextureBarrier> textures,
-                                       std::span<const BufferBarrier> buffers)
+        void D3D12CommandList::barrier(std::span<const TextureBarrier> textures, std::span<const BufferBarrier> buffers)
         {
             engine_check(buffers.empty() && "buffer barriers arrive in m3");
 
@@ -591,19 +568,20 @@ namespace engine::rhi
             tb.reserve(textures.size());
             for (const TextureBarrier &b : textures)
             {
-                tb.push_back(D3D12_TEXTURE_BARRIER{
-                    .SyncBefore = to_d3d12(b.sync_before),
-                    .SyncAfter = to_d3d12(b.sync_after),
-                    .AccessBefore = to_d3d12(b.access_before, b.sync_before),
-                    .AccessAfter = to_d3d12(b.access_after, b.sync_after),
-                    .LayoutBefore = to_d3d12(b.layout_before),
-                    .LayoutAfter = to_d3d12(b.layout_after),
-                    .pResource = dev_->texture(b.texture)->resource.Get(),
-                    .Subresources = {.IndexOrFirstMipLevel = 0xffffffff}, // all
-                });
+                tb.push_back(
+                    D3D12_TEXTURE_BARRIER{
+                        .SyncBefore = to_d3d12(b.sync_before),
+                        .SyncAfter = to_d3d12(b.sync_after),
+                        .AccessBefore = to_d3d12(b.access_before, b.sync_before),
+                        .AccessAfter = to_d3d12(b.access_after, b.sync_after),
+                        .LayoutBefore = to_d3d12(b.layout_before),
+                        .LayoutAfter = to_d3d12(b.layout_after),
+                        .pResource = dev_->texture(b.texture)->resource.Get(),
+                        .Subresources = { .IndexOrFirstMipLevel = 0xffffffff }, // all
+                    }
+                );
             }
-            if (tb.empty())
-                return;
+            if (tb.empty()) return;
             const D3D12_BARRIER_GROUP group{
                 .Type = D3D12_BARRIER_TYPE_TEXTURE,
                 .NumBarriers = static_cast<UINT32>(tb.size()),
@@ -613,16 +591,14 @@ namespace engine::rhi
         }
 
         void D3D12CommandList::clear_render_target(TextureHandle h, std::array<float, 4> rgba)
-        {
-            cl_->ClearRenderTargetView(dev_->texture(h)->rtv, rgba.data(), 0, nullptr);
-        }
+        { cl_->ClearRenderTargetView(dev_->texture(h)->rtv, rgba.data(), 0, nullptr); }
 
         void D3D12CommandList::set_render_targets(std::span<const TextureHandle> colors, TextureHandle depth)
         {
             engine_check(depth.is_null() && "depth arrives in m3");
             engine_check(colors.size() <= kMaxColorTargets);
             D3D12_CPU_DESCRIPTOR_HANDLE rtvs[kMaxColorTargets]{};
-            for (size_t i = 0; i < colors.size(); ++i) { rtvs[i] = dev_->texture(colors[i])->rtv; }
+            for (size_t i = 0; i < colors.size(); ++i) rtvs[i] = dev_->texture(colors[i])->rtv;
             cl_->OMSetRenderTargets(static_cast<UINT>(colors.size()), rtvs, FALSE, nullptr);
         }
     } // namespace
@@ -635,8 +611,8 @@ namespace engine::rhi
         ComPtr<IDXGIDebug1> dxgi_debug;
         if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&dxgi_debug))))
             dxgi_debug->ReportLiveObjects(
-                DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_FLAGS(DXGI_DEBUG_RLO_DETAIL |
-                                                     DXGI_DEBUG_RLO_IGNORE_INTERNAL));
+                DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_FLAGS(DXGI_DEBUG_RLO_DETAIL | DXGI_DEBUG_RLO_IGNORE_INTERNAL)
+            );
 #endif
     }
-} // namespace eng::rhi
+} // namespace engine::rhi

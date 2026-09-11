@@ -45,4 +45,4 @@ namespace engine::app
         bool should_close_ = false;
         friend struct PlatformWindowBridge;
     };
-} // namespace eng::app
+} // namespace engine::app

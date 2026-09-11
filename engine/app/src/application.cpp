@@ -11,7 +11,7 @@
 namespace engine::rhi
 {
     void d3d12_report_live_objects();
-} // TODO: move decl to rhi.h
+} // namespace engine::rhi
 #endif
 
 namespace engine::app
@@ -24,16 +24,17 @@ namespace engine::app
         log::init(boost::log::trivial::error, false);
 #endif
 
-        window_ = std::make_unique<Window>(WindowDesc{
-            .title = desc.title, .width = desc.width, .height = desc.height
-        });
+        window_ =
+            std::make_unique<Window>(WindowDesc{ .title = desc.title, .width = desc.width, .height = desc.height });
 
-        device_ = rhi::create_device(desc.backend, rhi::DeviceDesc{
-                                         .native_window = window_->native_handle(),
-                                         .width = window_->width(),
-                                         .height = window_->height(),
-                                         .enable_debug = desc.enable_debug,
-                                     });
+        device_ = rhi::create_device(
+            desc.backend, rhi::DeviceDesc{
+                              .native_window = window_->native_handle(),
+                              .width = window_->width(),
+                              .height = window_->height(),
+                              .enable_debug = desc.enable_debug,
+                          }
+        );
         engine_check(device_);
         log::info("app: '{}' on '{}'", desc.title, device_->caps().adapter_name);
     }
@@ -79,4 +80,4 @@ namespace engine::app
         on_stop();
         return 0;
     }
-} // namespace eng::app
+} // namespace engine::app

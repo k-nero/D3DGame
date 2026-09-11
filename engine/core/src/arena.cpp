@@ -16,7 +16,7 @@ namespace engine::arena
         offset_ = m.offset;
     }
 
-    Arena::Marker Arena::mark() const { return {offset_}; }
+    Arena::Marker Arena::mark() const { return { offset_ }; }
 
     void Arena::reset() { offset_ = 0; }
 
@@ -37,4 +37,4 @@ namespace engine::arena
         high_water_ = std::max(high_water_, offset_);
         return reinterpret_cast<void *>(aligned);
     }
-}
+} // namespace engine::arena

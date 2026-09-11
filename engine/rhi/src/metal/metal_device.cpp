@@ -63,11 +63,10 @@ namespace engine::rhi
             uint32_t width = 0, height = 0;
         };
 
-        template <class RhiH, class T>
-        RhiH to_rhi(pool::Handle<T> h) { return RhiH{.index = h.index, .gen = h.gen}; }
+        template <class RhiH, class T> RhiH to_rhi(pool::Handle<T> h) { return RhiH{ .index = h.index, .gen = h.gen }; }
 
-        template <class T, class RhiH>
-        pool::Handle<T> to_pool(RhiH h) { return pool::Handle<T>{.index = h.index, .gen = h.gen}; }
+        template <class T, class RhiH> pool::Handle<T> to_pool(RhiH h)
+        { return pool::Handle<T>{ .index = h.index, .gen = h.gen }; }
 
         class MetalDevice;
 
@@ -93,7 +92,6 @@ namespace engine::rhi
                 // m5, when transient aliasing forces resources into untracked heaps.
                 // Not before.
             }
-
 
             void clear_render_target(TextureHandle h, std::array<float, 4> rgba) override;
 
@@ -151,19 +149,21 @@ namespace engine::rhi
                 device_ = NS::TransferPtr(MTL::CreateSystemDefaultDevice());
                 engine_check(device_.get() && "Metal device not found");
 
-                std::snprintf(caps_.adapter_name, sizeof(caps_.adapter_name), "%s",
-                              device_->name()->utf8String());
+                std::snprintf(caps_.adapter_name, sizeof(caps_.adapter_name), "%s", device_->name()->utf8String());
                 caps_.vram_bytes = device_->recommendedMaxWorkingSetSize();
-                log::info("metal: device '{}', {} MB working set",
-                          caps_.adapter_name, caps_.vram_bytes / (1024 * 1024));
+                log::info(
+                    "metal: device '{}', {} MB working set", caps_.adapter_name, caps_.vram_bytes / (1024 * 1024)
+                );
 
                 // No debug-layer call here on purpose: Metal validation is
                 // MTL_DEBUG_LAYER=1 / MTL_SHADER_VALIDATION=1, read when the Metal
                 // framework initializes. desc.enable_debug has no API equivalent.
                 if (desc.enable_debug)
-                    log::info("metal: validation comes from MTL_DEBUG_LAYER=1 in the "
+                    log::info(
+                        "metal: validation comes from MTL_DEBUG_LAYER=1 in the "
                         "environment — there is no API equivalent of the D3D12 "
-                        "debug layer");
+                        "debug layer"
+                    );
 
                 // ---------- §2: queue + fence ----------
                 queue_ = NS::TransferPtr(device_->newCommandQueue());
@@ -179,8 +179,9 @@ namespace engine::rhi
                 fence_->setSignaledValue(0);
 
                 // ---------- §3: the CAMetalLayer (our "swap chain") ----------
-                engine_check(desc.native_window &&
-                    "Metal backend needs the CAMetalLayer* from Window::native_handle()");
+                engine_check(
+                    desc.native_window && "Metal backend needs the CAMetalLayer* from Window::native_handle()"
+                );
                 // Owned by MacWindowState/ARC; we hold a reference for our lifetime.
                 layer_ = NS::RetainPtr(static_cast<CA::MetalLayer *>(desc.native_window));
                 layer_->setDevice(device_.get());
@@ -276,10 +277,8 @@ namespace engine::rhi
             void resize(const uint32_t w, const uint32_t h) override
             {
                 engine_check(!in_frame_);
-                if (w == 0 || h == 0)
-                    return; // minimized
-                if (w == desc_.width && h == desc_.height)
-                    return;
+                if (w == 0 || h == 0) return; // minimized
+                if (w == desc_.width && h == desc_.height) return;
                 desc_.width = w;
                 desc_.height = h;
 
@@ -293,8 +292,7 @@ namespace engine::rhi
 
             void wait_idle() override
             {
-                const NS::SharedPtr<NS::AutoreleasePool> pool =
-                    NS::TransferPtr(NS::AutoreleasePool::alloc()->init());
+                const NS::SharedPtr<NS::AutoreleasePool> pool = NS::TransferPtr(NS::AutoreleasePool::alloc()->init());
 
                 // No queue->Signal(fence, v) on Metal: a signal must be ENCODED, so an
                 // idle-wait costs one empty command buffer.
@@ -376,8 +374,7 @@ namespace engine::rhi
             // wait_fence: fence_->GetCompletedValue() -> signaledValue()
             void wait_fence(const uint64_t value) const
             {
-                if (value == 0 || fence_->signaledValue() >= value)
-                    return;
+                if (value == 0 || fence_->signaledValue() >= value) return;
                 // timeout is MILLISECONDS, not ns/ticks. Returns false on timeout.
                 const bool ok = fence_->waitUntilSignaledValue(value, ~0ull);
                 engine_check(ok && "GPU fence wait timed out");

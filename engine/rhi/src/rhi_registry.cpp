@@ -15,7 +15,6 @@ namespace engine::rhi
     IDevice *create_vulkan_device(const DeviceDesc &);
 #endif
 
-
     IDevice *create_device(const Backend backend, const DeviceDesc &desc)
     {
         switch (backend)
@@ -49,9 +48,8 @@ namespace engine::rhi
 
     void destroy_device(IDevice *dev)
     {
-        if (!dev)
-            return;
+        if (!dev) return;
         dev->wait_idle();
         delete dev;
     }
-} // namespace eng::rhi
+} // namespace engine::rhi

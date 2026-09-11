@@ -19,9 +19,9 @@ namespace engine::math
     // Storage-type transform (convention 4): plain, packable, serializable.
     struct Transform
     {
-        float3 position{0.f, 0.f, 0.f};
-        float4 rotation{0.f, 0.f, 0.f, 1.f}; // quaternion, identity by default
-        float3 scale{1.f, 1.f, 1.f};
+        float3 position{ 0.f, 0.f, 0.f };
+        float4 rotation{ 0.f, 0.f, 0.f, 1.f }; // quaternion, identity by default
+        float3 scale{ 1.f, 1.f, 1.f };
     };
 
     // load -> compute (register types) — callers XMStore* the result where needed.
@@ -45,17 +45,16 @@ namespace engine::math
 
     // Convention 1 wrappers: the ONLY projection/view helpers the engine uses.
     // Reaching past these to a *LH function is a convention violation.
-    [[nodiscard]] inline DirectX::XMMATRIX perspective(const float fov_y, const float aspect, const float near_z,
-                                                       const float far_z)
-    {
-        return DirectX::XMMatrixPerspectiveFovRH(fov_y, aspect, near_z, far_z);
-    }
+    [[nodiscard]] inline DirectX::XMMATRIX perspective(
+        const float fov_y, const float aspect, const float near_z, const float far_z
+    )
+    { return DirectX::XMMatrixPerspectiveFovRH(fov_y, aspect, near_z, far_z); }
 
     [[nodiscard]] inline DirectX::XMMATRIX look_at(const float3 &eye, const float3 &target, const float3 &up)
     {
         using namespace DirectX;
         return XMMatrixLookAtRH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up));
     }
-}
+} // namespace engine::math
 
-#endif //ENGINE_MATH_H
+#endif // ENGINE_MATH_H

@@ -4,24 +4,20 @@
 
 using engine::arena::Arena;
 
-TEST_CASE(
-    "push respects alignment across mixed sizes"
-)
+TEST_CASE("push respects alignment across mixed sizes")
 {
     Arena a(4096);
     // deliberately misalign the cursor first
     (void)a.push(1, 1);
 
-    for (const size_t align : {size_t{1}, size_t{2}, size_t{4}, size_t{8}, size_t{16}, size_t{64}})
+    for (const size_t align : { size_t{ 1 }, size_t{ 2 }, size_t{ 4 }, size_t{ 8 }, size_t{ 16 }, size_t{ 64 } })
     {
         void *p = a.push(3, align); // odd size keeps forcing realignment next round
         CHECK(reinterpret_cast<uintptr_t>(p) % align == 0);
     }
 }
 
-TEST_CASE(
-    "reset reuses the same memory"
-)
+TEST_CASE("reset reuses the same memory")
 {
     Arena a(1024);
     void *first = a.push(100, 8);
@@ -31,9 +27,7 @@ TEST_CASE(
     CHECK(first == again);
 }
 
-TEST_CASE(
-    "marker / pop_to gives scoped scratch space"
-)
+TEST_CASE("marker / pop_to gives scoped scratch space")
 {
     Arena a(1024);
     (void)a.push(64, 8);
@@ -47,9 +41,7 @@ TEST_CASE(
     CHECK(a.used() == before);
 }
 
-TEST_CASE(
-    "high_water survives reset — it's how you size the arena"
-)
+TEST_CASE("high_water survives reset — it's how you size the arena")
 {
     Arena a(1024);
     (void)a.push(500, 8);
@@ -59,9 +51,7 @@ TEST_CASE(
     CHECK(a.used() == 10);
 }
 
-TEST_CASE(
-    "create constructs in place"
-)
+TEST_CASE("create constructs in place")
 {
     struct Vec
     {
@@ -73,24 +63,19 @@ TEST_CASE(
     CHECK(reinterpret_cast<uintptr_t>(v) % alignof(Vec) == 0);
 }
 
-TEST_CASE(
-    "push_array: correct extent, value-initialized"
-)
+TEST_CASE("push_array: correct extent, value-initialized")
 {
     Arena a(4096);
     auto s = a.push_array<uint32_t>(128);
     CHECK(s.size() == 128);
-    for (uint32_t x : s)
-        CHECK(x == 0); // T{} zeroed them
+    for (uint32_t x : s) CHECK(x == 0); // T{} zeroed them
 
     s[0] = 42;
     s[127] = 7; // and it's writable to the edges
     CHECK(s[0] + s[127] == 49);
 }
 
-TEST_CASE(
-    "push_array_uninit: correct extent and alignment"
-)
+TEST_CASE("push_array_uninit: correct extent and alignment")
 {
     Arena a(4096);
     auto s = a.push_array_uninit<double>(16);

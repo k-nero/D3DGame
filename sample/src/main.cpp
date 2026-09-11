@@ -24,15 +24,17 @@ namespace
                 .layout_before = rhi::Layout::Present,
                 .layout_after = rhi::Layout::RenderTarget,
             };
-            fr.cmd->barrier({{to_rt}});
+            fr.cmd->barrier({ { to_rt } });
 
             t_ += dt; // time-based now, not frame-based: resize stalls don't jump the hue
-            fr.cmd->clear_render_target(fr.backbuffer, {
-                                            0.5f + 0.5f * std::sin(t_),
-                                            0.5f + 0.5f * std::sin(t_ + 2.09f),
-                                            0.5f + 0.5f * std::sin(t_ + 4.19f),
-                                            1.0f,
-                                        });
+            fr.cmd->clear_render_target(
+                fr.backbuffer, {
+                                   0.5f + 0.5f * std::sin(t_),
+                                   0.5f + 0.5f * std::sin(t_ + 2.09f),
+                                   0.5f + 0.5f * std::sin(t_ + 4.19f),
+                                   1.0f,
+                               }
+            );
 
             const rhi::TextureBarrier to_present{
                 .texture = fr.backbuffer,
@@ -41,11 +43,11 @@ namespace
                 .layout_before = rhi::Layout::RenderTarget,
                 .layout_after = rhi::Layout::Present,
             };
-            fr.cmd->barrier({{to_present}});
+            fr.cmd->barrier({ { to_present } });
         }
 
         float t_ = 0.f;
     };
-}
+} // namespace
 
-int main() { return ClearSample({.title = "m2: clear", .width = 1280, .height = 720}).run(); }
+int main() { return ClearSample({ .title = "m2: clear", .width = 1280, .height = 720 }).run(); }

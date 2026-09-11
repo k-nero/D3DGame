@@ -4,9 +4,9 @@
 
 #include <utility>
 
+using engine::refcount::make_ref;
 using engine::refcount::Ref;
 using engine::refcount::RefCounted;
-using engine::refcount::make_ref;
 
 namespace
 {
@@ -20,9 +20,7 @@ namespace
     };
 } // namespace
 
-TEST_CASE(
-    "make_ref adopts the constructor's reference; scope exit destroys once"
-)
+TEST_CASE("make_ref adopts the constructor's reference; scope exit destroys once")
 {
     destroyed = 0;
     {
@@ -32,9 +30,7 @@ TEST_CASE(
     CHECK(destroyed == 1);
 }
 
-TEST_CASE(
-    "copy add_refs, move steals, destruction happens exactly once"
-)
+TEST_CASE("copy add_refs, move steals, destruction happens exactly once")
 {
     destroyed = 0;
     {
@@ -53,9 +49,7 @@ TEST_CASE(
     CHECK(destroyed == 1); // last Ref out
 }
 
-TEST_CASE(
-    "self-assignment is safe (copy-and-swap)"
-)
+TEST_CASE("self-assignment is safe (copy-and-swap)")
 {
     destroyed = 0;
     auto r = make_ref<Counter>();
@@ -66,13 +60,11 @@ TEST_CASE(
     CHECK(destroyed == 1);
 }
 
-TEST_CASE(
-    "Ref<const T> counts through const"
-)
+TEST_CASE("Ref<const T> counts through const")
 {
     destroyed = 0;
     {
-        Ref<const Counter> rc{new Counter}; // explicit adoption
+        Ref<const Counter> rc{ new Counter }; // explicit adoption
         CHECK(rc->v == 7);
         Ref<const Counter> rc2 = rc;
         CHECK(rc->ref_count() == 2);
@@ -80,9 +72,7 @@ TEST_CASE(
     CHECK(destroyed == 1);
 }
 
-TEST_CASE(
-    "reset releases immediately"
-)
+TEST_CASE("reset releases immediately")
 {
     destroyed = 0;
     auto r = make_ref<Counter>();
