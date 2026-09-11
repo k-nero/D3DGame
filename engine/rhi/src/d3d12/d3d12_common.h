@@ -13,11 +13,12 @@
 #include <dxgidebug.h>
 #endif
 
-namespace engine::rhi::d3d12 {
+namespace engine::rhi::d3d12
+{
     // The COM smart pointer (same shape as eng::Ref, COM spellings — see the
     // conversation notes: Get() to pass in, IID_PPV_ARGS(&x) to receive out,
     // As() to upgrade interface versions).
-    template<class T>
+    template <class T>
     using ComPtr = Microsoft::WRL::ComPtr<T>;
 
     // Every fallible COM call goes through this. SUCCEEDED/FAILED, never ==S_OK.
@@ -32,9 +33,11 @@ namespace engine::rhi::d3d12 {
     } while (0)
 
     // WCHAR adapter description -> utf8 for our logger.
-    inline void wide_to_utf8(const wchar_t *in, char *out, int out_bytes) {
+    inline void wide_to_utf8(const wchar_t *in, char *out, int out_bytes)
+    {
         const int n = WideCharToMultiByte(CP_UTF8, 0, in, -1, out, out_bytes,
                                           nullptr, nullptr);
-        if (n <= 0 && out_bytes > 0) out[0] = '\0';
+        if (n <= 0 && out_bytes > 0)
+            out[0] = '\0';
     }
 } // namespace eng::rhi::d3d12

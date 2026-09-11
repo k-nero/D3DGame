@@ -10,9 +10,9 @@ target_sources(engine_rendergraph PRIVATE ${ENGINE_RENDERGRAPH_SRC})
 
 # include/ does not exist until this module grows public headers; naming a
 # missing directory here would end up in the facade's interface.
-if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include)
+if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_include_directories(engine_rendergraph PUBLIC include)
-endif()
+endif ()
 target_include_directories(engine_rendergraph PRIVATE src)
 
 target_link_libraries(engine_rendergraph PUBLIC engine_rhi)

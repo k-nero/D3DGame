@@ -21,20 +21,22 @@
 
 #include "window.h"
 
-namespace engine::app {
-    struct ApplicationDesc {
+namespace engine::app
+{
+    struct ApplicationDesc
+    {
         const char *title = "engine";
         uint32_t width = 1280;
         uint32_t height = 720;
         rhi::Backend backend =
 #if defined(_WIN32)
-                rhi::Backend::D3D12;
+            rhi::Backend::D3D12;
 #elif defined(__APPLE__)
-                engine::rhi::Backend::Metal;
+            engine::rhi::Backend::Metal;
 #elif defined(__linux__)
-			    engine::rhi::Backend::Vulkan;
+        engine::rhi::Backend::Vulkan;
 #else
-                rhi::Backend::Vulkan;
+        rhi::Backend::Vulkan;
 #endif
         bool enable_debug = true;
     };
@@ -56,7 +58,8 @@ namespace engine::app {
     // header with /W4.
 #  pragma warning(disable : 4251)
 #endif
-    class ENGINE_API Application {
+    class ENGINE_API Application
+    {
     public:
         explicit Application(const ApplicationDesc &);
 
@@ -71,17 +74,16 @@ namespace engine::app {
 
     protected:
         // ---- hooks, in call order ----
-        virtual void on_start() {
-        } // device is live
+        virtual void on_start() {} // device is live
         virtual void on_frame(const rhi::FrameContext &, float dt) = 0;
 
-        virtual void on_resize(uint32_t /*w*/, uint32_t /*h*/) {
-        } // after device resize
-        virtual void on_stop() {
-        } // device still live
+        virtual void on_resize(uint32_t /*w*/, uint32_t /*h*/) {} // after device resize
+        virtual void on_stop() {} // device still live
 
         [[nodiscard]] rhi::IDevice &device() const { return *device_; }
+
         [[nodiscard]] Window &window() const { return *window_; }
+
         void request_quit() { quit_ = true; }
 
     private:

@@ -6,11 +6,15 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
-namespace engine::app {
-    struct PlatformWindowBridge {
-        static LRESULT CALLBACK proc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
+namespace engine::app
+{
+    struct PlatformWindowBridge
+    {
+        static LRESULT CALLBACK proc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+        {
             // Window* stored at creation via CREATESTRUCT — the standard dance.
-            if (msg == WM_NCCREATE) {
+            if (msg == WM_NCCREATE)
+            {
                 auto *cs = reinterpret_cast<CREATESTRUCTW *>(lp);
                 SetWindowLongPtrW(hwnd, GWLP_USERDATA,
                                   reinterpret_cast<LONG_PTR>(cs->lpCreateParams));
@@ -18,28 +22,32 @@ namespace engine::app {
             }
             auto *w = reinterpret_cast<Window *>(
                 GetWindowLongPtrW(hwnd, GWLP_USERDATA));
-            if (!w) return DefWindowProcW(hwnd, msg, wp, lp);
+            if (!w)
+                return DefWindowProcW(hwnd, msg, wp, lp);
 
-            switch (msg) {
-                case WM_SIZE:
-                    if (wp != SIZE_MINIMIZED) {
-                        w->width_ = LOWORD(lp);
-                        w->height_ = HIWORD(lp);
-                        w->resized_ = true;
-                    }
-                    return 0;
-                case WM_DESTROY:
-                    PostQuitMessage(0);
-                    return 0;
-                case WM_CLOSE:                       // user hit the X / Alt+F4
-                    PostQuitMessage(0);
-                    return 0;                        // do NOT DefWindowProc: we destroy in ~Window
+            switch (msg)
+            {
+            case WM_SIZE:
+                if (wp != SIZE_MINIMIZED)
+                {
+                    w->width_ = LOWORD(lp);
+                    w->height_ = HIWORD(lp);
+                    w->resized_ = true;
+                }
+                return 0;
+            case WM_DESTROY:
+                PostQuitMessage(0);
+                return 0;
+            case WM_CLOSE: // user hit the X / Alt+F4
+                PostQuitMessage(0);
+                return 0; // do NOT DefWindowProc: we destroy in ~Window
             }
             return DefWindowProcW(hwnd, msg, wp, lp);
         }
     };
 
-    Window::Window(const WindowDesc &desc) : width_(desc.width), height_(desc.height) {
+    Window::Window(const WindowDesc &desc) : width_(desc.width), height_(desc.height)
+    {
         const HINSTANCE inst = GetModuleHandleW(nullptr);
 
         const WNDCLASSW wc{
@@ -68,26 +76,30 @@ namespace engine::app {
         ShowWindow(hwnd, SW_SHOW);
     }
 
-    Window::~Window() {
-        if (impl_) DestroyWindow(static_cast<HWND>(impl_));
+    Window::~Window()
+    {
+        if (impl_)
+            DestroyWindow(static_cast<HWND>(impl_));
     }
 
-    void* Window::native_handle() const { return impl_; }
+    void *Window::native_handle() const { return impl_; }
 
-    bool Window::pump() {
-        if (should_close_) return false;
+    bool Window::pump()
+    {
+        if (should_close_)
+            return false;
         MSG msg;
-        while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE)) {
-            if (msg.message == WM_QUIT) {
-                should_close_ = true;
-            }// belt & braces
+        while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE))
+        {
+            if (msg.message == WM_QUIT) { should_close_ = true; } // belt & braces
             TranslateMessage(&msg);
             DispatchMessageW(&msg);
         }
         return !should_close_;
     }
 
-    bool Window::consume_resize() {
+    bool Window::consume_resize()
+    {
         const bool r = resized_;
         resized_ = false;
         return r;

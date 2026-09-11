@@ -23,11 +23,11 @@ elseif (APPLE)
 endif ()
 
 target_include_directories(engine_app
-        PUBLIC  include
+        PUBLIC include
         PRIVATE src)
 
 target_link_libraries(engine_app
-        PUBLIC  engine_scene engine_assets
+        PUBLIC engine_scene engine_assets
         PRIVATE imgui::imgui)
 
 if (APPLE)

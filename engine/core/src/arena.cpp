@@ -8,8 +8,10 @@
 
 #include "engine/core/asserts.h"
 
-namespace engine::arena {
-    void Arena::pop_to(const Marker m) {
+namespace engine::arena
+{
+    void Arena::pop_to(const Marker m)
+    {
         engine_check(m.offset <= offset_); // popping "forward" = stale marker
         offset_ = m.offset;
     }
@@ -18,7 +20,8 @@ namespace engine::arena {
 
     void Arena::reset() { offset_ = 0; }
 
-    void *Arena::push(const size_t size, const size_t align) {
+    void *Arena::push(const size_t size, const size_t align)
+    {
         engine_check(std::has_single_bit(align)); // alignment must be a power of two
         // TRAP (caught by the alignment test): align the ADDRESS, not the offset.
         // operator new[] only guarantees __STDCPP_DEFAULT_NEW_ALIGNMENT__ (16) for

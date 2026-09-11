@@ -174,20 +174,28 @@
       "name": "pack-mac-release",
       "inherits": "pack-base",
       "configurePreset": "mac-release",
-      "generators": [ "TGZ" ]
+      "generators": [
+        "TGZ"
+      ]
     },
     {
       "name": "pack-win-release",
       "inherits": "pack-base",
       "configurePreset": "win-release",
-      "configurations": [ "Release" ],
-      "generators": [ "ZIP" ]
+      "configurations": [
+        "Release"
+      ],
+      "generators": [
+        "ZIP"
+      ]
     },
     {
       "name": "pack-linux-release",
       "inherits": "pack-base",
       "configurePreset": "linux-release",
-      "generators": [ "TGZ" ]
+      "generators": [
+        "TGZ"
+      ]
     }
   ]
 }

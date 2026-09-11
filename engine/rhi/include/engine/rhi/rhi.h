@@ -28,7 +28,8 @@
 
 #include <engine/core/api.h>
 
-namespace engine::rhi {
+namespace engine::rhi
+{
     // ---------------------------------------------------------------- constants
     inline constexpr uint32_t kMaxFramesInFlight = 3;
     inline constexpr uint32_t kMaxColorTargets = 8;
@@ -40,8 +41,9 @@ namespace engine::rhi {
     // Same 24/8 generational layout as eng::Handle, restated here so rhi.h has
     // zero dependencies on core containers. The Tag makes BufferHandle and
     // TextureHandle distinct types — they cannot be swapped at a call site.
-    template<class Tag>
-    struct GpuHandle {
+    template <class Tag>
+    struct GpuHandle
+    {
         uint32_t index: 24 = 0;
         uint32_t gen: 8 = 0; // gen 0 = null, same convention as pool.h
 
@@ -55,7 +57,8 @@ namespace engine::rhi {
     using PSOHandle = GpuHandle<struct PSOTag>;
 
     // ------------------------------------------------------------------ formats
-    enum class Format : uint8_t {
+    enum class Format : uint8_t
+    {
         Unknown,
         RGBA8_UNorm,
         BGRA8_UNorm, // typical swapchain format
@@ -68,7 +71,7 @@ namespace engine::rhi {
 
     // -------------------------------------------------------------------- flags
     // enum-class flags need their operators spelled out once:
-#define ENGINE_RHI_FLAG_OPS(E)                                                   \
+#define ENGINE_RHI_FLAG_OPS(E)                                                \
     constexpr E operator|(E a, E b) {                                         \
         return E(uint32_t(a) | uint32_t(b));                                  \
     }                                                                         \
@@ -77,7 +80,8 @@ namespace engine::rhi {
     }                                                                         \
     constexpr bool any(E a) { return uint32_t(a) != 0; }
 
-    enum class BufferUsage : uint8_t {
+    enum class BufferUsage : uint8_t
+    {
         None = 0,
         Vertex = 1 << 0, // NOTE: bindless vertex *pulling* wants Storage, not this;
         Index = 1 << 1, //       Vertex exists for tooling/interop completeness
@@ -87,7 +91,8 @@ namespace engine::rhi {
 
     ENGINE_RHI_FLAG_OPS(BufferUsage)
 
-    enum class TextureUsage : uint8_t {
+    enum class TextureUsage : uint8_t
+    {
         None = 0,
         Sampled = 1 << 0,
         RenderTarget = 1 << 1,
@@ -98,7 +103,8 @@ namespace engine::rhi {
     ENGINE_RHI_FLAG_OPS(TextureUsage)
 
     // Where the memory lives — the D3D12 heap-type trio, portable spelling.
-    enum class Memory : uint8_t {
+    enum class Memory : uint8_t
+    {
         GpuOnly, // DEFAULT heap: fast, not CPU-visible
         Upload, // CPU-write / GPU-read; map() works only on these
         Readback, // GPU-write / CPU-read
@@ -107,7 +113,8 @@ namespace engine::rhi {
     // ----------------------------------------------------------------- barriers
     // Enhanced-barrier model: WHAT was/will be happening (sync), HOW memory is
     // accessed (access), and for textures, the physical LAYOUT.
-    enum class Sync : uint16_t {
+    enum class Sync : uint16_t
+    {
         None = 0,
         All = 1 << 0,
         Draw = 1 << 1,
@@ -120,7 +127,8 @@ namespace engine::rhi {
 
     ENGINE_RHI_FLAG_OPS(Sync)
 
-    enum class Access : uint16_t {
+    enum class Access : uint16_t
+    {
         NoAccess = 0,
         RenderTarget = 1 << 0,
         DepthWrite = 1 << 1,
@@ -132,7 +140,8 @@ namespace engine::rhi {
 
     ENGINE_RHI_FLAG_OPS(Access)
 
-    enum class Layout : uint8_t {
+    enum class Layout : uint8_t
+    {
         Undefined,
         Present,
         RenderTarget,
@@ -143,7 +152,8 @@ namespace engine::rhi {
         CopyDst,
     };
 
-    struct TextureBarrier {
+    struct TextureBarrier
+    {
         TextureHandle texture;
         Sync sync_before = Sync::None;
         Sync sync_after = Sync::None;
@@ -153,7 +163,8 @@ namespace engine::rhi {
         Layout layout_after = Layout::Undefined;
     };
 
-    struct BufferBarrier {
+    struct BufferBarrier
+    {
         BufferHandle buffer;
         Sync sync_before = Sync::None;
         Sync sync_after = Sync::None;
@@ -164,7 +175,8 @@ namespace engine::rhi {
     // -------------------------------------------------------- resource descs
     // sokol-style: designated initializers, zero is a sane default, adding a
     // field never breaks a caller.
-    struct BufferDesc {
+    struct BufferDesc
+    {
         uint64_t size = 0;
         Memory memory = Memory::GpuOnly;
         BufferUsage usage = BufferUsage::None;
@@ -172,7 +184,8 @@ namespace engine::rhi {
         const char *debug_name = nullptr; // shows up in PIX / debug layer
     };
 
-    struct TextureDesc {
+    struct TextureDesc
+    {
         uint32_t width = 1;
         uint32_t height = 1;
         uint16_t mip_count = 1;
@@ -182,7 +195,8 @@ namespace engine::rhi {
         const char *debug_name = nullptr;
     };
 
-    struct GraphicsPSODesc {
+    struct GraphicsPSODesc
+    {
         std::span<const std::byte> vs_bytecode; // DXIL from DXC; Null ignores
         std::span<const std::byte> ps_bytecode;
         std::span<const Format> color_formats; // render-target formats, in order
@@ -198,7 +212,8 @@ namespace engine::rhi {
     };
 
     // ------------------------------------------------------------ command list
-    class ICommandList {
+    class ICommandList
+    {
     public:
         virtual ~ICommandList() = default;
 
@@ -206,12 +221,12 @@ namespace engine::rhi {
         // silently diverge across overrides. Defaults live on these non-virtual
         // convenience overloads instead:
         void barrier(const std::span<const TextureBarrier> textures) { barrier(textures, {}); }
+
         void draw(const uint32_t vertex_count) { draw(vertex_count, 1); }
+
         void draw_indexed(const uint32_t index_count) { draw_indexed(index_count, 1); }
 
-        void set_render_targets(const std::span<const TextureHandle> colors) {
-            set_render_targets(colors, {});
-        }
+        void set_render_targets(const std::span<const TextureHandle> colors) { set_render_targets(colors, {}); }
 
         virtual void barrier(std::span<const TextureBarrier> textures,
                              std::span<const BufferBarrier> buffers) = 0;
@@ -239,19 +254,22 @@ namespace engine::rhi {
     };
 
     // ------------------------------------------------------------------- device
-    struct DeviceCaps {
+    struct DeviceCaps
+    {
         char adapter_name[128] = "unknown";
         uint64_t vram_bytes = 0;
     };
 
     // Everything begin_frame hands back is valid until the matching end_frame.
-    struct FrameContext {
+    struct FrameContext
+    {
         ICommandList *cmd = nullptr;
         TextureHandle backbuffer; // already usable as a render target
         uint32_t frame_index = 0; // 0..frames_in_flight-1
     };
 
-    class IDevice {
+    class IDevice
+    {
     public:
         virtual ~IDevice() = default;
 
@@ -309,13 +327,15 @@ namespace engine::rhi {
     //     boundary, which is the classic cross-DLL heap corruption.
     // Exporting the interfaces would add nothing and would drag their layout
     // into the ABI. Leave them alone.
-    enum class Backend : uint8_t {
+    enum class Backend : uint8_t
+    {
         D3D12, // Windows
         Metal, // MacOS
         Vulkan, // Linux
     };
 
-    struct DeviceDesc {
+    struct DeviceDesc
+    {
         void *native_window = nullptr; // HWND on Windows; Null ignores
         uint32_t width = 1280;
         uint32_t height = 720;

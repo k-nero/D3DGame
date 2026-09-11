@@ -7,13 +7,16 @@
 
 using namespace engine;
 
-namespace {
-    class ClearSample final : public app::Application {
+namespace
+{
+    class ClearSample final : public app::Application
+    {
     public:
         using Application::Application;
 
     protected:
-        void on_frame(const rhi::FrameContext &fr, float dt) override {
+        void on_frame(const rhi::FrameContext &fr, const float dt) override
+        {
             const rhi::TextureBarrier to_rt{
                 .texture = fr.backbuffer,
                 .sync_after = rhi::Sync::RenderTarget,
@@ -45,6 +48,4 @@ namespace {
     };
 }
 
-int main() {
-    return ClearSample({.title = "m2: clear", .width = 1280, .height = 720 }).run();
-}
+int main() { return ClearSample({.title = "m2: clear", .width = 1280, .height = 720}).run(); }

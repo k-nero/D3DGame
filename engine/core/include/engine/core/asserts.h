@@ -9,16 +9,16 @@
 
 #include "api.h"
 #define ENGINE_DEBUG_BREAK() /* __debugbreak() on MSVC, __builtin_debugtrap() on clang */
-#define engine_check(expr) \
-    do { if (!(expr)) { \
+#define engine_check(expr)                                          \
+    do { if (!(expr)) {                                             \
         engine::assert::on_check_failed(#expr, __FILE__, __LINE__); \
-        ENGINE_DEBUG_BREAK(); std::abort(); \
+        ENGINE_DEBUG_BREAK(); std::abort();                         \
     } } while (0)
 
-#define engine_ensure(expr) \
-    ( (expr) ? true : (engine::assert::on_ensure_failed(#expr, __FILE__, __LINE__), false) )
+#define engine_ensure(expr) ( (expr) ? true : (engine::assert::on_ensure_failed(#expr, __FILE__, __LINE__), false) )
 
-namespace engine::assert {
+namespace engine::assert
+{
     ENGINE_API void on_check_failed(const char *expr, const char *file, int line);
 
     ENGINE_API void on_ensure_failed(const char *expr, const char *file, int line);

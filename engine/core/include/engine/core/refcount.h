@@ -14,17 +14,18 @@
 #include "asserts.h"
 
 
-namespace engine::refcount {
-    class RefCounted {
+namespace engine::refcount
+{
+    class RefCounted
+    {
     public:
         RefCounted(const RefCounted &) = delete; // count is identity-bound;
         RefCounted &operator=(const RefCounted &) = delete; // copying it is always a bug
 
-        void add_ref() const {
-            refs_.fetch_add(1, std::memory_order_relaxed);
-        }
+        void add_ref() const { refs_.fetch_add(1, std::memory_order_relaxed); }
 
-        void release() const {
+        void release() const
+        {
             // acq_rel: the thread that deletes must observe all writes made by
             // other threads before they released. Single-threaded until
             // milestone 10, but this is the version we'd write then anyway.
@@ -32,7 +33,8 @@ namespace engine::refcount {
                 delete this;
         }
 
-        [[nodiscard]] uint32_t ref_count() const {
+        [[nodiscard]] uint32_t ref_count() const
+        {
             // debugging/tests only
             return refs_.load(std::memory_order_relaxed);
         }
@@ -50,44 +52,53 @@ namespace engine::refcount {
     // C++20 concept: constrain at the declaration, error at the call site.
     // derived_from (not is_base_of_v) also rejects PRIVATE inheritance, which
     // would otherwise fail obscurely inside release().
-    template<class T>
+    template <class T>
     concept RefCountable = std::derived_from<std::remove_const_t<T>, RefCounted>;
 
-    template<RefCountable T>
-    class Ref {
+    template <RefCountable T>
+    class Ref
+    {
     public:
         Ref() = default;
 
-        explicit Ref (std::nullptr_t){
-        }
+        explicit Ref(std::nullptr_t) {}
 
         // explicit on purpose: adoption must be visible at the call site.
-        explicit Ref(T *p) : ptr_(p) {
-        } // ADOPTS (see convention above)
+        explicit Ref(T *p) : ptr_(p) {} // ADOPTS (see convention above)
 
-        Ref(const Ref &o) : ptr_(o.ptr_) { if (ptr_) ptr_->add_ref(); }
-
-        Ref(Ref &&o) noexcept : ptr_(std::exchange(o.ptr_, nullptr)) {
+        Ref(const Ref &o) : ptr_(o.ptr_)
+        {
+            if (ptr_)
+                ptr_->add_ref();
         }
+
+        Ref(Ref &&o) noexcept : ptr_(std::exchange(o.ptr_, nullptr)) {}
 
         // Copy-and-swap: one operator= covers copy-assign, move-assign, and
         // self-assign correctly. `o` arrives as a copy (or move) and carries
         // the old pointer out to be released by its destructor.
-        Ref &operator=(Ref o) noexcept {
+        Ref &operator=(Ref o) noexcept
+        {
             std::swap(ptr_, o.ptr_);
             return *this;
         }
 
-        ~Ref() { if (ptr_) ptr_->release(); }
+        ~Ref()
+        {
+            if (ptr_)
+                ptr_->release();
+        }
 
         [[nodiscard]] T *get() const { return ptr_; }
 
-        T *operator->() const {
+        T *operator->() const
+        {
             engine_check(ptr_);
             return ptr_;
         }
 
-        T &operator*() const {
+        T &operator*() const
+        {
             engine_check(ptr_);
             return *ptr_;
         }
@@ -95,6 +106,7 @@ namespace engine::refcount {
         explicit operator bool() const { return ptr_ != nullptr; }
 
         void reset() { Ref{}.swap(*this); }
+
         void swap(Ref &o) noexcept { std::swap(ptr_, o.ptr_); }
 
         bool operator==(const Ref &) const = default; // C++20: defaulted comparison
@@ -103,8 +115,9 @@ namespace engine::refcount {
         T *ptr_ = nullptr;
     };
 
-    template<RefCountable T, class... Args>
-    [[nodiscard]] Ref<T> make_ref(Args &&... args) {
+    template <RefCountable T, class... Args>
+    [[nodiscard]] Ref<T> make_ref(Args &&... args)
+    {
         return Ref<T>(new T(std::forward<Args>(args)...)); // ctor's ref = the one we adopt
     }
 }
